@@ -1,12 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+#include("Velocity/css/style.css")
+</style>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-Hello $name
+<div id ="container">
+$logged
+
+$!{formulier}
+
+<br />
+<br />
+
+
+</div>
 <p />
-Het is $jan
+
 </body>
 </html>
+
+
+
+

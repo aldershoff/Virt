@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Context>
+
+<Resource name="jdbc/projectVirt"
+
+auth="Container"
+
+type="javax.sql.DataSource"
+
+username=""
+
+password=""
+
+driverClassName="com.mysql.jdbc.Driver"
+
+url="jdbc:mysql://localhost:3306/projectVirt"
+
+maxActive="15"
+
+maxIdle="3"/>
+
+</Context>
