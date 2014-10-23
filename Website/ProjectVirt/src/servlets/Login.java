@@ -18,8 +18,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-import queries.CheckLogin;
-import queries.DBConnection;
+import queries.LoginQuery;
 
 /**
  * Servlet implementation class Login This servlet is mainly for processing user
@@ -103,6 +102,9 @@ public class Login extends HttpServlet {
 			final HttpServletResponse response) throws ServletException,
 			IOException {
 
+		// Setting check int for checking login
+		int check = 0;
+
 		// getting new responsewriter and setting it into the already made
 		// variable
 		out = response.getWriter();
@@ -111,15 +113,12 @@ public class Login extends HttpServlet {
 		String username = request.getParameter("user");
 		String password = request.getParameter("password");
 
-		DBConnection dbConn = new DBConnection();
-		Connection conn = dbConn.returnConnection();
-		int check = 0;
-		
-		if(conn != null){
-		CheckLogin checkLog = new CheckLogin(conn, username, password);
+		// Making new login query and passing on the username and password
+		LoginQuery checkLog = new LoginQuery(username, password);
 
-		 check = checkLog.runQuery();
-		}
+		// Getting the result
+		check = checkLog.runQuery();
+
 		/**
 		 * If the name and password equals to each other, the redirect will take
 		 * place. This is also the place where database query content will be
