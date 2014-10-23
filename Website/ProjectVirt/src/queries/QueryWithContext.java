@@ -15,7 +15,6 @@ public final class QueryWithContext {
 
 	public static PrintWriter query(PrintWriter out) throws NamingException {
 		Context context = null;
-		DataSource datasource = null;
 		Connection connect = null;
 		Statement statement = null;
 
@@ -23,9 +22,7 @@ public final class QueryWithContext {
 
 			// Get the context and create a connection
 			context = new InitialContext();
-			datasource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/albums");
-			connect = datasource.getConnection();
+			connect = new DBConnection().returnConnection();
 
 			// Create the statement to be used to get the results.
 			statement = connect.createStatement();

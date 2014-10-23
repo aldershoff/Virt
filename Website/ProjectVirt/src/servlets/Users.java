@@ -99,7 +99,7 @@ public class Users extends HttpServlet {
 
 			// Setting cookies
 			Cookie[] cookies = request.getCookies();
-
+			
 			/**
 			 * If cookies are not null, the following should be executed
 			 */
@@ -123,10 +123,10 @@ public class Users extends HttpServlet {
 						vsl_Context.put("logged", "Hallo " + userName);
 
 						// Making new hypervisor conn
-						TestVM vm = new TestVM();
+						//TestVM vm = new TestVM();
 
 						// Make new vm's
-						vm.createDomains();
+						//vm.createDomains();
 
 					}
 

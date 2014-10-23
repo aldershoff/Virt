@@ -2,6 +2,10 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+
+import queries.CheckLogin;
+import queries.DBConnection;
 
 /**
  * Servlet implementation class Login This servlet is mainly for processing user
@@ -104,12 +111,21 @@ public class Login extends HttpServlet {
 		String username = request.getParameter("user");
 		String password = request.getParameter("password");
 
+		DBConnection dbConn = new DBConnection();
+		Connection conn = dbConn.returnConnection();
+		int check = 0;
+		
+		if(conn != null){
+		CheckLogin checkLog = new CheckLogin(conn, username, password);
+
+		 check = checkLog.runQuery();
+		}
 		/**
 		 * If the name and password equals to each other, the redirect will take
 		 * place. This is also the place where database query content will be
 		 * filtered
 		 */
-		if ("kjell".equals(username) && "test".equals(password)) {
+		if (check == 1) {
 
 			// Making new cookie from username
 			Cookie loginCookie = new Cookie("user", username);
@@ -136,4 +152,56 @@ public class Login extends HttpServlet {
 		}
 	}
 
+	public int checkLogin(Connection conn, String username, String password) {
+		Statement stmt = null;
+
+		ResultSet rs = null;
+		String checkUsername = null;
+		String checkPassword = null;
+
+		try
+
+		{
+
+			stmt = conn.createStatement();
+
+			rs = stmt
+					.executeQuery("SELECT username, password FROM Users WHERE username = "
+							+ "\"" + username + "\"" + " AND id > 0");
+
+			while (rs.next()) {
+
+				checkUsername = rs.getString("username");
+
+				checkPassword = rs.getString("password");
+
+				// checkAccessPower = rs.getInt(“accesspower”);
+
+			}
+
+			if (checkUsername != null) {
+				if (checkPassword.equals(password)) {
+					return 1;
+				} else {
+					return 0;
+				}
+			}
+			conn.close();
+		}
+
+		catch (SQLException ex)
+
+		{
+
+			// handle any errors
+
+			System.out.println("SQLException: " + ex.getMessage());
+
+			System.out.println("SQLState: " + ex.getSQLState());
+
+			System.out.println("VendorError: " + ex.getErrorCode());
+
+		}
+		return 0;
+	}
 }

@@ -2,6 +2,8 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+
+import queries.DBConnection;
 
 /**
  * Servlet implementation class AuthUsers. This servlet will handle all the
@@ -140,7 +144,7 @@ public class AuthUsers extends HttpServlet {
 						String form = "<form action='Logout'>"
 								+ "<input type='submit' value='Logout' />"
 								+ "</form>";
-
+						
 						// putting it in the velocity context engine for HTML
 						vsl_Context.put("formulier", form);
 
