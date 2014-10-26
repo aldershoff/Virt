@@ -59,55 +59,56 @@ public class LoginQuery {
 		DBConnection dbConn = null;
 		Connection conn = null;
 
-		try {
-			// Initializing the dbconn and conn for use
-			dbConn = new DBConnection();
-			conn = dbConn.returnConnection();
+		// Initializing the dbconn and conn for use
+		dbConn = new DBConnection();
+		conn = dbConn.returnConnection();
 
-			// Make prepared statement with the desired query
-			PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
+		if (conn != null) {
+			try {
 
-			// Setting the parameters (places where the "?" exist)
-			pstm.setString(1, getUsername);
-			pstm.setString(2, getPassword);
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
 
-			// Execute the query
-			rs = pstm.executeQuery();
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, getUsername);
+				pstm.setString(2, getPassword);
+
+				// Execute the query
+				rs = pstm.executeQuery();
+
+				/**
+				 * While the resultset will go to the next result, store the
+				 * variables
+				 */
+				while (rs.next()) {
+					checkUsername = rs.getString("username");
+					checkPassword = rs.getString("password");
+				}
+			}
 
 			/**
-			 * While the resultset will go to the next result, store the
-			 * variables
+			 * Catch exception SQL
 			 */
-			while (rs.next()) {
-				checkUsername = rs.getString("username");
-				checkPassword = rs.getString("password");
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
 			}
+
+			closeConn(conn);
+
+			// Return 1 or 0 for checking if username and password combination
+			// were
+			// correct or not
+			return checkIfCorrect(checkUsername, checkPassword);
 		}
 
-		/**
-		 * Catch exception SQL
-		 */
-		catch (SQLException ex) {
-
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
-
+		else {
+			return 2;
 		}
-
-		// Close connection
-		try {
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		;
-
-		// Return 1 or 0 for checking if username and password combination were
-		// correct or not
-		return checkIfCorrect(checkUsername, checkPassword);
 
 	}
 
@@ -129,5 +130,21 @@ public class LoginQuery {
 			}
 		}
 		return 0;
+	}
+
+	/**
+	 * Close the connection
+	 * 
+	 * @param conn
+	 */
+	private void closeConn(Connection conn) {
+		// Close connection
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

@@ -35,7 +35,6 @@ public class AuthUsers extends HttpServlet {
 	 */
 	public AuthUsers() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

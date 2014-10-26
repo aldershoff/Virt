@@ -111,13 +111,7 @@ public class Users extends HttpServlet {
 						// String
 						userName = cookie.getValue();
 
-						// Setting new form for logging out
-						String form = "<form action='Logout'>"
-								+ "<input type='submit' value='Logout' />"
-								+ "</form>";
-
 						// Putting the variables for velocity engine
-						vsl_Context.put("formulier", form);
 						vsl_Context.put("logged", "Hallo " + userName);
 
 						// Making new hypervisor conn
@@ -137,11 +131,7 @@ public class Users extends HttpServlet {
 			 * Other information must be given of course.
 			 */
 			if (userName == null) {
-				vsl_Context.put("logged", "Je bent niet ingelogd");
-				String form = "<form action='Login'>"
-						+ "<input type='submit' value='Go to login' />"
-						+ "</form>";
-				vsl_Context.put("formulier", form);
+				vsl_Context.put("notLogged", "Je bent niet ingelogd");
 			}
 
 		}

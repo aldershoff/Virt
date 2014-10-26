@@ -9,13 +9,28 @@
 </head>
 <body>
 <div id ="container">
+
+#if ($logged)
 $logged
 
-$!{formulier}
+$test.customerusername
+
+<form action='Logout'>
+<input type='submit' value='Logout' />
+</form>
+
+#else
+$notLogged
+<form action='Login'>
+<input type='submit' value='Go to login' />
+</form>
+#end
 
 <br />
 <br />
 
+
+dwlijalijalijwliadjalijdlw
 
 </div>
 <p />
