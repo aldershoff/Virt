@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import queries.LoginQuery;
+
+import database.LoginQuery;
 
 /**
  * Servlet implementation class Login This servlet is mainly for processing user

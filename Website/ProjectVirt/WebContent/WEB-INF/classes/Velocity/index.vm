@@ -13,8 +13,6 @@
 #if ($logged)
 $logged
 
-$test.customerusername
-
 <form action='Logout'>
 <input type='submit' value='Logout' />
 </form>
@@ -25,12 +23,6 @@ $notLogged
 <input type='submit' value='Go to login' />
 </form>
 #end
-
-<br />
-<br />
-
-
-dwlijalijalijwliadjalijdlw
 
 </div>
 <p />

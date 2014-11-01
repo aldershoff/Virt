@@ -1,4 +1,4 @@
-package queries;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -31,7 +31,7 @@ public class DBConnection {
 
 			// Setting server and database names
 			String serverName = "localhost";
-			String mydatabase = "ProjectVirt";
+			String mydatabase = "projectVirt";
 
 			// Setting the url with all the above variables
 			String url = "jdbc:mysql://" + serverName + "/" + mydatabase; // a
@@ -39,7 +39,7 @@ public class DBConnection {
 			// url
 			// Setting login and password for database
 			String sqlusername = "root";
-			String sqlpassword = "";
+			String sqlpassword = "UNFAH2Ww6waA";
 
 			// Initiazing the connection with the drivermanager for making a
 			// real connection
