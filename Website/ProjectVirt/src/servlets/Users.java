@@ -107,13 +107,7 @@ public class Users extends HttpServlet {
 					// If the username equals the user
 					if (cookie.getName().equals("user")) {
 
-						// Setting the cookie username to a local username
-						// String
-						userName = cookie.getValue();
-
-						// Putting the variables for velocity engine
-						vsl_Context.put("logged", "Hallo " + userName);
-
+						response.sendRedirect("AuthUsers");
 						// Making new hypervisor conn
 						// TestVM vm = new TestVM();
 
@@ -130,7 +124,7 @@ public class Users extends HttpServlet {
 			 * If username is null, it means that the user hasn't logged in yet.
 			 * Other information must be given of course.
 			 */
-			else{
+			if(userName == null){
 				vsl_Context.put("notLogged", "Je bent niet ingelogd");
 			}
 
