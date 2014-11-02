@@ -130,7 +130,7 @@ public class Users extends HttpServlet {
 			 * If username is null, it means that the user hasn't logged in yet.
 			 * Other information must be given of course.
 			 */
-			if (userName == null) {
+			else{
 				vsl_Context.put("notLogged", "Je bent niet ingelogd");
 			}
 
