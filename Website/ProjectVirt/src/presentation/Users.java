@@ -1,4 +1,4 @@
-package servlets;
+package presentation;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,11 +18,13 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
-@WebServlet("/Users")
+@WebServlet(name = "/Users", loadOnStartup = 1)
 /**
  * Servlet implementation class Users.
  * This Servlet is for all users and can access
  * public information
+ * @author kjellzijlemaker
+ *
  */
 public class Users extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -66,7 +68,7 @@ public class Users extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		// Getting the template for public use
-		getTemp(request, response);
+		getController(request, response);
 	}
 
 	@Override
@@ -74,10 +76,118 @@ public class Users extends HttpServlet {
 			throws ServletException, IOException {
 
 		// Also for the post, the same method as the get
-		getTemp(request, response);
+		getController(request, response);
 
 	}
 
+	private void getController(final HttpServletRequest request,
+			final HttpServletResponse response) throws ServletException,
+			IOException {
+
+		try {
+			// Setting the writer
+			out = response.getWriter();
+
+			String userPath = request.getServletPath();
+
+			// If home page is requested
+			if (userPath.equals("/home")) {
+				template = Velocity.getTemplate("Velocity/index.html");
+			}
+
+			// If login page is requested
+			else if (userPath.equals("/about")) {
+				template = Velocity.getTemplate("Velocity/about.html");
+			}
+			// If login page is requested
+			else if (userPath.equals("/services")) {
+				template = Velocity.getTemplate("Velocity/services.html");
+			}
+			// If login page is requested
+			else if (userPath.equals("/hosts")) {
+				template = Velocity.getTemplate("Velocity/hosts.html");
+			}
+
+			// If login page is requested
+			else if (userPath.equals("/login")) {
+				template = Velocity.getTemplate("Velocity/login.html");
+			}
+
+			// If login page is requested
+			else if (userPath.equals("/register")) {
+				template = Velocity.getTemplate("Velocity/register.html");
+			}
+
+		}
+
+		catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+
+		/**
+		 * When done, merge template and close the writer for user
+		 */
+		finally {
+			template.merge(vsl_Context, out);
+			out.close();
+		}
+
+	}
+
+	
+	/**
+	 * Not needed anymore, because the fulter can also check these things.
+	 * Checking the cookies will be needed also in the future, still working on that..
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	private int checkIfLoggedIn(final HttpServletRequest request,
+			final HttpServletResponse response) {
+		/**
+		 * Try to see if anyone logged in, if so, the user should be welcomed
+		 * and see different information then the other users
+		 */
+
+		// Setting username
+		String userName = null;
+
+		// Setting cookies
+		Cookie[] cookies = request.getCookies();
+
+		/**
+		 * If cookies are not null, the following should be executed
+		 */
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+
+				// If the username equals the user
+				if (cookie.getName().equals("user")) {
+
+					return 1;
+					// Making new hypervisor conn
+					// TestVM vm = new TestVM();
+
+					// Make new vm's
+					// vm.createDomains();
+
+				}
+
+			}
+		} else if (userName == null) {
+			return 0;
+		}
+		return 0;
+
+	}
+
+	/**
+	 * Also not needed anymore..
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	private void getTemp(final HttpServletRequest request,
 			final HttpServletResponse response) throws ServletException,
 			IOException {
@@ -124,7 +234,7 @@ public class Users extends HttpServlet {
 			 * If username is null, it means that the user hasn't logged in yet.
 			 * Other information must be given of course.
 			 */
-			if(userName == null){
+			if (userName == null) {
 				vsl_Context.put("notLogged", "Je bent niet ingelogd");
 			}
 
@@ -138,7 +248,7 @@ public class Users extends HttpServlet {
 		 * When done, merge template and close the writer for user
 		 */
 		finally {
-			template = Velocity.getTemplate("Velocity/index.vm");
+			template = Velocity.getTemplate("Velocity/index.html");
 			template.merge(vsl_Context, out);
 			out.close();
 		}

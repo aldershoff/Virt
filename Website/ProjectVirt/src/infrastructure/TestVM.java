@@ -1,4 +1,4 @@
-package kvm;
+package infrastructure;
 
 /**
  * Class for monitoring and creating different VM's on the hypervisor

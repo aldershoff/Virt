@@ -1,4 +1,4 @@
-package servlets;
+package presentation;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -21,9 +21,9 @@ import org.apache.velocity.app.Velocity;
 /**
  * Servlet implementation class AuthUsers. This servlet will handle all the
  * users that are succesfully logged into the website and will get other views
- * then the Users servlet
+ * than the Users servlet
  */
-@WebServlet("/AuthUsers")
+@WebServlet(name = "/AuthUsers")
 public class AuthUsers extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private VelocityContext vsl_Context = new VelocityContext();
@@ -94,7 +94,8 @@ public class AuthUsers extends HttpServlet {
 	private void processTemp(final HttpServletRequest request,
 			final HttpServletResponse response) throws ServletException,
 			IOException {
-
+		HttpSession session = request.getSession(false);
+		session.invalidate();
 	}
 
 	/**
@@ -111,69 +112,112 @@ public class AuthUsers extends HttpServlet {
 			final HttpServletResponse response) throws ServletException,
 			IOException {
 
-		// Making new writer from the, already existed, print variable
-		out = response.getWriter();
-
-		// Setting username
-		String userName = null;
-
-		// Making new cookie request (from the login servlet)
-		Cookie[] cookies = request.getCookies();
-
-		/**
-		 * This try statement is for checking if cookie is present or not
-		 */
 		try {
-			if (cookies != null) {
-				// If cookie not null, go through all cookies
-				for (Cookie cookie : cookies) {
+			// Making new writer from the, already existed, print variable
+			out = response.getWriter();
+			String userPath = request.getServletPath();
 
-					// If the username equals the user cookie, execute
-					// statements
-					if (cookie.getName().equals("user")) {
-
-						// Get the username from the cookie
-						userName = cookie.getValue();
-
-						// Making the new logout form
-						String form = "<form action='Logout'>"
-								+ "<input type='submit' value='Logout' />"
-								+ "</form>";
-
-						// putting it in the velocity context engine for HTML
-						vsl_Context.put("formulier", form);
-
-						// Putting welcome message in the velocity context
-						// engine for HTML
-						vsl_Context.put("logged", "Hallo " + userName);
-
-						// Getting template
-						template = Velocity.getTemplate("Velocity/index.vm");
-
-						// Merge template
-						template.merge(vsl_Context, out);
-
-					}
-				}
+			// Making new session and getting the attribute for sending it to the HTML pages
+			HttpSession session = request.getSession(false);
+			String name = (String) session.getAttribute("name");
+			String cookie = (String) session.getAttribute("cookie");
+			
+			/**
+			 * If the home page is requested, the name is redirected through the Velocity template
+			 */
+			if (userPath.equals("/customer/home")) {
+				vsl_Context.put("name", name);
+				vsl_Context.put("cookie", cookie);
+				template = Velocity
+						.getTemplate("Velocity/customers/index.html");
 			}
 
 			/**
-			 * If username == null, redirect to the login page. User hasn't
-			 * logged in yet
+			 * Logout page control
 			 */
-			if (userName == null) {
-				response.sendRedirect("Login");
+			if (userPath.equals("/customer/logout")) {
+				template = Velocity
+						.getTemplate("Velocity/customers/logout.html");
 			}
+
 		}
 
 		/**
-		 * Finally, close the print writer
+		 * Catch exceptions
+		 */
+		catch (Exception e) {
+			System.out.println(e.getLocalizedMessage());
+		}
+
+		/**
+		 * When done, merge template and close the writer for user
 		 */
 		finally {
-
+			template.merge(vsl_Context, out);
 			out.close();
 		}
 
+		//
+		// // Making new cookie request (from the login servlet)
+		// Cookie[] cookies = request.getCookies();
+		//
+		// /**
+		// * This try statement is for checking if cookie is present or not
+		// */
+		// try {
+		// if (cookies != null) {
+		// // If cookie not null, go through all cookies
+		// for (Cookie cookie : cookies) {
+		//
+		// // If the username equals the user cookie, execute
+		// // statements
+		// if (cookie.getName().equals("user")) {
+		//
+		// // Get the username from the cookie
+		// userName = cookie.getValue();
+		// out.print(userName);
+		// // Making the new logout form
+		// String form = "<form action='Logout'>"
+		// + "<input type='submit' value='Logout' />"
+		// + "</form>";
+		//
+		// // putting it in the velocity context engine for HTML
+		// vsl_Context.put("formulier", form);
+		//
+		// // Putting welcome message in the velocity context
+		// // engine for HTML
+		// vsl_Context.put("logged", "Hallo " + userName);
+		//
+		// // Getting template
+		// template = Velocity.getTemplate("Velocity/index.vm");
+		//
+		// // Merge template
+		// template.merge(vsl_Context, out);
+		//
+		// }
+		// }
+		// }
+		// else{
+		// out.print("Something went wrong");
+		// }
+
+		/**
+		 * If username == null, redirect to the login page. User hasn't logged
+		 * in yet
+		 */
+		// if (userName == null) {
+		// response.sendRedirect("Login");
+		// }
 	}
+
+	/**
+	 * Finally, close the print writer
+	 */
+	// finally {
+	//
+	// out.close();
+	// }
+
+	// }
 
 }

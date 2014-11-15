@@ -1,4 +1,4 @@
-package servlets;
+package businesslogic;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
  * will destroy the users session and cookie
  */
 @WebServlet("/Logout")
-public class Logout extends HttpServlet {
+public class LogoutServ extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public Logout() {
+	public LogoutServ() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

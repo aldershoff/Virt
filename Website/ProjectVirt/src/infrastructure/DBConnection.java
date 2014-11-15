@@ -1,4 +1,4 @@
-package database;
+package infrastructure;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -39,7 +39,7 @@ public class DBConnection {
 			// url
 			// Setting login and password for database
 			String sqlusername = "root";
-			String sqlpassword = "UNFAH2Ww6waA";
+			String sqlpassword = "";
 
 			// Initiazing the connection with the drivermanager for making a
 			// real connection
