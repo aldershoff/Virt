@@ -64,6 +64,10 @@ public class OperationalBackEnd extends HttpServlet {
 		if (userPath.equals("/login/processlogin")) {
 			processLogin(request, response);
 		}
+		// If login process is requested
+		else if (userPath.equals("/login/processregister")) {
+			processRegister(request, response);
+		}
 
 	}
 
@@ -92,20 +96,20 @@ public class OperationalBackEnd extends HttpServlet {
 			final HttpServletResponse response) throws IOException {
 
 		// Setting writer
-		out = response.getWriter();
+				out = response.getWriter();
 
-		// Making new bean for the customer
-		CustomerBean custBean = new CustomerBean();
+				// Making new bean for the customer
+				CustomerBean custBean = new CustomerBean();
 
-		// Getting parameters from form (login.html)
-		String getFormUsername = request.getParameter("user");
-		String getFormPassword = request.getParameter("password");
+				// Getting parameters from form (login.html)
+				custBean.setUserName(request.getParameter("user"));
+				custBean.setPassword(request.getParameter("password"));
 
-		// Making new login Data Access Object
-		UserDAO checkLog = new UserDAO();
+				// Making new login Data Access Object
+				UserDAO checkLog = new UserDAO();
 
-		// Make connection, fill bean and return it
-		custBean = checkLog.login(custBean, getFormUsername, getFormPassword);
+				// Make connection, fill bean and return it
+				custBean = checkLog.login(custBean);
 
 		// If bean is not null, a database connection has been initiated
 		if (custBean != null) {
@@ -136,6 +140,74 @@ public class OperationalBackEnd extends HttpServlet {
 					session.setAttribute("cookie", "COOKIE INSERTED");
 
 				}
+
+				// Redirect to servlet
+				response.sendRedirect("/ProjectVirt/customer/home");
+
+			}
+
+			/**
+			 * Else, print that the password is wrong and close the print
+			 */
+			else if (!custBean.valid) {
+				out.print("BAD");
+			}
+		}
+
+		/**
+		 * If returned null, something is wrong with the database
+		 */
+		else {
+			out.print("NO DATABASE");
+		}
+
+	}
+	
+	/**
+	 * Method for processing the register from the Users presentation servlet.
+	 * When registering is complete, the user can succesfully login into his own profile
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void processRegister(final HttpServletRequest request,
+			final HttpServletResponse response) throws IOException {
+
+		// Setting writer
+				out = response.getWriter();
+
+				// Making new bean for the customer
+				CustomerBean custBean = new CustomerBean();
+
+				// Getting parameters from form (login.html)
+				custBean.setUserName(request.getParameter("user"));
+				custBean.setPassword(request.getParameter("password"));
+				custBean.setDateOfBirth(request.getParameter("dateofbirth"));
+				custBean.setFirstName(request.getParameter("firstname"));
+				custBean.setLastName(request.getParameter("lastname"));
+				custBean.setEmail(request.getParameter("email"));
+				custBean.setPhone(request.getParameter("phone"));
+				custBean.setAddress(request.getParameter("address"));
+				custBean.setZipCode(request.getParameter("zipcode"));
+
+				// Making new login Data Access Object
+				UserDAO checkLog = new UserDAO();
+
+				// Make connection, fill bean and return it
+				custBean = checkLog.register(custBean);
+		// If bean is not null, a database connection has been initiated
+		if (custBean != null) {
+
+			/**
+			 * If the user is succesfully authenticated, and the bean has been
+			 * filled with information, a new session can be made
+			 */
+			if (custBean.isValid()) {
+
+				// Make session and fill it with the username
+				HttpSession session = request.getSession();
+				session.setAttribute("name", custBean.getUsername());
 
 				// Redirect to servlet
 				response.sendRedirect("/ProjectVirt/customer/home");

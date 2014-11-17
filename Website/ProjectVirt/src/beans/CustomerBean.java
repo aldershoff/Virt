@@ -16,6 +16,11 @@ public class CustomerBean {
 	private String password;
 	private String firstName;
 	private String lastName;
+	private String dateOfBirth;
+	private String email;
+	private String phone;
+	private String address;
+	private String zipCode;
 	public boolean valid;
 
 	/**
@@ -54,6 +59,8 @@ public class CustomerBean {
 		lastName = newLastName;
 	}
 
+	
+	
 	/**
 	 * Getting the userpassword
 	 * 
@@ -106,5 +113,45 @@ public class CustomerBean {
 	 */
 	public void setValid(boolean newValid) {
 		valid = newValid;
+	}
+
+	public String getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(String dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
 	}
 }

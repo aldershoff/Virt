@@ -53,6 +53,10 @@
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/login/processlogin</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/login/processregister</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthUsers</servlet-name>
 		<servlet-class>presentation.AuthUsers</servlet-class>

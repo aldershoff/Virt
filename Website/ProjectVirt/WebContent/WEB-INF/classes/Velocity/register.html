@@ -57,7 +57,7 @@
   <div id="container">
     <div class="homepage">
 <section class="lgncnt">
-    <form>
+    <form action="login/processregister" method="post">
         <div class="login">
 
             <div><i></i>
@@ -65,15 +65,15 @@
                 <p>Please fill in your personal details below</p>
             </div>
             <div>
-                <input type="text" placeholder="username"/>
-                <input type="password" placeholder="password"/>
-				<input type="text" placeholder="Date of birth"/>
-                <input type="text" placeholder="First name"/>
-				<input type="text" placeholder="Last name"/>
-                <input type="text" placeholder="Email"/>
-				<input type="text" placeholder="Phone"/>
-				<input type="text" placeholder="Address"/>
-				<input type="text" placeholder="Zip code"/>
+                <input type="text" placeholder="username" name="user"/>
+                <input type="password" placeholder="password" name="password"/>
+				<input type="text" placeholder="Date of birth" name="dateofbirth"/>
+                <input type="text" placeholder="First name" name="firstname"/>
+				<input type="text" placeholder="Last name" name="lastname"/>
+                <input type="text" placeholder="Email" name="email"/>
+				<input type="text" placeholder="Phone" name="phone"/>
+				<input type="text" placeholder="Address" name="address"/>
+				<input type="text" placeholder="Zip code" name="zipcode"/>
             </div>
              <div>
 			  <input type="checkbox" id="Iaccept"/>

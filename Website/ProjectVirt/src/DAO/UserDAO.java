@@ -30,9 +30,11 @@ public class UserDAO {
 	 * 
 	 * @return
 	 */
-	public CustomerBean login(CustomerBean bean, String getFormUsername,
-			String getFormPassword) {
+	public CustomerBean login(CustomerBean bean) {
 
+		String getFormUsername = bean.getUsername();
+		String getFormPassword = bean.getPassword();
+		
 		// Making the connection
 		conn = makeConn();
 
@@ -108,6 +110,85 @@ public class UserDAO {
 		return bean;
 	}
 
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * 
+	 * @return
+	 */
+	public CustomerBean register(CustomerBean bean) {
+
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		int rs = 0;
+		final String VERIFY_USER = "insert into users(username, password, dateofbirth, firstname, lastname, email, phone, address, zipcode)" +
+		"values(?,?,?,?,?,?,?,?,?)";
+
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {
+
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
+
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, bean.getUsername());
+				pstm.setString(2, bean.getPassword());
+				pstm.setString(3, bean.getDateOfBirth());
+				pstm.setString(4, bean.getFirstName());
+				pstm.setString(5, bean.getLastName());
+				pstm.setString(6, bean.getEmail());
+				pstm.setString(7, bean.getPhone());
+				pstm.setString(8, bean.getAddress());
+				pstm.setString(9, bean.getZipCode());
+
+				// Execute the query
+				rs = pstm.executeUpdate();
+
+				
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+				if (rs == 1) {
+					bean.setValid(true);
+				}
+				else{
+					bean.setValid(false);
+				}
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return null;
+		}
+
+		// Return the bean for using the data
+		return bean;
+	}
+	
 	/**
 	 * Make the connection with the database and return it
 	 * 
