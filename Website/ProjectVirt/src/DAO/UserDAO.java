@@ -68,7 +68,6 @@ public class UserDAO {
 					// Setting the information inside the Bean, from the
 					// database information
 					bean.setUserName(rs.getString("username"));
-					bean.setPassword(rs.getString("password"));
 				}
 			}
 
@@ -122,8 +121,8 @@ public class UserDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String VERIFY_USER = "insert into users(username, password, dateofbirth, firstname, lastname, email, phone, address, zipcode)" +
-		"values(?,?,?,?,?,?,?,?,?)";
+		final String VERIFY_USER = "insert into users(username, password, dateofbirth, firstname, lastname, email, phone, address, zipcode)"
+		+ "values(?,?,?,?,?,?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed

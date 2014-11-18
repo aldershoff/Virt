@@ -95,15 +95,15 @@ public class Users extends HttpServlet {
 				template = Velocity.getTemplate("Velocity/index.html");
 			}
 
-			// If login page is requested
+			// If about page is requested
 			else if (userPath.equals("/about")) {
 				template = Velocity.getTemplate("Velocity/about.html");
 			}
-			// If login page is requested
+			// If services page is requested
 			else if (userPath.equals("/services")) {
 				template = Velocity.getTemplate("Velocity/services.html");
 			}
-			// If login page is requested
+			// If hosts page is requested
 			else if (userPath.equals("/hosts")) {
 				template = Velocity.getTemplate("Velocity/hosts.html");
 			}
@@ -113,9 +113,14 @@ public class Users extends HttpServlet {
 				template = Velocity.getTemplate("Velocity/login.html");
 			}
 
-			// If login page is requested
+			// If register page is requested
 			else if (userPath.equals("/register")) {
 				template = Velocity.getTemplate("Velocity/register.html");
+			}
+
+				
+			else if(userPath.equals("/register/processregister?name=notallfields")){
+				out.print("Not all fields inserted");
 			}
 
 		}

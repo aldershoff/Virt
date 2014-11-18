@@ -3,6 +3,7 @@ package businesslogic;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -49,6 +50,8 @@ public class OperationalBackEnd extends HttpServlet {
 		if (userPath.equals("/customer/getVirtualMachine=")) {
 			getUserVM(request, response);
 		}
+		
+		
 	}
 
 	/**
@@ -96,76 +99,89 @@ public class OperationalBackEnd extends HttpServlet {
 			final HttpServletResponse response) throws IOException {
 
 		// Setting writer
-				out = response.getWriter();
+		out = response.getWriter();
 
-				// Making new bean for the customer
-				CustomerBean custBean = new CustomerBean();
+		// Making new bean for the customer
+		CustomerBean custBean = new CustomerBean();
 
-				// Getting parameters from form (login.html)
-				custBean.setUserName(request.getParameter("user"));
-				custBean.setPassword(request.getParameter("password"));
+		// Getting parameters from form (login.html)
+		custBean.setUserName(request.getParameter("user"));
+		custBean.setPassword(request.getParameter("password"));
 
-				// Making new login Data Access Object
-				UserDAO checkLog = new UserDAO();
+		if (custBean.getUsername() != "" && custBean.getPassword() != "") {
 
-				// Make connection, fill bean and return it
-				custBean = checkLog.login(custBean);
+			// Making new login Data Access Object
+			UserDAO checkLog = new UserDAO();
 
-		// If bean is not null, a database connection has been initiated
-		if (custBean != null) {
+			// Make connection, fill bean and return it
+			custBean = checkLog.login(custBean);
 
-			/**
-			 * If the user is succesfully authenticated, and the bean has been
-			 * filled with information, a new session can be made
-			 */
-			if (custBean.isValid()) {
+			// If bean is not null, a database connection has been initiated
+			if (custBean != null) {
 
-				// Make session and fill it with the username
-				HttpSession session = request.getSession();
-				session.setAttribute("name", custBean.getUsername());
+				/**
+				 * If the user is succesfully authenticated, and the bean has
+				 * been filled with information, a new session can be made
+				 */
+				if (custBean.isValid()) {
 
-				// If rememberme is checked, a cookie will be exchanged to the
-				// user
-				if (request.getParameter("rememberme") != null) {
+					// Make session and fill it with the username
+					HttpSession session = request.getSession();
+					session.setAttribute("name", custBean.getUsername());
 
-					// Making new cookie from username
-					Cookie loginCookie = new Cookie("user",
-							custBean.getUsername());
+					// If rememberme is checked, a cookie will be exchanged to
+					// the
+					// user
+					if (request.getParameter("rememberme") != null) {
 
-					// setting cookie to expiry in 30 mins
-					loginCookie.setMaxAge(2592000);
-					response.addCookie(loginCookie);
+						// Making new cookie from username
+						Cookie loginCookie = new Cookie("user",
+								custBean.getUsername());
 
-					// Sending debug message
-					session.setAttribute("cookie", "COOKIE INSERTED");
+						// setting cookie to expiry in 30 mins
+						loginCookie.setMaxAge(2592000);
+						response.addCookie(loginCookie);
+
+						// Sending debug message
+						session.setAttribute("cookie", "COOKIE INSERTED");
+
+					}
+
+					// Redirect to servlet
+					response.sendRedirect("/ProjectVirt/customer/home");
 
 				}
 
-				// Redirect to servlet
-				response.sendRedirect("/ProjectVirt/customer/home");
-
+				/**
+				 * Else, print that the password is wrong and close the print
+				 */
+				else if (!custBean.valid) {
+					out.print("BAD");
+				}
 			}
 
 			/**
-			 * Else, print that the password is wrong and close the print
+			 * If returned null, something is wrong with the database
 			 */
-			else if (!custBean.valid) {
-				out.print("BAD");
+			else {
+				out.print("NO DATABASE");
 			}
-		}
-
-		/**
-		 * If returned null, something is wrong with the database
-		 */
-		else {
-			out.print("NO DATABASE");
-		}
+		} else if(custBean.getUsername() == "" && custBean.getPassword() == "") {
+			out.print("No username given or password given");
+		} else if(custBean.getUsername() == ""){
+			out.print("No username given");
+		} else if(custBean.getPassword() == ""){
+			out.print("No pasword given");
+		} else{
+			out.print("No username and password given");
+		} 
 
 	}
-	
+
 	/**
 	 * Method for processing the register from the Users presentation servlet.
-	 * When registering is complete, the user can succesfully login into his own profile
+	 * When registering is complete, the user can succesfully login into his own
+	 * profile
 	 * 
 	 * @param request
 	 * @param response
@@ -175,27 +191,30 @@ public class OperationalBackEnd extends HttpServlet {
 			final HttpServletResponse response) throws IOException {
 
 		// Setting writer
-				out = response.getWriter();
+		out = response.getWriter();
 
-				// Making new bean for the customer
-				CustomerBean custBean = new CustomerBean();
+		// Making new bean for the customer
+		CustomerBean custBean = new CustomerBean();
 
-				// Getting parameters from form (login.html)
-				custBean.setUserName(request.getParameter("user"));
-				custBean.setPassword(request.getParameter("password"));
-				custBean.setDateOfBirth(request.getParameter("dateofbirth"));
-				custBean.setFirstName(request.getParameter("firstname"));
-				custBean.setLastName(request.getParameter("lastname"));
-				custBean.setEmail(request.getParameter("email"));
-				custBean.setPhone(request.getParameter("phone"));
-				custBean.setAddress(request.getParameter("address"));
-				custBean.setZipCode(request.getParameter("zipcode"));
+		// Getting parameters from form (login.html)
+		custBean.setUserName(request.getParameter("user"));
+		custBean.setPassword(request.getParameter("password"));
+		custBean.setDateOfBirth(request.getParameter("dateofbirth"));
+		custBean.setFirstName(request.getParameter("firstname"));
+		custBean.setLastName(request.getParameter("lastname"));
+		custBean.setEmail(request.getParameter("email"));
+		custBean.setPhone(request.getParameter("phone"));
+		custBean.setAddress(request.getParameter("address"));
+		custBean.setZipCode(request.getParameter("zipcode"));
 
-				// Making new login Data Access Object
-				UserDAO checkLog = new UserDAO();
+		if (custBean.getUsername() != "" && custBean.getPassword() != ""&&
+			custBean.getFirstName() != "" && custBean.getLastName() != "" && custBean.getEmail() != "") {
+		
+		// Making new login Data Access Object
+		UserDAO checkLog = new UserDAO();
 
-				// Make connection, fill bean and return it
-				custBean = checkLog.register(custBean);
+		// Make connection, fill bean and return it
+		custBean = checkLog.register(custBean);
 		// If bean is not null, a database connection has been initiated
 		if (custBean != null) {
 
@@ -221,12 +240,24 @@ public class OperationalBackEnd extends HttpServlet {
 				out.print("BAD");
 			}
 		}
-
+		
+		
 		/**
 		 * If returned null, something is wrong with the database
 		 */
 		else {
 			out.print("NO DATABASE");
+		}
+		}
+		else{
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/register/processregister?name=notallfields");
+			try {
+				dispatcher.forward(request, response);
+			} catch (ServletException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+					
 		}
 
 	}

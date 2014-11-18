@@ -45,6 +45,10 @@
 		<servlet-name>Users</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Users</servlet-name>
+		<url-pattern>/register/processregister?name=notallfields</url-pattern>
+	</servlet-mapping>
 	<servlet>
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<servlet-class>businesslogic.OperationalBackEnd</servlet-class>
