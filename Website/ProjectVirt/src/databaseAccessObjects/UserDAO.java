@@ -1,4 +1,4 @@
-package DAO;
+package databaseAccessObjects;
 
 import infrastructure.DBConnection;
 
@@ -10,8 +10,9 @@ import java.sql.SQLException;
 import beans.CustomerBean;
 
 /**
- * Class for making a Database Access object. It will get all the data needed from the database
- * and return the object to the back-end servlet for processing the data and sending it to the presentation layer
+ * Class for making a Database Access object. It will get all the data needed
+ * from the database and return the object to the back-end servlet for
+ * processing the data and sending it to the presentation layer
  * 
  * @author kjellzijlemaker
  *
@@ -34,13 +35,13 @@ public class UserDAO {
 
 		String getFormUsername = bean.getUsername();
 		String getFormPassword = bean.getPassword();
-		
+
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT username, password FROM users WHERE username = ? AND password = ?";
+		final String VERIFY_USER = "SELECT username, password, userid FROM users WHERE username = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -54,7 +55,6 @@ public class UserDAO {
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, getFormUsername);
-				pstm.setString(2, getFormPassword);
 
 				// Execute the query
 				rs = pstm.executeQuery();
@@ -68,6 +68,23 @@ public class UserDAO {
 					// Setting the information inside the Bean, from the
 					// database information
 					bean.setUserName(rs.getString("username"));
+					bean.setPassword(rs.getString("password"));
+					bean.setUserID(rs.getString("userid"));
+
+					/**
+					 * Check if username and password is correct
+					 */
+					if (bean.getUsername() != "" || bean.getPassword() != "") {
+						if (getFormUsername.equals(bean.getUsername())
+								&& getFormPassword.equals(bean.getPassword())) {
+							bean.setValid(true);
+						} else {
+							bean.setValid(false);
+						}
+
+					} else {
+						bean.setValid(false);
+					}
 				}
 			}
 
@@ -89,13 +106,6 @@ public class UserDAO {
 			 */
 			finally {
 				closeConn(conn);
-				if (bean.getUsername() != "") {
-					if (getFormPassword.equals(bean.getPassword())) {
-						bean.setValid(true);
-					} else {
-						bean.setValid(false);
-					}
-				}
 			}
 
 		}
@@ -122,7 +132,7 @@ public class UserDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		final String VERIFY_USER = "insert into users(username, password, dateofbirth, firstname, lastname, email, phone, address, zipcode)"
-		+ "values(?,?,?,?,?,?,?,?,?)";
+				+ "values(?,?,?,?,?,?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -148,7 +158,6 @@ public class UserDAO {
 				// Execute the query
 				rs = pstm.executeUpdate();
 
-				
 			}
 
 			/**
@@ -171,8 +180,7 @@ public class UserDAO {
 				closeConn(conn);
 				if (rs == 1) {
 					bean.setValid(true);
-				}
-				else{
+				} else {
 					bean.setValid(false);
 				}
 			}
@@ -187,7 +195,7 @@ public class UserDAO {
 		// Return the bean for using the data
 		return bean;
 	}
-	
+
 	/**
 	 * Make the connection with the database and return it
 	 * 

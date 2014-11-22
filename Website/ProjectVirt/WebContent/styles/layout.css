@@ -1,16 +1,6 @@
-/*
-Template Name: PlusBusiness
-File: Layout CSS
-Author: OS Templates
-Author URI: http://www.os-templates.com/
-Licence: <a href="http://www.os-templates.com/template-terms">Website Template Licence</a>
-*/
-
 @import url(navi.css);
-@import url(forms.css);
-@import url(tables.css);
 @import url(featured_slide.css);
-
+@import url(login.css);
 
 body{
 	margin:0;
@@ -36,14 +26,6 @@ a{
 	outline:none;
 	text-decoration:none;
 	}
-	
-	a2{
-	color:#FFFFFF;
-	background-color:#365D98;
-	outline:none;
-	text-decoration:none;
-	}
-	
 
 .fl_left{float:left;}
 .fl_right{float:right;}
@@ -80,7 +62,7 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 
 /* ----------------------------------------------Generalise-------------------------------------*/
 
-#header, #topbar, #homepage, #breadcrumb, #container, #footer, #copyright{
+#header, #topbar, #homepage, #container, #footer{
 	position:relative;
 	margin:0 auto 0;
 	display:block;
@@ -117,28 +99,13 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 	background-color:#000000;
 	}
 
-/* ----------------------------------------------BreadCrumb-------------------------------------*/
-
-#breadcrumb{
-	padding:20px 0;
-	}
-
-#breadcrumb ul{
-	margin:0;
-	padding:0;
-	list-style:none;
-	}
-
-#breadcrumb ul li{display:inline;}
-#breadcrumb ul li.current a{text-decoration:underline;}
-
 /* ----------------------------------------------Content-------------------------------------*/
 
 #container{
 	padding:20px 0;
 	}
 
-#container h1, #container h2, #container h3, #container h4, #container h5, #container h6{
+#container h2{
 	margin:0 0 15px 0;
 	padding:0 0 8px 0;
 	border-bottom:1px solid #E7E6E6;
@@ -206,90 +173,6 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 	background-color:#95AD19;
 	}
 
-/* ----------------------------------------------Content Block-------------------------------------*/
-
-#content{
-	display:block;
-	float:left;
-	width:600px;
-	}
-
-/* ------Comments-----*/
-
-#comments{margin-bottom:40px;}
-
-#comments .commentlist {margin:0; padding:0;}
-
-#comments .commentlist ul{margin:0; padding:0; list-style:none;}
-
-#comments .commentlist li.comment_odd, #comments .commentlist li.comment_even{margin:0 0 10px 0; padding:15px; list-style:none;}
-
-#comments .commentlist li.comment_odd{color:#666666; background-color:#F7F7F7;}
-#comments .commentlist li.comment_odd a{color:#95AD19; background-color:#F7F7F7;}
-
-#comments .commentlist li.comment_even{color:#666666; background-color:#E8E8E8;}
-#comments .commentlist li.comment_even a{color:#95AD19; background-color:#E8E8E8;}
-
-#comments .commentlist .author .name{font-weight:bold;}
-#comments .commentlist .submitdate{font-size:smaller;}
-
-#comments .commentlist p{margin:10px 5px 10px 0; padding:0; font-weight: normal;text-transform: none;}
-
-#comments .commentlist li .avatar{float:right; border:1px solid #EEEEEE; margin:0 0 0 10px;}
-
-/* ----------------------------------------------Column-------------------------------------*/
-
-#column{
-	display:block;
-	float:right;
-	width:300px;
-	}
-
-#column .holder{
-	display:block;
-	width:300px;
-	margin-bottom:20px;
-	}
-
-#column .holder p{
-	line-height:1.6em;
-	}
-
-#column .holder h2.title{
-	display:block;
-	width:100%;
-	height:65px;
-	margin:0;
-	padding:15px 0 0 0;
-	font-size:20px;
-	line-height:normal;
-	}
-
-#column .holder h2.title img{
-	float:left;
-	margin:-15px 8px 0 0;
-	padding:5px;
-	border:1px solid #666666;
-	}
-
-#column .holder p.readmore{
-	display:block;
-	width:100%;
-	font-weight:bold;
-	text-align:right;
-	line-height:normal;
-	}
-
-#column div.imgholder{
-	display:block;
-	width:290px;
-	margin:0 0 10px 0;
-	padding:4px;
-	color:#666666;
-	background-color:#F7F7F7;
-	border:1px solid #CCCCCC;
-	}
-
 /* ----------------------------------------------Footer-------------------------------------*/
 
 #footer{
@@ -336,14 +219,3 @@ div.wrapper h1, div.wrapper h2, div.wrapper h3, div.wrapper h4, div.wrapper h5, 
 #footer .flickrbox .wrap .fix{clear:both;}
 #footer .flickrbox .wrap .flickr_badge_image{display:block; float:left; margin:0 10px 10px 0; width:80px; height:80px;}
 #footer .flickrbox .wrap #flickr_badge_image3, #footer .flickrbox .wrap #flickr_badge_image6{margin-right:0;}
-
-/* ----------------------------------------------Copyright-------------------------------------*/
-
-#copyright{
-	padding:10px 0;
-	}
-
-#copyright p{
-	margin:0;
-	padding:0;
-	}

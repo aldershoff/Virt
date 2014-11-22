@@ -3,13 +3,14 @@
 <head profile="http://gmpg.org/xfn/11">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="imagetoolbar" content="no" />
-<link rel="stylesheet" href="styles/layout.css" type="text/css" />
-<link rel="stylesheet" href="styles/login.css" type="text/css" />
-<script type="text/javascript" src="scripts/jquery-1.4.1.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.jcarousel.pack.js"></script>
-<script type="text/javascript" src="scripts/jquery.jcarousel.setup.js"></script>
+<link rel="stylesheet" href="$baseUrl/styles/layout.css" type="text/css" />
+<link rel="stylesheet" href="$baseUrl/styles/login.css" type="text/css" />
+<script type="text/javascript" src="$baseUrl/scripts/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="$baseUrl/scripts/jquery.jcarousel.pack.js"></script>
+<script type="text/javascript" src="$baseUrl/scripts/jquery.jcarousel.setup.js"></script>
 </head>
 <body id="top">
+
 <div class="wrapper col1">
   <div id="header">
     <div id="logo">
@@ -18,17 +19,17 @@
     </div>
     <div id="topnav">
       <ul>
-        <li><a href="home">Home</a></li>
-		<li><a href="about">About</a></li>
-        <li><a href="services">Services</a></li>
+        <li><a href="$baseUrl/home">Home</a></li>
+		<li><a href="$baseUrl/about">About</a></li>
+        <li><a href="$baseUrl/services">Services</a></li>
 		<li><a href="#">Hosts</a>
           <ul>
             <li><a href="#">Windows server 2008</a></li>
             <li><a href="#">Debian</a></li>
             <li><a href="#">Slackware</a></li>
           </ul>
-		<li><a href="login">Login</a></li>
-		<li class="active"><a href="register">Register</a></li>
+		<li><a href="$baseUrl/login">Login</a></li>
+		<li class="active"><a href="$baseUrl/register">Register</a></li>
         
         </li>
       </ul>
@@ -36,11 +37,12 @@
     <br class="clear" />
   </div>
 </div>
+
 <div class="wrapper col2">
   <div id="featured_slide">
     <div id="featured_content">
       <ul>
-		<li><img src="images/register.jpg" alt="" />
+		<li><img src="$baseUrl/images/register.jpg" alt="" />
           <div class="floater">
 			<br>
 			<br>
@@ -53,11 +55,12 @@
       </ul>
     </div>
 </div>
+
 <div class="wrapper col5">
   <div id="container">
     <div class="homepage">
 <section class="lgncnt">
-    <form action="login/processregister" method="post">
+      <form action="$baseUrl/register/processregister" method="post">
         <div class="login">
 
             <div><i></i>
@@ -81,7 +84,8 @@
 				<br>
 				<br>
 			 <p>Please make sure all entered details are correct before registering</p>
-             </div>
+  				$!{error}           
+  				</div>
             <div>
                 <input type="submit" value="register"/>
             </div>
@@ -91,11 +95,12 @@
    </div>
  </div>  
 </div>
+
 <div class="wrapper col4">
   <div id="footer">
     <div class="box1">
       <h2>A Little Company Information !</h2>
-      <img class="imgl" src="images/logo_plaintech.png" alt="" />
+      <img class="imgl" src="$baseUrl/images/logo_plaintech.png" alt="" />
       <p>informative text goes here.</p>
       <p>And some more over here.</p>
     </div>
@@ -115,12 +120,12 @@
       <h2>Some of our Clients!</h2>
       <div class="wrap">
         <div class="fix"></div>
-        <div class="flickr_badge_image" id="flickr_badge_image1"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image2"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image3"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image4"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image5"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image6"><a href="#"><img src="images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image1"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image2"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image3"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image4"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image5"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
+        <div class="flickr_badge_image" id="flickr_badge_image6"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
         <div class="fix"></div>
       </div>
     </div>
