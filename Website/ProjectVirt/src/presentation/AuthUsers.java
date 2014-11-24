@@ -19,6 +19,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
 import beans.CustomerBean;
+import beans.VMBean;
 
 /**
  * Servlet implementation class AuthUsers. This servlet will handle all the
@@ -79,8 +80,13 @@ public class AuthUsers extends HttpServlet {
 			CustomerBean custBean = (CustomerBean) session
 					.getAttribute("customer");
 
+			
+			// Making new session and getting the attribute for sending it to
+			// the HTML pages
+			VMBean vmBean = (VMBean) session.getAttribute("virtualmachine");
+						
 			// Calling controller for passing path and bean
-			setGetControllerUrls(userPath, custBean);
+			setGetControllerUrls(userPath, custBean, request, response, session, vmBean);
 		}
 
 		catch (Exception e) {
@@ -114,19 +120,33 @@ public class AuthUsers extends HttpServlet {
 	 * Method for handling the GET userPath details for putting into the templates
 	 * @param userPath
 	 * @param custBean
+	 * @throws IOException 
 	 */
-	private void setGetControllerUrls(String userPath, CustomerBean custBean) {
+	private void setGetControllerUrls(String userPath, CustomerBean custBean, HttpServletRequest request, HttpServletResponse response, HttpSession session, VMBean vmBean) throws IOException {
 		switch (userPath) {
 		case "/customer/home":
 			vsl_Context.put("name", custBean.getUsername());
 			vsl_Context.put("id", custBean.getUserID());
 			template = Velocity.getTemplate("Velocity/customers/index.html");
 			break;
-
-		case "/customer/logout":
-			template = Velocity.getTemplate("Velocity/customers/logout.html");
-
-			break;
+			
+		case "/customer/controlpanel":
+			
+			// Checking if the bean is not null, else the data is not properly loaded inside the backend serv
+			if(vmBean != null){
+				vsl_Context.put("name", custBean.getUsername());
+				vsl_Context.put("id", custBean.getUserID());
+				vsl_Context.put("vmname", vmBean.getVMName());
+				template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+			}
+			else{
+				response.sendRedirect(request.getRequestURI() + "/getvms");
+			}
+			break;	
+		case "/customer/marketplace":
+			template = Velocity.getTemplate("Velocity/customers/marketplace.html");
+			break;	
+		
 
 		default:
 			break;

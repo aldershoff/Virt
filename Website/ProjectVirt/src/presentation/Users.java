@@ -1,5 +1,7 @@
 package presentation;
 
+import infrastructure.TestVM.*;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.libvirt.LibvirtException;
 
 @WebServlet(name = "/Users", loadOnStartup = 1)
 /**
@@ -49,11 +52,19 @@ public class Users extends HttpServlet {
 		_Properties
 				.setProperty("webapp.resource.loader.class",
 						"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		
 		ServletContext _ServletContext = getServletContext();
+		
 		Velocity.setApplicationAttribute("javax.servlet.ServletContext",
 				_ServletContext);
+		System.setProperty("jna.library.path",
+				"/home/sne/workspace/ProjectVirt");
+		
+		
 		try {
+			//test for creating VM
 			Velocity.init(_Properties);
+			
 		} catch (Exception ex) {
 			Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
 		}
@@ -70,10 +81,13 @@ public class Users extends HttpServlet {
 		try {
 			// Setting the writer
 			out = response.getWriter();
-
+	
 			// Setting the servletpath and sending it to the Switch method
 			String userPath = request.getServletPath();
-
+			
+			//infrastructure.TestVM.createVM("qemu", "test02", 1048576, 2, 1 );
+			
+			
 			// If the userPath does not contains the error String, the link is
 			// for the the main website
 			if (!userPath.contains("error")) {
@@ -101,7 +115,14 @@ public class Users extends HttpServlet {
 			cleanVelocity();
 			vsl_Context.put("baseUrl", request.getContextPath());
 			out.close();
+			
 
+		}
+		try {
+			infrastructure.TestVM.createVM("qemu", "test02", 1048576, 2, 1 );
+		} catch (LibvirtException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

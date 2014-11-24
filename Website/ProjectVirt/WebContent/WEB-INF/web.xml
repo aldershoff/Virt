@@ -62,9 +62,13 @@
     <servlet-name>OperationalBackEnd</servlet-name>
     <url-pattern>/register/processregister</url-pattern>
   </servlet-mapping>
+    <servlet-mapping>
+  <servlet-name>OperationalBackEnd</servlet-name>
+    <url-pattern>/customer/controlpanel/getvms</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>OperationalBackEnd</servlet-name>
-    <url-pattern>/logout</url-pattern>
+    <url-pattern>/customer/logout</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>AuthUsers</servlet-name>
@@ -73,6 +77,10 @@
   <servlet-mapping>
     <servlet-name>AuthUsers</servlet-name>
     <url-pattern>/customer/home</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>AuthUsers</servlet-name>
+    <url-pattern>/customer/controlpanel</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>ServletFilter</filter-name>

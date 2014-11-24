@@ -30,6 +30,7 @@ public final class PasswordService {
 
 		byte raw[] = md.digest(); // step 4
 		String hash = new Base64().encodeToString(raw); // step 5
+		
 		return hash; // step 6
 	}
 

@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import databaseAccessObjects.UserDAO;
+import databaseAccessObjects.VMDAO;
 import security.PasswordService;
 import beans.CustomerBean;
+import beans.VMBean;
 
 /**
  * The servlet for getting and Posting information through and from the database
@@ -84,10 +86,12 @@ public class OperationalBackEnd extends HttpServlet {
 			HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 		switch (userPath) {
-		case "/customer/":
+		case "/customer/controlpanel/getvms":
 			getUserVM(request, response);
 			break;
-
+		case "/customer/logout":
+			processLogout(request, response);
+			break;	
 		default:
 			break;
 		}
@@ -113,10 +117,6 @@ public class OperationalBackEnd extends HttpServlet {
 		case "/register/processregister":
 			processRegister(request, response);
 			break;
-			
-		case "/logout":
-			processLogout(request, response);
-			break;
 
 		default:
 			break;
@@ -132,7 +132,31 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void getUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-		// Put data
+		
+		VMBean vmBean = new VMBean();
+
+		VMDAO VMDAO = new VMDAO();
+
+		HttpSession session = request.getSession(false);
+		CustomerBean custBean = (CustomerBean) session
+				.getAttribute("customer");
+		
+		
+		/**
+		 * Checking if the attribute is null
+		 * If so, the query needs to be runned. If not, the user should give
+		 * permission to refresh the servers and get fresh output
+		 */
+		try {
+			if(session.getAttribute("virtualmachine") == null){
+				vmBean = VMDAO.getVMs(vmBean, custBean.getUserID());
+				session.setAttribute("virtualmachine", vmBean);
+			}
+			
+		} 
+		finally {
+			response.sendRedirect("/ProjectVirt/customer/controlpanel");
+		}
 	}
 
 	/**
@@ -215,13 +239,10 @@ public class OperationalBackEnd extends HttpServlet {
 						loginCookie.setMaxAge(2592000);
 						response.addCookie(loginCookie);
 
-						// Sending debug message
-						session.setAttribute("cookie", "COOKIE INSERTED");
-
 					}
 
 					// Redirect to servlet
-					response.sendRedirect("/ProjectVirt/customer/home");
+					response.sendRedirect(request.getRequestURI() + "/customer/home");
 
 				}
 
@@ -314,16 +335,16 @@ public class OperationalBackEnd extends HttpServlet {
 				 */
 				if (custBean.isValid()) {
 
-					// Make session and fill it with the username
+					// Get session and fill it with the username
 					HttpSession session = request.getSession();
-					session.setAttribute("name", custBean.getUsername());
-
-					// Redirect to servlet
-					response.sendRedirect("/ProjectVirt/customer/home");
+					session.setAttribute("customer", custBean);
 
 				}
-			}
 
+				// Redirect to servlet
+				response.sendRedirect(request.getRequestURI() + "/customer/home");
+				
+			}
 			/**
 			 * If returned null, something is wrong with the database
 			 */
@@ -331,9 +352,11 @@ public class OperationalBackEnd extends HttpServlet {
 				response.sendRedirect(request.getRequestURI()
 						+ "/error?name=nodatabase");
 			}
+			
 		}
+			
 	}
-	
+
 	/**
 	 * Method for destroying the session
 	 * 
@@ -344,19 +367,44 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void processLogout(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-		
+
 		// Get session from other servlet
 		HttpSession session = request.getSession();
-		
-		if (request.getParameter("logout") != null) {  
-		    session.invalidate();
-		    response.sendRedirect(request.getRequestURI() + "/home");
-		    return; // <--- Here.   
-		}
-		
-		else{
+
+			session.invalidate();
+
+			// Setting cookie
+			Cookie loginCookie = null;
+
+			// Getting cookie
+			Cookie[] cookies = request.getCookies();
+
+			/**
+			 * If not null, set logincookie to cookie for destroying it
+			 */
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("user")) {
+						loginCookie = cookie;
+						break;
+					}
+				}
+			}
+
+			/**
+			 * Setting the age to 0 and add cookie cookie to the response again.
+			 * The cookie is now destroyed
+			 */
+			if (loginCookie != null) {
+				loginCookie.setMaxAge(0);
+				response.addCookie(loginCookie);
+			}
+
+			// Redirect to home page
 			response.sendRedirect(request.getRequestURI() + "/home");
+
+			return; // <--- Here.
 		}
-	}
+
 
 }
