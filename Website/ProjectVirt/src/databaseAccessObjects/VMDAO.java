@@ -6,6 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import net.sf.json.JSONArray;
+
+import com.mysql.fabric.xmlrpc.base.Array;
 
 import beans.VMBean;
 
@@ -16,29 +21,28 @@ public class VMDAO {
 	 */
 	private static DBConnection dbConn = null;
 	private static Connection conn = null;
-
 	/**
 	 * Executes the login query, but will also add information to the Bean
 	 * 
 	 * @return
 	 */
-	public VMBean getVMs(VMBean bean, String userID) {
+	public ArrayList<VMBean> getVMs(int i) {
 
-
+		ArrayList<VMBean> VMBeanArray = new ArrayList<VMBean>();
+		
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT vmName FROM vm WHERE userid = " + userID;
+		final String VERIFY_USER = "SELECT vmName, vmid FROM vm WHERE userid = " + i;
 
 		/**
 		 * If connection is not null, the query can proceed
 		 */
 		if (conn != null) {
 
-			try {
-
+			try {				
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
 
@@ -50,11 +54,16 @@ public class VMDAO {
 				 * While the resultset will go to the next result, store the
 				 * variables. rs.next will only
 				 */
+				
 				while (rs.next()) {
-
+					VMBean bean = new VMBean();
+					
 					// Setting the information inside the Bean, from the
 					// database information
 					bean.setVMName(rs.getString("vmName"));
+					bean.setVmID(rs.getInt("vmid"));
+					VMBeanArray.add(bean);
+					
 				}
 			}
 
@@ -86,7 +95,7 @@ public class VMDAO {
 		}
 
 		// Return the bean for using the data
-		return bean;
+		return VMBeanArray;
 	}
 	
 	/**

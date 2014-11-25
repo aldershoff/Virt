@@ -73,9 +73,11 @@ public class TestVM {
 	 */
 	public static void createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
-		//setup libvirt connection
+		//setup libvirt connection, second parameter is a boolean for read-only 
 		Connect conn = new Connect("qemu:///system", false);
-		UUID UUID = java.util.UUID.randomUUID();
+		
+		//Temp, might use it later on in the project.
+		//UUID UUID = java.util.UUID.randomUUID();
 		if(!conn.isConnected()){
 			System.out.println("Error, hypervisor connection not available!");
 		}
@@ -95,14 +97,15 @@ public class TestVM {
 			    "<devices>" +
 			    "<emulator>/usr/bin/qemu-system-x86_64</emulator>" +
 			    "<disk type='file' device='disk'>" +
-			    "<source file='/home/sne/slackware64-14.1-install-dvd.iso'/> "+
+			    "<source file='/home/sne/slackware-14.1-source-dvd.iso'/> "+
 			    "<target dev='hdc'/>"+
-			    //"<readonly/>"+
-			    //"</disk>"+
-//			    //"<disk type='file' device='disk'>"+
-//			    //"<source file='/var/lib/libvirt/images/test01.img'/>"+
-//			    //"<target dev='hda'/>"+
-//			    "</disk>"+
+			    //Add a second HDD with
+			    "<readonly/>"+
+			    "</disk>"+
+			    "<disk type='file' device='disk'>"+
+			    "<source file='/var/lib/libvirt/images/testVolume'/>"+
+			    "<target dev='hda'/>"+
+			    "</disk>"+
 			    "<interface type='network'>"+
 			    "<source network='default'/>"+
 			    "</interface>"+

@@ -1,115 +1,70 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN" dir="ltr">
-<head profile="http://gmpg.org/xfn/11">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta http-equiv="imagetoolbar" content="no" />
-<link rel="stylesheet" href="$baseUrl/styles/layout.css" type="text/css" />
-</head>
+#parse( "/Velocity/includes/header.html" )
+
 <body id="top">
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/home">Home</a></li>
+					<li class="active"><a href="$baseUrl/about">About</a></li>
+					<li><a href="$baseUrl/services">Services</a></li>
+					<li><a href="$baseUrl/hosts">Hosts</a>
+					<li><a href="$baseUrl/login">Login</a></li>
+					<li><a href="$baseUrl/register">Register</a></li>
+
+					</li>
+				</ul>
+			</div>
+			<br class="clear" />
+		</div>
+	</div>
 
 
-<div class="wrapper col1">
-  <div id="header">
-    <div id="logo">
-      <h1><a href="#">Plaintech</a></h1>
-      <p>Your personal server!</p>
-    </div>
-    <div id="topnav">
-      <ul>
-        <li><a href="$baseUrl/home">Home</a></li>
-		<li class="active"><a href="$baseUrl/about">About</a></li>
-        <li><a href="$baseUrl/services">Services</a></li>
-		<li><a href="#">Hosts</a>
-          <ul>
-            <li><a href="#">Windows server 2008</a></li>
-            <li><a href="#">Debian</a></li>
-            <li><a href="#">Slackware</a></li>
-          </ul>
-		<li><a href="$baseUrl/login">Login</a></li>
-		<li><a href="$baseUrl/register">Register</a></li>
-        
-        </li>
-      </ul>
-    </div>
-    <br class="clear" />
-  </div>
-</div>
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/who_are_we.jpg" alt="" />
+						<div class="floater">
+							<br> <br> <br> <br> <br>
+							<h2>Who is Plaintech?</h2>
+						</div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 
 
-<div class="wrapper col2">
-  <div id="featured_slide">
-    <div id="featured_content">
-      <ul>
-		<li><img src="$baseUrl/images/who_are_we.jpg" alt="" />
-          <div class="floater">
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-            <h2>Who is Plaintech?</h2>
-          </div>
-			</li>
-		</ul>
-	 </div>
-   </div>
-</div>
+	<div class="wrapper col3">
+		<div id="container">
+			<div class="homepage">
+				<ul>
+					<div class="box1">
+						<img class="imgl" src="$baseUrl/images/logo_plaintech.png" alt="" />
+						<br>
+						<h3>We at plaintech believe that every business needs it's
+							own specific computing power and computer services. We are here
+							to provide you with the specific needs your business has.</h3>
+						<br> <br>
+						<p>As a business develops, computers become increasingly
+							important. We at plaintech make sure you do not have to own your
+							own set of computers. By paying a monthly fee we provide you with
+							a system based on your requirements. As your business and
+							computing needs grow you can simply upgrade your current system
+							by a few mouse clicks instead of having to purchase an entire new
+							computer system. We believe that this flexibility will help you
+							develop your business in a natural and healthy way.</p>
+					</div>
+				</ul>
+				<br class="clear" />
+			</div>
+		</div>
+	</div>
 
-
-<div class="wrapper col3">
-  <div id="container">
-    <div class="homepage">
-      <ul>
-      <div class="box1">
-      <img class="imgl" src="$baseUrl/images/logo_plaintech.png" alt="" />
-	  <br>
-	  <h3>We at plaintech believe that every business needs it's own specific computing power and computer services. We are here to provide you with the specific needs your business has.</h3>
-      <br>
-	  <br>
-	  <p>As a business develops, computers become increasingly important. We at plaintech make sure you do not have to own your own set of computers. By paying a monthly fee we provide you with a system based on your requirements. As your business and computing needs grow you can simply upgrade your current system by a few mouse clicks instead of having to purchase an entire new computer system. We believe that this flexibility will help you develop your business in a natural and healthy way.</p>
-    </div>
-      </ul>
-      <br class="clear" />
-    </div>
-  </div>
-</div>
-
-
-<div class="wrapper col4">
-  <div id="footer">
-    <div class="box1">
-      <h2>A Little Company Information !</h2>
-      <img class="imgl" src="$baseUrl/images/logo_plaintech.png" alt="" />
-      <p>informative text goes here.</p>
-      <p>And some more over here.</p>
-    </div>
-    <div class="box contactdetails">
-      <h2>Our Contact Details !</h2>
-      <ul>
-        <li>25 Bakersstreet</li>
-        <li>London, BK 94158</li>
-		<br></br>
-        <li>Phone number: 0123-456 789</li>
-		<li></li>
-        <li>Email: info@Plaintech.com</li>
-        <li class="last">LinkedIn: <a href="#">Company Profile</a></li>
-      </ul>
-    </div>
-    <div class="box flickrbox">
-      <h2>Some of our Clients!</h2>
-      <div class="wrap">
-        <div class="fix"></div>
-        <div class="flickr_badge_image" id="flickr_badge_image1"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image2"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image3"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image4"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image5"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image6"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="fix"></div>
-      </div>
-    </div>
-    <br class="clear" />
-  </div>
-</div>
-</body>
-</html>
+	#parse( "/Velocity/includes/footer.html" )

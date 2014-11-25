@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.ArrayList;
+
 /**
  * Bean for getting all the user virtual machine information from database
  * 
@@ -12,11 +14,13 @@ public class VMBean {
 	/**
 	 * Setting the variables needed
 	 */
+	private int vmID;
 	private String vmName;
 	private String vmCPU;
 	private String vmMemory;
 	private String vmDiskSpace;
 	private String vmIP;
+	public ArrayList<VMBean> VMs = new ArrayList<VMBean>();
 	public boolean valid;
 
 	/**
@@ -126,6 +130,14 @@ public class VMBean {
 	 */
 	public void setValid(boolean newValid) {
 		valid = newValid;
+	}
+
+	public int getVmID() {
+		return vmID;
+	}
+
+	public void setVmID(int vmID) {
+		this.vmID = vmID;
 	}
 
 	

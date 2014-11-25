@@ -2,6 +2,7 @@ package businesslogic;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.naming.ServiceUnavailableException;
 import javax.servlet.RequestDispatcher;
@@ -132,8 +133,6 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void getUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-		
-		VMBean vmBean = new VMBean();
 
 		VMDAO VMDAO = new VMDAO();
 
@@ -148,10 +147,9 @@ public class OperationalBackEnd extends HttpServlet {
 		 * permission to refresh the servers and get fresh output
 		 */
 		try {
-			if(session.getAttribute("virtualmachine") == null){
-				vmBean = VMDAO.getVMs(vmBean, custBean.getUserID());
+				ArrayList<VMBean> vmBean = VMDAO.getVMs(custBean.getUserID());
 				session.setAttribute("virtualmachine", vmBean);
-			}
+			
 			
 		} 
 		finally {

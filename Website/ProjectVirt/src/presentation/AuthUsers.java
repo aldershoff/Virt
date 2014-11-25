@@ -2,6 +2,7 @@ package presentation;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,10 +84,10 @@ public class AuthUsers extends HttpServlet {
 			
 			// Making new session and getting the attribute for sending it to
 			// the HTML pages
-			VMBean vmBean = (VMBean) session.getAttribute("virtualmachine");
+			 ArrayList<VMBean> vmBeanArrayList = (ArrayList<VMBean>) session.getAttribute("virtualmachine");
 						
 			// Calling controller for passing path and bean
-			setGetControllerUrls(userPath, custBean, request, response, session, vmBean);
+			setGetControllerUrls(userPath, custBean, request, response, session, vmBeanArrayList);
 		}
 
 		catch (Exception e) {
@@ -122,29 +123,40 @@ public class AuthUsers extends HttpServlet {
 	 * @param custBean
 	 * @throws IOException 
 	 */
-	private void setGetControllerUrls(String userPath, CustomerBean custBean, HttpServletRequest request, HttpServletResponse response, HttpSession session, VMBean vmBean) throws IOException {
+	private void setGetControllerUrls(String userPath, CustomerBean custBean, HttpServletRequest request, HttpServletResponse response, HttpSession session, ArrayList<VMBean> vmBeanArrayList) throws IOException {
+		vsl_Context.put("name", custBean.getUsername());
+		vsl_Context.put("id", custBean.getUserID());
+		
 		switch (userPath) {
-		case "/customer/home":
-			vsl_Context.put("name", custBean.getUsername());
-			vsl_Context.put("id", custBean.getUserID());
+		
+		case "/customer/home":		
 			template = Velocity.getTemplate("Velocity/customers/index.html");
 			break;
 			
 		case "/customer/controlpanel":
 			
 			// Checking if the bean is not null, else the data is not properly loaded inside the backend serv
-			if(vmBean != null){
-				vsl_Context.put("name", custBean.getUsername());
-				vsl_Context.put("id", custBean.getUserID());
-				vsl_Context.put("vmname", vmBean.getVMName());
+			if(vmBeanArrayList != null){
+				vsl_Context.put("vmname",vmBeanArrayList);
+				
+				
 				template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
 			}
 			else{
 				response.sendRedirect(request.getRequestURI() + "/getvms");
 			}
-			break;	
+			break;	  
 		case "/customer/marketplace":
 			template = Velocity.getTemplate("Velocity/customers/marketplace.html");
+			break;	
+		case "/customer/marketplace/windows":
+			template = Velocity.getTemplate("Velocity/customers/windows.html");
+			break;	
+		case "/customer/marketplace/debian":
+			template = Velocity.getTemplate("Velocity/customers/debian.html");
+			break;	
+		case "/customer/marketplace/slackware":
+			template = Velocity.getTemplate("Velocity/customers/windows.html");
 			break;	
 		
 

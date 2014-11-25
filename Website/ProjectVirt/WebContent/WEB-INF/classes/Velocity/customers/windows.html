@@ -1,0 +1,107 @@
+#parse( "/Velocity/includes/header.html" )
+
+<body id="top">
+
+
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/customer/home">Home</a></li>
+					<li><a href="$baseUrl/customer/controlpanel">Control Panel</a></li>
+					<li><a href="$baseUrl/customer/marketplace">VM Marketplace</a>
+						<ul>
+							<li class="active"><a href="$baseUrl/customer/marketplace/windows">Windows
+									server 2008</a></li>
+							<li><a href="$baseUrl/customer/marketplace/debian">Debian</a></li>
+							<li><a href="$baseUrl/customer/marketplace/slackware">Slackware</a></li>
+						</ul></li>
+					<li><a href="$baseUrl/customer/logout">Logout</a></li>
+				</ul>
+			</div>
+				Welcome back, $name!
+			<br class="clear" />
+		</div>
+	</div>
+
+
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/hardware.png" alt="" />
+						<div class="floater">
+							<br> <br> <br> <br> <br>
+							<h2>Please Select your server requirements below</h2>
+						</div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="wrapper col5">
+		<div id="container">
+			<div class="homepage">
+				<section class="lgncnt">
+					<form>
+						<div class="login">
+							<div>
+								<i></i> <span>Server specifications</span>
+								<p>Please select the required server specifications below</p>
+							</div>
+							<div>
+								<select>
+									<option value="vmOS">Windows server 2008</option>
+								</select> <br> <br> <select>
+									<option value="vmRAM">Select Ram</option>
+									<option value="1">512 mb</option>
+									<option value="2">1 gb</option>
+									<option value="3">2 gb</option>
+									<option value="4">4 gb</option>
+									<option value="5">8 gb</option>
+									<option value="6">16 gb</option>
+								</select> <br> <br> <select>
+									<option value="vmCPU">Select CPU cores</option>
+									<option value="1">1 core</option>
+									<option value="2">2 core</option>
+									<option value="3">4 core</option>
+									<option value="4">8 core</option>
+									<option value="5">16 core</option>
+								</select> <br> <br> <select>
+									<option value="vmHDD">Select Diskspace</option>
+									<option value="3">40 gb</option>
+									<option value="4">80 gb</option>
+									<option value="5">160 gb</option>
+								</select> <br> <br> <select>
+									<option value="vmSLA">Select Service level</option>
+									<option value="1">Gold</option>
+									<option value="2">Silver</option>
+									<option value="3">Bronze</option>
+								</select> <br> <br>
+
+							</div>
+							<div>
+								<input type="checkbox" id="Iaccept" /> <label for="Iaccept">I
+									accept the <a href="pdf/ToA_Plaintech.pdf">terms of
+										agreement</a>
+								</label> <br> <br>
+								<p>Please make sure the correct server specifications are
+									selected before submitting</p>
+							</div>
+							<div>
+								<input type="submit" value="submit" />
+							</div>
+						</div>
+					</form>
+				</section>
+			</div>
+		</div>
+	</div>
+	#parse( "/Velocity/includes/footer.html" )

@@ -12,7 +12,7 @@ public class CustomerBean {
 	/**
 	 * Setting the variables needed
 	 */
-	private String userID;
+	private int userID;
 	private String username;
 	private String password;
 	private String firstName;
@@ -156,11 +156,11 @@ public class CustomerBean {
 		this.zipCode = zipCode;
 	}
 
-	public String getUserID() {
+	public int getUserID() {
 		return userID;
 	}
 
-	public void setUserID(String userID) {
-		this.userID = userID;
+	public void setUserID(int i) {
+		this.userID = i;
 	}
 }

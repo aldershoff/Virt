@@ -1,121 +1,104 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="EN" lang="EN" dir="ltr">
-<head profile="http://gmpg.org/xfn/11">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta http-equiv="imagetoolbar" content="no" />
-<link rel="stylesheet" href="$baseUrl/styles/layout.css" type="text/css" />
-</head>
+#parse( "/Velocity/includes/header.html" )
+
 <body id="top">
 
 
-<div class="wrapper col1">
-  <div id="header">
-    <div id="logo">
-      <h1><a href="#">Plaintech</a></h1>
-      <p>Your personal server!</p>
-    </div>
-    <div id="topnav">
-      <ul>
-        <li><a href="$baseUrl/home">Home</a></li>
-		<li><a href="$baseUrl/about">About</a></li>
-        <li class="active"><a href="$baseUrl/services">Services</a></li>
-		<li><a href="#">Hosts</a>
-          <ul>
-            <li><a href="#">Windows server 2008</a></li>
-            <li><a href="#">Debian</a></li>
-            <li><a href="#">Slackware</a></li>
-          </ul>
-		<li><a href="$baseUrl/login">Login</a></li>
-		<li><a href="$baseUrl/register">Register</a></li>
-        </li>
-      </ul>
-    </div>
-    <br class="clear" />
-  </div>
-</div>
-
-
-<div class="wrapper col2">
-  <div id="featured_slide">
-    <div id="featured_content">
-      <ul>
-		<li><img src="$baseUrl/images/services_main.jpg" alt="" />
-          <div class="floater">
-		  <br>
-		  <br>
-          <h1>Delivering the services you need, To get the results you want!</h1>
-        </li>
-      </ul>
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
 			</div>
-     </div>
-   </div>
-</div>
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/home">Home</a></li>
+					<li><a href="$baseUrl/about">About</a></li>
+					<li class="active"><a href="$baseUrl/services">Services</a></li>
+					<li><a href="$baseUrl/hosts">Hosts</a>
+					<li><a href="$baseUrl/login">Login</a></li>
+					<li><a href="$baseUrl/register">Register</a></li>
+					</li>
+				</ul>
+			</div>
+			<br class="clear" />
+		</div>
+	</div>
 
 
-<div class="wrapper col3">
-  <div id="container">
-    <div class="homepage">
-      <ul>
-        <li>
-          <h2><img src="$baseUrl/images/services_g.png" alt="" />Gold Service</h2>
-          <p>- Basic System <br>- Monitored email support <br>- Monthly system health check <br>- Manned telephone support <br>- Daily Backup <br>- High availability with redundancy<br>- Remote assistance</p>
-		  <p>This package includes all aspects from the silver service as well as high availability with redundancy and remote assistance. This means we will use remote assistance to solve any problems you encounter and we make sure that your server is up 99,99% of the time. Even in case of freak accidents such as hackers, power loss etc. </p>
-		</li>
-		<li>
-          <h2><img src="$baseUrl/images/services_s.png" alt="" />Silver Service</h2>
-          <p>- Basic System <br>- Monitored email support <br>- Monthly system health check<br>- Manned telephone support <br>- Daily backup</p>
-		  <br>
-		  <p>This package includes all aspects from the bronze service as well as manned telephone support and a daily backup. This means you can contact us by phone whenever something goes wrong and we will try our very best to solve it as soon as possible and that a backup of your entire machine is made every 24 hours.</p>
-		</li>
-        <li class="last">
-          <h2><img src="$baseUrl/images/services_b.png" alt="" />Bronze Service</h2>
-          <p>- Basic System <br>- Monitored email support <br>- Monthly system health check</p>
-		  <br>
-		  <br>
-		  <p>This package includes the least amount of services we provide. We give you a basic system as requested and check if it is still functioning properly once each month. If there are problems with the machine you can contact us by email which may take up to 7 days for us to respond. </p>
-        </li>
-      </ul>
-      <br class="clear" />
-    </div>
-  </div>
-</div>
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/services_main.jpg" alt="" />
+						<div class="floater">
+							<br> <br>
+							<h1>Delivering the services you need, To get the results you
+								want!</h1></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	</div>
 
 
-<div class="wrapper col4">
-  <div id="footer">
-    <div class="box1">
-      <h2>A Little Company Information !</h2>
-      <img class="imgl" src="$baseUrl/images/logo_plaintech.png" alt="" />
-      <p>informative text goes here.</p>
-      <p>And some more over here.</p>
-    </div>
-    <div class="box contactdetails">
-      <h2>Our Contact Details !</h2>
-      <ul>
-        <li>25 Bakersstreet</li>
-        <li>London, BK 94158</li>
-		<br></br>
-        <li>Phone number: 0123-456 789</li>
-		<li></li>
-        <li>Email: info@Plaintech.com</li>
-        <li class="last">LinkedIn: <a href="#">Company Profile</a></li>
-      </ul>
-    </div>
-    <div class="box flickrbox">
-      <h2>Some of our Clients!</h2>
-      <div class="wrap">
-        <div class="fix"></div>
-        <div class="flickr_badge_image" id="flickr_badge_image1"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image2"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image3"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image4"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image5"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="flickr_badge_image" id="flickr_badge_image6"><a href="#"><img src="$baseUrl/images/demo/80x80.gif" alt="" /></a></div>
-        <div class="fix"></div>
-      </div>
-    </div>
-    <br class="clear" />
-  </div>
-</div>
-</body>
-</html>
+	<div class="wrapper col3">
+		<div id="container">
+			<div class="homepage">
+				<ul>
+					<li>
+						<h2>
+							<img src="$baseUrl/images/services_g.png" alt="" />Gold Service
+						</h2>
+						<p>
+							- Basic System <br>- Monitored email support <br>-
+							Monthly system health check <br>- Manned telephone support <br>-
+							Daily Backup <br>- High availability with redundancy<br>-
+							Remote assistance
+						</p>
+						<p>This package includes all aspects from the silver service
+							as well as high availability with redundancy and remote
+							assistance. This means we will use remote assistance to solve any
+							problems you encounter and we make sure that your server is up
+							99,99% of the time. Even in case of freak accidents such as
+							hackers, power loss etc.</p>
+					</li>
+					<li>
+						<h2>
+							<img src="$baseUrl/images/services_s.png" alt="" />Silver
+							Service
+						</h2>
+						<p>
+							- Basic System <br>- Monitored email support <br>-
+							Monthly system health check<br>- Manned telephone support <br>-
+							Daily backup
+						</p> <br>
+						<p>This package includes all aspects from the bronze service
+							as well as manned telephone support and a daily backup. This
+							means you can contact us by phone whenever something goes wrong
+							and we will try our very best to solve it as soon as possible and
+							that a backup of your entire machine is made every 24 hours.</p>
+					</li>
+					<li class="last">
+						<h2>
+							<img src="$baseUrl/images/services_b.png" alt="" />Bronze
+							Service
+						</h2>
+						<p>
+							- Basic System <br>- Monitored email support <br>-
+							Monthly system health check
+						</p> <br> <br>
+						<p>This package includes the least amount of services we
+							provide. We give you a basic system as requested and check if it
+							is still functioning properly once each month. If there are
+							problems with the machine you can contact us by email which may
+							take up to 7 days for us to respond.</p>
+					</li>
+				</ul>
+				<br class="clear" />
+			</div>
+		</div>
+	</div>
+
+	#parse( "/Velocity/includes/footer.html" )

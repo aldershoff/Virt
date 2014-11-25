@@ -69,7 +69,7 @@ public class UserDAO {
 					// database information
 					bean.setUserName(rs.getString("username"));
 					bean.setPassword(rs.getString("password"));
-					bean.setUserID(rs.getString("userid"));
+					bean.setUserID(rs.getInt("userid"));
 
 					/**
 					 * Check if username and password is correct
