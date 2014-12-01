@@ -47,11 +47,11 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Users</servlet-name>
-		<url-pattern>/register/processregister/error</url-pattern>
+		<url-pattern>/login/error</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Users</servlet-name>
-		<url-pattern>/login/processlogin/error</url-pattern>
+		<url-pattern>/register/error</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>OperationalBackEnd</servlet-name>
@@ -69,9 +69,17 @@
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/customer/controlpanel/getvms</url-pattern>
 	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/controlpanel/monitorvms</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/customer/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/marketplace/buy/processbuy</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthUsers</servlet-name>
@@ -101,6 +109,14 @@
 		<servlet-name>AuthUsers</servlet-name>
 		<url-pattern>/customer/marketplace/slackware</url-pattern>
 	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>AuthUsers</servlet-name>
+		<url-pattern>/customer/marketplace/buy</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AuthUsers</servlet-name>
+		<url-pattern>/customer/error</url-pattern>
+	</servlet-mapping>
 
 	<filter>
 		<filter-name>ServletFilter</filter-name>
@@ -114,12 +130,12 @@
 		<filter-name>AuthenticationFilter</filter-name>
 		<url-pattern>/customer/*</url-pattern>
 	</filter-mapping>
-	<filter>
+<!-- 	<filter>
 		<filter-name>CheckIfLoggedFilter</filter-name>
 		<filter-class>filters.CheckIfLoggedFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>CheckIfLoggedFilter</filter-name>
 		<url-pattern>/login/*</url-pattern>
-	</filter-mapping>
+	</filter-mapping>  -->
 </web-app>

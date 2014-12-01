@@ -35,7 +35,7 @@
 					<li><img src="$baseUrl/images/login.jpg" alt="" />
 						<div class="floater">
 							<br> <br> <br> <br> <br>
-							<h2>Please login to gain acces to your server</h2>
+							<h2>Please login to gain access to your server</h2>
 						</div></li>
 				</ul>
 			</div>
@@ -55,8 +55,8 @@
 								</div>
 								<div>
 									<input type="text" name="user" id="username"
-										placeholder="username here" /> <input type="password"
-										name="password" id="password" placeholder="password here" />
+										placeholder="username here"  value ="$!{formUsername}"/> 
+										<input type="password" name="password" id="password" placeholder="password here" />
 								</div>
 								<div>
 									<input type="checkbox" id="rememberme" name="rememberme" /> <label
@@ -64,6 +64,7 @@
 									<li><a href="home"><b>forgot password ?</b></a></li>
 								</div>
 								<div>
+									<input type="hidden" value="login" name="request" />
 									<input type="submit" value="login" />
 								</div>
 								$!{error}

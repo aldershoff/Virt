@@ -2,10 +2,12 @@ package businesslogic;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
+import javax.json.Json;
+import javax.json.stream.JsonGenerator;
 import javax.naming.ServiceUnavailableException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,11 +17,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import databaseAccessObjects.UserDAO;
-import databaseAccessObjects.VMDAO;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import net.sf.json.JSONObject;
 import security.PasswordService;
 import beans.CustomerBean;
 import beans.VMBean;
+import databaseAccessObjects.BuyDAO;
+import databaseAccessObjects.UserDAO;
+import databaseAccessObjects.VMDAO;
 
 /**
  * The servlet for getting and Posting information through and from the database
@@ -32,7 +39,6 @@ import beans.VMBean;
 @WebServlet(name = "/BackEnd")
 public class OperationalBackEnd extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private PrintWriter out;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -90,6 +96,9 @@ public class OperationalBackEnd extends HttpServlet {
 		case "/customer/controlpanel/getvms":
 			getUserVM(request, response);
 			break;
+		case "/customer/controlpanel/monitorvms":
+			getMonitorUserVM(request, response);
+			break;
 		case "/customer/logout":
 			processLogout(request, response);
 			break;	
@@ -119,6 +128,9 @@ public class OperationalBackEnd extends HttpServlet {
 			processRegister(request, response);
 			break;
 
+		case "/customer/marketplace/buy/processbuy":
+			buyUserVM(request, response);
+			break;
 		default:
 			break;
 		}
@@ -130,6 +142,7 @@ public class OperationalBackEnd extends HttpServlet {
 	 * @param request
 	 * @param response
 	 * @throws IOException
+	 * @throws ServletException
 	 */
 	private void getUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
@@ -137,24 +150,127 @@ public class OperationalBackEnd extends HttpServlet {
 		VMDAO VMDAO = new VMDAO();
 
 		HttpSession session = request.getSession(false);
-		CustomerBean custBean = (CustomerBean) session
-				.getAttribute("customer");
-		
-		
-		/**
-		 * Checking if the attribute is null
-		 * If so, the query needs to be runned. If not, the user should give
-		 * permission to refresh the servers and get fresh output
-		 */
-		try {
-				ArrayList<VMBean> vmBean = VMDAO.getVMs(custBean.getUserID());
-				session.setAttribute("virtualmachine", vmBean);
+		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
 			
+			String urlRequest = request.getParameter("request");
 			
-		} 
-		finally {
-			response.sendRedirect("/ProjectVirt/customer/controlpanel");
+			switch (urlRequest) {
+		
+			case "getallvm":
+				/**
+				 * Checking if the attribute is null If so, the query needs to be
+				 * runned. If not, the user should give permission to refresh the
+				 * servers and get fresh output
+				 */
+					ArrayList<VMBean> vmBeanArray = VMDAO.getVMs(custBean.getUserID());
+
+					if(vmBeanArray!= null){
+						
+						Gson gson = new Gson();
+				        String jsonVMBeanArray = gson.toJson(vmBeanArray);
+				        response.setContentType("application/json");
+				        session.setAttribute("json", jsonVMBeanArray);
+				       
+				        response.getWriter().write(jsonVMBeanArray.toString());
+					}	
+
+				
+				break;
+			
+//				 response.sendRedirect("/ProjectVirt/customer/controlpanel?response=getallvm");
+//				String userListTable() throws JSONException {
+//			        List<User> foundUser = userService.getUsers();
+//
+//			        JSONArray data = new JSONArray();
+//			        JSONObject JSONObject = new JSONObject();
+//
+//			        JSONObject.put("sEcho", 1);
+//			        JSONObject.put("iTotalRecords", foundUser.size());
+//			        JSONObject.put("iTotalDisplayRecords", foundUser.size());
+//
+//			        for (User user : foundUser) {
+//			            JSONArray row = new JSONArray();
+//			            row.put(user.getUserDetail().getFirstName());
+//			            row.put(user.getUserDetail().getLastName());
+//			            row.put(user.getBusinessUnit().getName());
+//			            row.put(user.getUserDetail().getUserId());
+//			                        row.put("");
+//			            data.put(row);
+//			        }
+//			        JSONObject.put("aaData", data);
+//			        return ;
+//			    }
+				
+		case "getvm":
+			String vmID = request.getParameter("vmid");
+			VMBean vmBean = new VMBean();
+			vmBean = VMDAO.getSpecificVM(vmBean, custBean.getUserID(), vmID);
+
+			if (vmBean.isValid()) {
+
+				Gson gson = new Gson();
+				String jsonVMBean = gson.toJson(vmBean);
+				response.setContentType("application/json");
+				session.setAttribute("json", jsonVMBean);
+				response.sendRedirect("/ProjectVirt/customer/controlpanel?response=getvm");
+
+			}
+
+			break;
+				
+			default:
+				break;
+			}
 		}
+	
+	private void getMonitorUserVM(final HttpServletRequest request,
+			final HttpServletResponse response) throws IOException {
+		VMDAO VMDAO = new VMDAO();
+		VMBean vmBean = null;
+
+		HttpSession session = request.getSession(false);
+		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
+
+				String vmID = request.getParameter("vmid");
+			
+					vmBean = new VMBean();
+					vmBean = VMDAO.getSpecificVM(vmBean, custBean.getUserID(), vmID);
+				
+					
+					if(vmBean.isValid()){
+						JsonGenerator _JsonGenerator = Json.createGenerator(response.getWriter());
+						
+						_JsonGenerator
+							.writeStartObject()
+								.write("name", vmBean.getVMName())
+								.write("vmid", vmBean.getVmID())
+							.writeEnd();
+						_JsonGenerator.close();
+					}	
+
+		
+
+
+		
+	}
+
+		/**
+		 * Must finish this method, does not work yet!!
+		 * @param request
+		 * @param response
+		 * @throws IOException
+		 */
+	private void buyUserVM(final HttpServletRequest request,
+			final HttpServletResponse response) throws IOException {
+		BuyDAO buyDAO = new BuyDAO();
+
+		HttpSession session = request.getSession(false);
+		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
+			
+		VMBean vmBean = new VMBean();
+		vmBean = buyDAO.addVM(vmBean, custBean.getUserID());
+
+		
 	}
 
 	/**
@@ -168,30 +284,26 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void processLogin(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-
-		// Setting writer
-		out = response.getWriter();
-
+		
+		ServletContext context = request.getSession().getServletContext();
+		context.setAttribute("formUsername", request.getParameter("user"));
+		
 		/**
 		 * Checking if the fields were not left empty
 		 */
 		if (request.getParameter("user") == ""
 				&& request.getParameter("password") == "") {
-			response.sendRedirect(request.getRequestURI()
-					+ "/error?name=bothfieldsempty");
+			context.setAttribute("error", "You must provide both username and password");
+			response.sendRedirect("/ProjectVirt/login?error=bothfieldsempty");
 		} else if (request.getParameter("user") == "") {
-			response.sendRedirect(request.getRequestURI()
-					+ "/error?name=emptyusername");
+			context.setAttribute("error", "You must provide a username");
+			response.sendRedirect("/ProjectVirt/login?error=emptyusername");
 		} else if (request.getParameter("password") == "") {
-			response.sendRedirect(request.getRequestURI()
-					+ "/error?name=emptypassword");
+			context.setAttribute("error", "You must provide a password");
+			response.sendRedirect("/ProjectVirt/login?error=emptypassword");
 		}
-
-		/**
-		 * If the fields are not empty
-		 */
-		else {
-
+		else{
+		
 			// Making new bean for the customer
 			CustomerBean custBean = new CustomerBean();
 
@@ -224,6 +336,14 @@ public class OperationalBackEnd extends HttpServlet {
 					session.setAttribute("customer", custBean);
 
 					/**
+					 * Moet een JSON response worden!
+					 */
+//					Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+//			        String json = gson.toJson(custBean);
+//			        response.setContentType("application/json");
+			        
+					
+					/**
 					 * If rememberMe is checked, a cookie will be exchanged to
 					 * the user
 					 */
@@ -236,11 +356,12 @@ public class OperationalBackEnd extends HttpServlet {
 						// setting cookie to expiry in 30 mins
 						loginCookie.setMaxAge(2592000);
 						response.addCookie(loginCookie);
-
+						//custBean.setRememberMe(true);
 					}
-
-					// Redirect to servlet
-					response.sendRedirect(request.getRequestURI() + "/customer/home");
+					
+					//response.getWriter().write(json.toString());
+//					// Redirect to servlet
+					response.sendRedirect("/ProjectVirt/customer/home");
 
 				}
 
@@ -248,8 +369,8 @@ public class OperationalBackEnd extends HttpServlet {
 				 * Else, print that the password is wrong and close the print
 				 */
 				else if (!custBean.valid) {
-					response.sendRedirect(request.getRequestURI()
-							+ "/error?name=wrongusernamepassword");
+					context.setAttribute("error", "Wrong username or password");
+					response.sendRedirect("/ProjectVirt/login?error=wrongusernamepassword");
 				}
 			}
 
@@ -257,9 +378,10 @@ public class OperationalBackEnd extends HttpServlet {
 			 * If returned null, something is wrong with the database
 			 */
 			else {
-				response.sendRedirect(request.getRequestURI()
-						+ "/error?name=nodatabase");
+				context.setAttribute("error", "Cannot connect to DB");
+				response.sendRedirect("/ProjectVirt/login/error?response=nodatabase");
 			}
+			
 		}
 	}
 
@@ -276,28 +398,17 @@ public class OperationalBackEnd extends HttpServlet {
 	private void processRegister(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 
-		// Setting writer
-		out = response.getWriter();
-
-		/**
-		 * If not all fields are filled, a redirect will take place
-		 */
 		if (request.getParameter("user") == ""
 				|| request.getParameter("password") == ""
 				|| request.getParameter("firstname") == ""
 				|| request.getParameter("lastname") == ""
 				|| request.getParameter("user") == "") {
+			response.sendRedirect("/ProjectVirt/register?error=fieldsnotfilled");
 
-			response.sendRedirect(request.getRequestURI()
-					+ "/error?name=fieldsnotfilled");
 
 		}
 
-		/**
-		 * Else, the user registration will continue
-		 */
-		else {
-
+		else{
 			// Making new bean for the customer
 			CustomerBean custBean = new CustomerBean();
 
@@ -333,14 +444,11 @@ public class OperationalBackEnd extends HttpServlet {
 				 */
 				if (custBean.isValid()) {
 
-					// Get session and fill it with the username
-					HttpSession session = request.getSession();
-					session.setAttribute("customer", custBean);
+					// Set parameter succesful back!
 
 				}
 
-				// Redirect to servlet
-				response.sendRedirect(request.getRequestURI() + "/customer/home");
+				
 				
 			}
 			/**
@@ -348,12 +456,11 @@ public class OperationalBackEnd extends HttpServlet {
 			 */
 			else {
 				response.sendRedirect(request.getRequestURI()
-						+ "/error?name=nodatabase");
+						+ "/error?response=nodatabase");
 			}
-			
+		}
 		}
 			
-	}
 
 	/**
 	 * Method for destroying the session
@@ -367,10 +474,10 @@ public class OperationalBackEnd extends HttpServlet {
 			final HttpServletResponse response) throws IOException {
 
 		// Get session from other servlet
-		HttpSession session = request.getSession();
+		HttpSession session = request.getSession(false);
 
 			session.invalidate();
-
+			
 			// Setting cookie
 			Cookie loginCookie = null;
 

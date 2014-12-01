@@ -1,5 +1,7 @@
 package beans;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Bean for getting all the user information from the database
  * 
@@ -12,17 +14,18 @@ public class CustomerBean {
 	/**
 	 * Setting the variables needed
 	 */
-	private int userID;
-	private String username;
+	@Expose private int userID;
+	@Expose private String username;
 	private String password;
-	private String firstName;
-	private String lastName;
-	private String dateOfBirth;
-	private String email;
-	private String phone;
-	private String address;
-	private String zipCode;
-	public boolean valid;
+	@Expose private String firstName;
+	@Expose private String lastName;
+	@Expose private String dateOfBirth;
+	@Expose private String email;
+	@Expose private String phone;
+	@Expose private String address;
+	@Expose private String zipCode;
+	@Expose private boolean remember;
+	@Expose public boolean valid;
 
 	/**
 	 * Returning firstname
@@ -107,6 +110,25 @@ public class CustomerBean {
 		return valid;
 	}
 
+	/**
+	 * Check if the user is valid
+	 * 
+	 * @return
+	 */
+	public boolean isRememberMe() {
+		return remember;
+	}
+	
+	/**
+	 * set rememberme parameter
+	 * 
+	 * @return
+	 */
+	public void setRememberMe(boolean remember) {
+		this.remember = remember;
+	}
+	
+	
 	/**
 	 * Set if the user is valid
 	 * 

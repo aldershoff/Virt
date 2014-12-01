@@ -47,7 +47,7 @@ public class CheckIfLoggedFilter implements Filter {
         /**
          * If the session is null, a log will be initialized and will be redirected
          */
-        if(session != null){
+        if(session.getAttribute("loggedInUser") != null){
             res.sendRedirect("/ProjectVirt/customer/home");
         }else{
             // pass the request along the filter chain

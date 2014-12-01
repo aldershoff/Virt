@@ -1,4 +1,4 @@
-#parse( "/Velocity/includes/header.html" )
+#parse( "/Velocity/includes/customers/header.html" )
 
 <body id="top">
 
@@ -54,13 +54,25 @@
 				You currently have $amountVMs <br /> Here, the list of vms will
 				appear <br /> <br />
 				<ul>
-					#foreach( $virtname in $vmname )
-					<li>$virtname.getVMName()</li>
-					<li>$virtname.getVmID()</li> #end
+				<div id="showallvms">
+				
+				
+				</div>
+			
+					<!-- #foreach( $vm in $vmBeanArray )
+					<li><a href="$baseUrl/customer/controlpanel?request=getvm&vmid=$vm.getVmID()">$vm.getVMName()</a></li>
+					<br />
+					 #end -->
+					 
+					<!--  #if($vmBean)
+						VMNaam is: <a href="$baseUrl/customer/controlpanel?request=monitor&vmid=$vmBean.getVmID()">$vmBean.getVMName()</a> en VM ID = $vmBean.getVmID()
+					#end -->
+					 
 				</ul>
 				<br class="clear" />
 			</div>
 		</div>
 	</div>
+       
 
-	#parse( "/Velocity/includes/footer.html" )
+	#parse( "/Velocity/includes/customers/footer.html" )

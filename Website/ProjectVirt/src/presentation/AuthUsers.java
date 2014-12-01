@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -81,13 +82,42 @@ public class AuthUsers extends HttpServlet {
 			CustomerBean custBean = (CustomerBean) session
 					.getAttribute("customer");
 
-			
-			// Making new session and getting the attribute for sending it to
-			// the HTML pages
-			 ArrayList<VMBean> vmBeanArrayList = (ArrayList<VMBean>) session.getAttribute("virtualmachine");
-						
-			// Calling controller for passing path and bean
-			setGetControllerUrls(userPath, custBean, request, response, session, vmBeanArrayList);
+			/**
+			 * Checking if the parametermapping is empty. If so, the request is
+			 * an usual request from the menu within the website
+			 */
+			if (request.getParameterMap().isEmpty()) {
+				setGetControllerUrls(userPath, custBean, request, response,
+						session);
+			}
+
+			/**
+			 * If the parameter has a request parameter inside it's url, the
+			 * request is comming from a HTML link like a HREF (or redirection)
+			 */
+			else if (request.getParameterMap().containsKey("request")) {
+				getUserRequest(request, response);
+				template.merge(vsl_Context, out);
+				cleanVelocity();
+				vsl_Context.put("baseUrl", request.getContextPath());
+				out.close();
+			}
+
+//			/**
+//			 * If the parameter contains a response keyword, the data is comming
+//			 * from the back-end servlet Mostly, the servlet will get data back
+//			 * from the back-end
+//			 */
+//			else if (request.getParameterMap().containsKey("response")) {
+//
+//				getBackEndResponse(request, response,session, custBean);
+//			}
+//			
+			else if(request.getParameterMap().containsKey("error")){
+				getErrorResponse(request, response, session, custBean);
+				
+			}
+
 		}
 
 		catch (Exception e) {
@@ -115,56 +145,222 @@ public class AuthUsers extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
+
 	}
 
 	/**
-	 * Method for handling the GET userPath details for putting into the templates
+	 * Method for handling the GET requests, done by clicking on the menu. These
+	 * requests will forward to the back-end if needed
+	 * 
 	 * @param userPath
 	 * @param custBean
-	 * @throws IOException 
+	 * @param vmBeanArrayList
+	 * @throws IOException
 	 */
-	private void setGetControllerUrls(String userPath, CustomerBean custBean, HttpServletRequest request, HttpServletResponse response, HttpSession session, ArrayList<VMBean> vmBeanArrayList) throws IOException {
+	private void setGetControllerUrls(String userPath, CustomerBean custBean,
+			HttpServletRequest request, HttpServletResponse response,
+			HttpSession session) throws IOException {
 		vsl_Context.put("name", custBean.getUsername());
 		vsl_Context.put("id", custBean.getUserID());
-		
+
 		switch (userPath) {
-		
-		case "/customer/home":		
+
+		case "/customer/home":
 			template = Velocity.getTemplate("Velocity/customers/index.html");
 			break;
-			
+
 		case "/customer/controlpanel":
-			
-			// Checking if the bean is not null, else the data is not properly loaded inside the backend serv
-			if(vmBeanArrayList != null){
-				vsl_Context.put("vmname",vmBeanArrayList);
-				
-				
-				template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
-			}
-			else{
-				response.sendRedirect(request.getRequestURI() + "/getvms");
-			}
-			break;	  
+			template = Velocity
+					.getTemplate("Velocity/customers/controlpanel.html");
+			break;
+
 		case "/customer/marketplace":
-			template = Velocity.getTemplate("Velocity/customers/marketplace.html");
-			break;	
+			template = Velocity
+					.getTemplate("Velocity/customers/marketplace.html");
+			break;
 		case "/customer/marketplace/windows":
 			template = Velocity.getTemplate("Velocity/customers/windows.html");
-			break;	
+			break;
 		case "/customer/marketplace/debian":
 			template = Velocity.getTemplate("Velocity/customers/debian.html");
-			break;	
+			break;
 		case "/customer/marketplace/slackware":
 			template = Velocity.getTemplate("Velocity/customers/windows.html");
-			break;	
-		
+			break;
 
 		default:
 			break;
 		}
 	}
 
+	/**
+	 * Method for handling user requests, like links (href) from HTML web pages.
+	 * Parameters will be given with useful information for forwarding to the
+	 * back-end
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void getUserRequest(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+
+		String UrlRequest = request.getParameter("request");
+
+
+		switch (UrlRequest) {
+		case "getvm":
+
+			/**
+			 * Send request to the back-end servlet for getting the specific VM
+			 * data
+			 */
+			template = Velocity
+					.getTemplate("Velocity/customers/controlpanel.html");
+			
+//			response.sendRedirect("/ProjectVirt/customer/controlpanel/getvms?request="
+//							+ sendRequest + "&vmid=" + vmID);
+			
+			break;
+
+		case "monitor":
+
+			/**
+			 * Send request to the back-end servlet for getting the monitor data
+			 */
+			template = Velocity
+					.getTemplate("Velocity/customers/monitor/index.html");
+			break;
+
+		case "buy":
+
+			/**
+			 * Checking if the fields were not left empty
+			 */
+			if (request.getParameter("RAM") == "vmOS"
+					|| request.getParameter("CPU") == "vmCPU"
+					|| request.getParameter("HDD") == "vmHDD"
+					|| request.getParameter("SLA") == "vmSLA") {
+				response.sendRedirect(request.getRequestURI()
+						+ "/error?name=fieldsnotfilled");
+			} else {
+
+				/**
+				 * Send request to the back-end servlet for getting the buy data
+				 */
+				
+				RequestDispatcher dispatcher = request.getRequestDispatcher("/customer/marketplace/buy/processbuy");
+				try {
+					dispatcher.forward(request, response);
+				} catch (ServletException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			break;
+
+		default:
+			break;
+		}
+
+	}
+////
+//	/**
+//	 * Method for getting responses from the back-end servlet. These responses
+//	 * are usually beans, filled with data These beans can therefore be
+//	 * delivered to the Velocity template engine
+//	 * 
+//	 * @param request
+//	 * @param response
+//	 * @throws IOException
+//	 */
+//	private void getBackEndResponse(HttpServletRequest request,
+//			HttpServletResponse response, HttpSession session,CustomerBean custBean)
+//			throws IOException {
+//		vsl_Context.put("name", custBean.getUsername());
+//		vsl_Context.put("id", custBean.getUserID());
+//
+//		
+//		String backEndResponse = request.getParameter("response");
+//		VMBean vmBean = null;
+//		String jsonObject = null;
+//		
+//		switch (backEndResponse) {
+//		case "getallvm":
+//			/**
+//			 * If the message is OK, the data has been processed correctly and
+//			 * the data can be transfered to a local data type
+//			 */
+//
+//			jsonObject = (String) session.getAttribute("json");
+//			session.removeAttribute("json");
+//	        response.getWriter().write(jsonObject.toString());
+//
+//			break;
+//
+//		case "getvm":
+//
+//			/**
+//			 * If the data was correctly processed, the servlet will process the
+//			 * bean
+//			 */
+//			jsonObject = (String) session.getAttribute("json");
+//			session.removeAttribute("json");
+//	        response.getWriter().write(jsonObject.toString());
+//			break;
+//			
+//		case "monitor":
+//
+//			/**
+//			 * If the data was correctly processed, the servlet will process the
+//			 * bean
+//			 */
+//			vmBean = (VMBean) session.getAttribute("vmBean");
+//			session.removeAttribute("vmBean");
+//			vsl_Context.put("vmBean", vmBean);
+//			template = Velocity
+//					.getTemplate("Velocity/customers/monitor/index.html");
+//			
+//			break;
+//		}
+//		
+//		
+//
+//	}
+
+
+		private void getErrorResponse(HttpServletRequest request,
+				HttpServletResponse response, HttpSession session,CustomerBean custBean){
+			vsl_Context.put("name", custBean.getUsername());
+			vsl_Context.put("id", custBean.getUserID());
+			String backEndResponse = request.getParameter("error");
+			String error = null;
+			
+			switch (backEndResponse) {
+			case "getallvm":
+				error = "Something went wrong";
+				vsl_Context.put("error", error);
+				template = Velocity
+						.getTemplate("Velocity/customers/controlpanel.html");
+				break;
+				
+			case "getvm":
+				error = "Something went wrong";
+				vsl_Context.put("error", error);
+				template = Velocity
+						.getTemplate("Velocity/customers/controlpanel.html");
+				
+				
+
+			default:
+				break;
+			}
+			
+		}
+			
+		
+		
 	/**
 	 * Delete all the velocity objects, so objects can be called again when
 	 * reloading the Users Servlet
