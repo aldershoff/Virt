@@ -2,6 +2,7 @@ package infrastructure;
 
 /**
  * Class for monitoring and creating different VM's on the hypervisor
+ * @author PieterDieleman
  */
 
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class TestVM {
 
 	/**
 	 * Make connection to hypervisor and return it
-	 * 
+	 * @author PieterDieleman
 	 * @return
 	 * @throws LibvirtException
 	 */
@@ -40,30 +41,6 @@ public class TestVM {
 	/**
 	 * Method for monitoring all VM's
 	 */
-	//public void monitorDomains() {
-	//	try {
-//
-	//		Connect conn = makeConn();
-//
-	//		NodeInfo ni = conn.nodeInfo();
-//
-	//		System.out.println("model: " + ni.model + " mem(kb):" + ni.memory);
-//
-	//		int numOfVMs = conn.numOfDomains();
-//
-	//		for (int i = 1; i < numOfVMs + 1; i++) {
-		///		Domain vm = conn.domainLookupByID(i);
-			//	System.out.println("vm name: " + vm.getName() + "  type: "
-				//		+ vm.getOSType() + " max mem: " + vm.getMaxMemory()
-					//	+ " max cpu: " + vm.getMaxVcpus());
-			//}
-			//String cap = conn.getCapabilities();
-			//System.out.println("cap: " + cap);
-			//conn.close();
-	//	} catch (LibvirtException le) {
-	//		le.printStackTrace();
-//		}
-//	}
 
 	/**
 	 * Method for creating VM's with XML files
