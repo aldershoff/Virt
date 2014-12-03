@@ -17,8 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import jsonserializers.CustomerSerialiser;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 
 import net.sf.json.JSONObject;
 import security.PasswordService;
@@ -284,104 +287,48 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void processLogin(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-		
-		ServletContext context = request.getSession().getServletContext();
-		context.setAttribute("formUsername", request.getParameter("user"));
-		
-		/**
-		 * Checking if the fields were not left empty
-		 */
-		if (request.getParameter("user") == ""
-				&& request.getParameter("password") == "") {
-			context.setAttribute("error", "You must provide both username and password");
-			response.sendRedirect("/ProjectVirt/login?error=bothfieldsempty");
-		} else if (request.getParameter("user") == "") {
-			context.setAttribute("error", "You must provide a username");
-			response.sendRedirect("/ProjectVirt/login?error=emptyusername");
-		} else if (request.getParameter("password") == "") {
-			context.setAttribute("error", "You must provide a password");
-			response.sendRedirect("/ProjectVirt/login?error=emptypassword");
+
+		Gson gson = null;
+
+		// Making new bean for the customer
+		CustomerBean custBean = new CustomerBean();
+
+		// Getting parameters from form (login.html)
+		custBean.setUserName(request.getParameter("user"));
+		try {
+			custBean.setPassword(new PasswordService().getInstance().encrypt(
+					request.getParameter("password")));
+		} catch (ServiceUnavailableException e) {
+			e.printStackTrace();
 		}
-		else{
-		
-			// Making new bean for the customer
-			CustomerBean custBean = new CustomerBean();
 
-			// Getting parameters from form (login.html)
-			custBean.setUserName(request.getParameter("user"));
-			try {
-				custBean.setPassword(new PasswordService().getInstance()
-						.encrypt(request.getParameter("password")));
-			} catch (ServiceUnavailableException e) {
-				e.printStackTrace();
-			}
+		// Making new login Data Access Object
+		UserDAO checkLog = new UserDAO();
 
-			// Making new login Data Access Object
-			UserDAO checkLog = new UserDAO();
+		// Make connection, fill bean and return it
+		custBean = checkLog.login(custBean);
 
-			// Make connection, fill bean and return it
-			custBean = checkLog.login(custBean);
+		try {
+			
+			final GsonBuilder gsonBuilder = new GsonBuilder();
+		    gsonBuilder.registerTypeAdapter(CustomerBean.class, new CustomerSerialiser());
+		    gsonBuilder.setPrettyPrinting();
+		    gson = gsonBuilder.create();
 
-			// If bean is not null, a database connection has been initiated
-			if (custBean != null) {
 
-				/**
-				 * If the user is succesfully authenticated, and the bean has
-				 * been filled with information, a new session can be made
-				 */
-				if (custBean.isValid()) {
-
-					// Get session and fill it with the username
-					HttpSession session = request.getSession();
-					session.setAttribute("customer", custBean);
-
-					/**
-					 * Moet een JSON response worden!
-					 */
-//					Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//			        String json = gson.toJson(custBean);
-//			        response.setContentType("application/json");
-			        
-					
-					/**
-					 * If rememberMe is checked, a cookie will be exchanged to
-					 * the user
-					 */
-					if (request.getParameter("rememberme") != null) {
-
-						// Making new cookie from username
-						Cookie loginCookie = new Cookie("user",
-								custBean.getUsername());
-
-						// setting cookie to expiry in 30 mins
-						loginCookie.setMaxAge(2592000);
-						response.addCookie(loginCookie);
-						//custBean.setRememberMe(true);
-					}
-					
-					//response.getWriter().write(json.toString());
-//					// Redirect to servlet
-					response.sendRedirect("/ProjectVirt/customer/home");
-
-				}
-
-				/**
-				 * Else, print that the password is wrong and close the print
-				 */
-				else if (!custBean.valid) {
-					context.setAttribute("error", "Wrong username or password");
-					response.sendRedirect("/ProjectVirt/login?error=wrongusernamepassword");
-				}
-			}
 
 			/**
-			 * If returned null, something is wrong with the database
+			 * If rememberMe is checked, a cookie will be exchanged to the user
 			 */
-			else {
-				context.setAttribute("error", "Cannot connect to DB");
-				response.sendRedirect("/ProjectVirt/login/error?response=nodatabase");
+			if (request.getParameter("rememberme") != null) {
+
+				custBean.setRememberMe(true);
 			}
-			
+		} finally {
+
+			String json = gson.toJson(custBean);
+			response.setContentType("application/json");
+			response.getWriter().write(json.toString());
 		}
 	}
 

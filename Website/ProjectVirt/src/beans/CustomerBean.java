@@ -24,6 +24,7 @@ public class CustomerBean {
 	@Expose private String phone;
 	@Expose private String address;
 	@Expose private String zipCode;
+	@Expose private String error;
 	@Expose private boolean remember;
 	@Expose public boolean valid;
 
@@ -184,5 +185,13 @@ public class CustomerBean {
 
 	public void setUserID(int i) {
 		this.userID = i;
+	}
+	
+	public String getError() {
+		return this.error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
 	}
 }

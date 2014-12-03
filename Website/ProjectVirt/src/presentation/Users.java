@@ -1,8 +1,9 @@
 package presentation;
 
-import infrastructure.TestVM.*;
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -13,18 +14,28 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import json.JSONPosts;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.libvirt.LibvirtException;
-
-import beans.CustomerBean;
-import beans.VMBean;
 
 @WebServlet(name = "/Users", loadOnStartup = 1)
 /**
@@ -100,7 +111,8 @@ public class Users extends HttpServlet {
 			}
 
 			/**
-			 * If there is an error given by the back-end, process it through the following method
+			 * If there is an error given by the back-end, process it through
+			 * the following method
 			 */
 			else if (request.getParameterMap().containsKey("error")) {
 				setGetErrorParameters(request, response, userPath);
@@ -134,6 +146,40 @@ public class Users extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// /**
+		// * Checking if the fields were not left empty
+		// */
+		// if (request.getParameter("user") == ""
+		// && request.getParameter("password") == "") {
+		// context.setAttribute("error",
+		// "You must provide both username and password");
+		//
+		// } else if (request.getParameter("user") == "") {
+		// context.setAttribute("error", "You must provide a username");
+		//
+		// } else if (request.getParameter("password") == "") {
+		// context.setAttribute("error", "You must provide a password");
+		// }
+
+		JSONPosts jsonPOST = new JSONPosts();
+
+		JSONObject json = jsonPOST.postLoginJson(request);
+		// response.getWriter().write(json.toString());
+		long userID = (long) json.get("userID");
+		String username = (String) json.get("username");
+		boolean userIsValid = (boolean) json.get("valid");
+
+		if (userIsValid) {
+			HttpSession session = request.getSession();
+			session.setAttribute("userID", userID);
+			session.setAttribute("username", username);
+
+			response.sendRedirect("/ProjectVirt/customer/home");
+		}
+		else{
+			response.sendRedirect("/ProjectVirt/customer/home");
+
+		}
 	}
 
 	/**

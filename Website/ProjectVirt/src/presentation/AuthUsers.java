@@ -79,15 +79,15 @@ public class AuthUsers extends HttpServlet {
 			// Making new session and getting the attribute for sending it to
 			// the HTML pages
 			HttpSession session = request.getSession(false);
-			CustomerBean custBean = (CustomerBean) session
-					.getAttribute("customer");
+
+			
 
 			/**
 			 * Checking if the parametermapping is empty. If so, the request is
 			 * an usual request from the menu within the website
 			 */
 			if (request.getParameterMap().isEmpty()) {
-				setGetControllerUrls(userPath, custBean, request, response,
+				setGetControllerUrls(userPath, request, response,
 						session);
 			}
 
@@ -114,7 +114,7 @@ public class AuthUsers extends HttpServlet {
 //			}
 //			
 			else if(request.getParameterMap().containsKey("error")){
-				getErrorResponse(request, response, session, custBean);
+				getErrorResponse(request, response, session);
 				
 			}
 
@@ -157,11 +157,11 @@ public class AuthUsers extends HttpServlet {
 	 * @param vmBeanArrayList
 	 * @throws IOException
 	 */
-	private void setGetControllerUrls(String userPath, CustomerBean custBean,
+	private void setGetControllerUrls(String userPath,
 			HttpServletRequest request, HttpServletResponse response,
 			HttpSession session) throws IOException {
-		vsl_Context.put("name", custBean.getUsername());
-		vsl_Context.put("id", custBean.getUserID());
+		vsl_Context.put("name", session.getAttribute("username"));
+		vsl_Context.put("id", session.getAttribute("userID"));
 
 		switch (userPath) {
 
@@ -331,9 +331,9 @@ public class AuthUsers extends HttpServlet {
 
 
 		private void getErrorResponse(HttpServletRequest request,
-				HttpServletResponse response, HttpSession session,CustomerBean custBean){
-			vsl_Context.put("name", custBean.getUsername());
-			vsl_Context.put("id", custBean.getUserID());
+				HttpServletResponse response, HttpSession session){
+			vsl_Context.put("name", session.getAttribute("username"));
+			vsl_Context.put("id", session.getAttribute("userID"));
 			String backEndResponse = request.getParameter("error");
 			String error = null;
 			
