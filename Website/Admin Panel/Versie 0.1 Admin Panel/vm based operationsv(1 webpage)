@@ -1,0 +1,37 @@
+vm based operationsv(1 webpage)
+	create vm (based on storage volume and options)
+	delete vm
+	update vm
+	start vm
+	stop vm
+	list vms
+	make snapshot
+	delete snapshot
+	restore snapshot
+	list snapshots
+	
+storage volume based operations (1 webpage)
+	create storage volume (based on storage pools)
+	delete storage volume
+	update storage volume
+	list storage volumes
+	migrate storage volumes (check if possible)
+	
+storage pool based operations (1 webpage)
+	Create storage pool
+	delete storage pool
+	update storage pool
+	list storage pools
+	stop pool
+	start pool
+	
+network based operations 	(1 webpage)
+	create network interface
+	delete network interface
+	update network interface
+	list network interfaces
+	
+host based operations (1webpage)
+	list hosts
+	show cpu info
+	show mem info
