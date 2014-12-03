@@ -13,6 +13,8 @@ import org.libvirt.Domain;
 import org.libvirt.DomainInfo;
 import org.libvirt.LibvirtException;
 import org.libvirt.NodeInfo;
+import org.libvirt.StoragePool;
+import org.libvirt.StorageVol;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -79,6 +81,7 @@ public class TestVM {
 	 */
 	
 	
+	@SuppressWarnings("null")
 	public static void createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
 		//setup libvirt connection, second parameter is a boolean for read-only 
@@ -87,23 +90,47 @@ public class TestVM {
 		//Temp, might use it later on in the project.
 		
 		UUID UUID = java.util.UUID.randomUUID();
-		
-		
-		StringBuilder commandBuilder = new StringBuilder("qemu-img create -f raw /var/lib/libvirt/images/"+ UUID +".img "+ Storage +"M");
-		String command = commandBuilder.toString();
-		Runtime runtime = Runtime.getRuntime();
-		Process process = null;
-		try {
-		    process = runtime.exec(command);
-		    System.out.println(command);
-		    System.out.println("from process try..catch");
-		} catch (IOException e1) {
-		    e1.printStackTrace();
-		    System.out.println(e1.getMessage());
-		}finally{
-		    System.out.println("from finally entry");
-		    process.destroy();
+	
+		//TODO: CONVERT INPUT TO BYTES
+		try{
+			StorageVol mainVol = conn.storageVolLookupByPath("/var/lib/libvirt/images/mainVolume.img");
+			System.out.println(mainVol);
+			//String volXML = mainVol.getXMLDesc(0);
+			StoragePool createPool = conn.storagePoolLookupByName("default");
+			createPool.storageVolCreateXMLFrom("<volume>" +
+			"<name>" + UUID + ".img</name>"+
+			"<key>/var/lib/libvirt/images/" + UUID + ".img</key>"+
+			"<capacity unit='bytes'>2097152000</capacity>"+
+			"<allocation unit='bytes'>0</allocation>"+
+			"<target>"+
+			"<path>/var/lib/libvirt/images/" + UUID + ".img</path>"+
+			"</target>"+
+			"</volume>", mainVol, 0);
 		}
+		catch(LibvirtException e){
+			System.out.println(e);
+			
+		}
+		finally{
+			//s
+		}
+
+//		
+//		StringBuilder commandBuilder = new StringBuilder("qemu-img create -f raw /var/lib/libvirt/images/"+ UUID +".img "+ Storage +"M");
+//		String command = commandBuilder.toString();
+//		Runtime runtime = Runtime.getRuntime();
+//		Process process = null;
+//		try {
+//		    process = runtime.exec(command);
+//		    System.out.println(command);
+//		    System.out.println("from process try..catch");
+//		} catch (IOException e1) {
+//		    e1.printStackTrace();
+//		    System.out.println(e1.getMessage());
+//		}finally{
+//		    System.out.println("from finally entry");
+//		    process.destroy();
+//		}
 		
 		if(!conn.isConnected()){
 			System.out.println("Error, hypervisor connection not available!");
