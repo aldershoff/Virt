@@ -2,7 +2,6 @@ package infrastructure;
 
 /**
  * Class for monitoring and creating different VM's on the hypervisor
- * @author PieterDieleman
  */
 
 import java.util.UUID;
@@ -14,6 +13,12 @@ import org.libvirt.Domain;
 import org.libvirt.DomainInfo;
 import org.libvirt.LibvirtException;
 import org.libvirt.NodeInfo;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
 
 public class TestVM {
 
@@ -27,7 +32,7 @@ public class TestVM {
 
 	/**
 	 * Make connection to hypervisor and return it
-	 * @author PieterDieleman
+	 * 
 	 * @return
 	 * @throws LibvirtException
 	 */
@@ -41,6 +46,30 @@ public class TestVM {
 	/**
 	 * Method for monitoring all VM's
 	 */
+	//public void monitorDomains() {
+	//	try {
+//
+	//		Connect conn = makeConn();
+//
+	//		NodeInfo ni = conn.nodeInfo();
+//
+	//		System.out.println("model: " + ni.model + " mem(kb):" + ni.memory);
+//
+	//		int numOfVMs = conn.numOfDomains();
+//
+	//		for (int i = 1; i < numOfVMs + 1; i++) {
+		///		Domain vm = conn.domainLookupByID(i);
+			//	System.out.println("vm name: " + vm.getName() + "  type: "
+				//		+ vm.getOSType() + " max mem: " + vm.getMaxMemory()
+					//	+ " max cpu: " + vm.getMaxVcpus());
+			//}
+			//String cap = conn.getCapabilities();
+			//System.out.println("cap: " + cap);
+			//conn.close();
+	//	} catch (LibvirtException le) {
+	//		le.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Method for creating VM's with XML files
@@ -48,23 +77,46 @@ public class TestVM {
 	 * 
 	 * @throws Exception
 	 */
+	
+	
 	public static void createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
 		//setup libvirt connection, second parameter is a boolean for read-only 
 		Connect conn = new Connect("qemu:///system", false);
 		
 		//Temp, might use it later on in the project.
-		//UUID UUID = java.util.UUID.randomUUID();
+		
+		UUID UUID = java.util.UUID.randomUUID();
+		
+		
+		StringBuilder commandBuilder = new StringBuilder("qemu-img create -f raw /var/lib/libvirt/images/"+ UUID +".img "+ Storage +"M");
+		String command = commandBuilder.toString();
+		Runtime runtime = Runtime.getRuntime();
+		Process process = null;
+		try {
+		    process = runtime.exec(command);
+		    System.out.println(command);
+		    System.out.println("from process try..catch");
+		} catch (IOException e1) {
+		    e1.printStackTrace();
+		    System.out.println(e1.getMessage());
+		}finally{
+		    System.out.println("from finally entry");
+		    process.destroy();
+		}
+		
 		if(!conn.isConnected()){
 			System.out.println("Error, hypervisor connection not available!");
 		}
 		else{
 			System.out.println("Connection is ready!");
 			try{
+				//Create HDD with Qemu
+
 				
 				Domain newDm = conn.domainDefineXML("<domain type='" + OSType + "'>" +
 				"<name>" + OSName + "</name>" +
-				"<uuid></uuid>" +
+				"<uuid>" + UUID + "</uuid>" +
 				"<memory>" + Memory + "</memory>" +
 				"<vcpu>" + CPU + "</vcpu>" +
 				"<os>" +
@@ -73,16 +125,15 @@ public class TestVM {
 			    "</os>" +
 			    "<devices>" +
 			    "<emulator>/usr/bin/qemu-system-x86_64</emulator>" +
-			    "<disk type='file' device='disk'>" +
-			    "<source file='/home/sne/slackware-14.1-source-dvd.iso'/> "+
+			    "<disk type='file' device='cdrom'>" +
+			    "<source file='/home/sne/ubuntu-14.04.1-server-amd64.iso'/> "+
 			    "<target dev='hdc'/>"+
-			    //Add a second HDD with
-			    "<readonly/>"+
+			    //"<readonly/>"+
 			    "</disk>"+
 			    "<disk type='file' device='disk'>"+
-			    "<source file='/var/lib/libvirt/images/testVolume'/>"+
+			    "<source file='/var/lib/libvirt/images/" + UUID + ".img'/> " +
 			    "<target dev='hda'/>"+
-			    "</disk>"+
+			    "</disk>"+			    
 			    "<interface type='network'>"+
 			    "<source network='default'/>"+
 			    "</interface>"+
@@ -92,6 +143,7 @@ public class TestVM {
 				//conn.domainXMLFromNative("", arg1, arg2)
 				//Domain newDm = conn.domainLookupByUUID(UUID);
 				newDm.create();
+				
 				
 				if(newDm.isActive() == 0){
 					System.out.println("Error, domain is not running");
@@ -112,5 +164,4 @@ public class TestVM {
 			}
 		}
 	}
-
 }

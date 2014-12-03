@@ -1,10 +1,6 @@
 package infrastructure;
 
-/**
- * Class for getting information from the hypervisor. 
- * SSH will be included in the future.
- * @author PieterDieleman
- */
+
 import org.libvirt.Connect;
 import org.libvirt.ConnectAuth;
 import org.libvirt.ConnectAuthDefault;
