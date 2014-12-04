@@ -1,14 +1,11 @@
 package businesslogic;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
 import javax.naming.ServiceUnavailableException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -17,13 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import net.sf.json.JSONObject;
+import jsonserializers.CustomerSerialiser;
+import jsonserializers.GetUserVMSerialiser;
 import security.PasswordService;
 import beans.CustomerBean;
 import beans.VMBean;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import databaseAccessObjects.BuyDAO;
 import databaseAccessObjects.UserDAO;
 import databaseAccessObjects.VMDAO;
@@ -31,7 +30,7 @@ import databaseAccessObjects.VMDAO;
 /**
  * The servlet for getting and Posting information through and from the database
  * and KVM. This servlet will handle all the operations needed to get all the
- * information back to the user
+ * information back to the user servlet. Basicly, this is the REST server
  * 
  * @author kjellzijlemaker
  *
@@ -99,9 +98,6 @@ public class OperationalBackEnd extends HttpServlet {
 		case "/customer/controlpanel/monitorvms":
 			getMonitorUserVM(request, response);
 			break;
-		case "/customer/logout":
-			processLogout(request, response);
-			break;	
 		default:
 			break;
 		}
@@ -147,130 +143,152 @@ public class OperationalBackEnd extends HttpServlet {
 	private void getUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 
+		// Making new VMDAO for making connection
 		VMDAO VMDAO = new VMDAO();
 
-		HttpSession session = request.getSession(false);
-		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
-			
-			String urlRequest = request.getParameter("request");
-			
-			switch (urlRequest) {
-		
-			case "getallvm":
-				/**
-				 * Checking if the attribute is null If so, the query needs to be
-				 * runned. If not, the user should give permission to refresh the
-				 * servers and get fresh output
-				 */
-					ArrayList<VMBean> vmBeanArray = VMDAO.getVMs(custBean.getUserID());
+		/**
+		 * Getting the requested URL and userID from the parameters
+		 */
+		String urlRequest = request.getParameter("request");
+		String userID = null;
 
-					if(vmBeanArray!= null){
-						
-						Gson gson = new Gson();
-				        String jsonVMBeanArray = gson.toJson(vmBeanArray);
-				        response.setContentType("application/json");
-				        session.setAttribute("json", jsonVMBeanArray);
-				       
-				        response.getWriter().write(jsonVMBeanArray.toString());
-					}	
+		/**
+		 * Switch for checking which service has been requested
+		 */
+		switch (urlRequest) {
 
-				
-				break;
-			
-//				 response.sendRedirect("/ProjectVirt/customer/controlpanel?response=getallvm");
-//				String userListTable() throws JSONException {
-//			        List<User> foundUser = userService.getUsers();
-//
-//			        JSONArray data = new JSONArray();
-//			        JSONObject JSONObject = new JSONObject();
-//
-//			        JSONObject.put("sEcho", 1);
-//			        JSONObject.put("iTotalRecords", foundUser.size());
-//			        JSONObject.put("iTotalDisplayRecords", foundUser.size());
-//
-//			        for (User user : foundUser) {
-//			            JSONArray row = new JSONArray();
-//			            row.put(user.getUserDetail().getFirstName());
-//			            row.put(user.getUserDetail().getLastName());
-//			            row.put(user.getBusinessUnit().getName());
-//			            row.put(user.getUserDetail().getUserId());
-//			                        row.put("");
-//			            data.put(row);
-//			        }
-//			        JSONObject.put("aaData", data);
-//			        return ;
-//			    }
-				
-		case "getvm":
-			String vmID = request.getParameter("vmid");
-			VMBean vmBean = new VMBean();
-			vmBean = VMDAO.getSpecificVM(vmBean, custBean.getUserID(), vmID);
+		/**
+		 * Service for getting all possible VMs from the user
+		 */
+		case "getallvm":
 
-			if (vmBean.isValid()) {
+			// Setting the userID and new arraylist for getting all the VMs
+			userID = request.getParameter("userID");
+			ArrayList<VMBean> vmBeanArray = VMDAO.getVMs(userID);
+
+			/**
+			 * If the array is not null, a new JSON String will be made and will
+			 * be send to the output
+			 */
+			if (vmBeanArray != null) {
 
 				Gson gson = new Gson();
-				String jsonVMBean = gson.toJson(vmBean);
+				String jsonVMBeanArray = gson.toJson(vmBeanArray);
 				response.setContentType("application/json");
-				session.setAttribute("json", jsonVMBean);
-				response.sendRedirect("/ProjectVirt/customer/controlpanel?response=getvm");
+				response.getWriter().write(jsonVMBeanArray.toString());
+
+			}
+			break;
+
+		/**
+		 * Service for getting a specific VM for the user
+		 */
+		case "getvm":
+
+			/**
+			 * Setting the parameters for the VM and User ID
+			 */
+			String vmID = request.getParameter("vmid");
+			userID = request.getParameter("userID");
+			Gson gson = null;
+			
+			/**
+			 * Making new bean and fill it with data
+			 */
+			VMBean vmBean = new VMBean();
+			vmBean = VMDAO.getSpecificVM(vmBean, userID, vmID);
+
+			/**
+			 * If the bean is valid, it will return a new JSON response
+			 */
+			if (vmBean.isValid()) {
+
+				try {
+
+					/**
+					 * Setting builder and serialiser for appropiate data
+					 */
+					final GsonBuilder gsonBuilder = new GsonBuilder();
+					gsonBuilder.registerTypeAdapter(VMBean.class,
+							new GetUserVMSerialiser());
+					gson = gsonBuilder.create();
+
+				} finally {
+
+					/**
+					 * Convert bean to json and send it to as a String
+					 */
+					String json = gson.toJson(vmBean);
+					response.setContentType("application/json");
+					response.getWriter().write(json.toString());
+				}
 
 			}
 
 			break;
-				
-			default:
-				break;
-			}
+
+		default:
+			break;
 		}
-	
-	private void getMonitorUserVM(final HttpServletRequest request,
-			final HttpServletResponse response) throws IOException {
-		VMDAO VMDAO = new VMDAO();
-		VMBean vmBean = null;
-
-		HttpSession session = request.getSession(false);
-		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
-
-				String vmID = request.getParameter("vmid");
-			
-					vmBean = new VMBean();
-					vmBean = VMDAO.getSpecificVM(vmBean, custBean.getUserID(), vmID);
-				
-					
-					if(vmBean.isValid()){
-						JsonGenerator _JsonGenerator = Json.createGenerator(response.getWriter());
-						
-						_JsonGenerator
-							.writeStartObject()
-								.write("name", vmBean.getVMName())
-								.write("vmid", vmBean.getVmID())
-							.writeEnd();
-						_JsonGenerator.close();
-					}	
-
-		
-
-
-		
 	}
 
+	/**
+	 * Method for getting the specific VM data for monitoring the VM. This data
+	 * will also have real time specifications Still working on this one!
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void getMonitorUserVM(final HttpServletRequest request,
+			final HttpServletResponse response) throws IOException {
+
 		/**
-		 * Must finish this method, does not work yet!!
-		 * @param request
-		 * @param response
-		 * @throws IOException
+		 * Setting VMDAO and bean for filling data
 		 */
+		VMDAO VMDAO = new VMDAO();
+		VMBean vmBean = null;
+		Gson gson = null;
+
+		/**
+		 * Set parameters
+		 */
+		String vmID = request.getParameter("vmid");
+		String userID = request.getParameter("userID");
+
+		/**
+		 * Fill the data
+		 */
+		vmBean = new VMBean();
+		vmBean = VMDAO.getSpecificVM(vmBean, userID, vmID);
+
+		/**
+		 * If bean is valid, send new vmBean back as response.
+		 */
+		if (vmBean.isValid()) {
+			
+			/*
+			 * Set realtime data here, preverably from Libvirt
+			 */
+			
+		}
+
+	}
+
+	/**
+	 * Must finish this method, does not work yet!!
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
 	private void buyUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 		BuyDAO buyDAO = new BuyDAO();
 
-		HttpSession session = request.getSession(false);
-		CustomerBean custBean = (CustomerBean) session.getAttribute("customer");
-			
 		VMBean vmBean = new VMBean();
-		vmBean = buyDAO.addVM(vmBean, custBean.getUserID());
+		// vmBean = buyDAO.addVM(vmBean, custBean.getUserID());
 
-		
 	}
 
 	/**
@@ -284,104 +302,59 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void processLogin(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
-		
-		ServletContext context = request.getSession().getServletContext();
-		context.setAttribute("formUsername", request.getParameter("user"));
+
+		Gson gson = null;
+
+		// Making new bean for the customer
+		CustomerBean custBean = new CustomerBean();
+
+		String parameterUsername = request.getParameter("user");
+		String parameterPassword = request.getParameter("password");
+		String parameterRememberme = request.getParameter("rememberme");
+
+		// Getting parameters from form (login.html)
+		custBean.setUserName(parameterUsername);
+		try {
+			custBean.setPassword(new PasswordService().getInstance().encrypt(
+					parameterPassword));
+		} catch (ServiceUnavailableException e) {
+			e.printStackTrace();
+		}
+
+		// Making new login Data Access Object
+		UserDAO checkLog = new UserDAO();
+
+		// Make connection, fill bean and return it
+		custBean = checkLog.login(custBean);
+
+		/**
+		 * If rememberMe is checked, a cookie will be exchanged to the user
+		 */
+		if (parameterRememberme != null) {
+
+			custBean.setRememberMe(true);
+		}
+
+		/**
+		 * Set the gson serialiser for appropriate data and converting the customer bean to JSON string
+		 */
+		try {
+
+			final GsonBuilder gsonBuilder = new GsonBuilder();
+			gsonBuilder.registerTypeAdapter(CustomerBean.class,
+					new CustomerSerialiser());
+			gson = gsonBuilder.create();
+
+		} 
 		
 		/**
-		 * Checking if the fields were not left empty
+		 * Do the converting
 		 */
-		if (request.getParameter("user") == ""
-				&& request.getParameter("password") == "") {
-			context.setAttribute("error", "You must provide both username and password");
-			response.sendRedirect("/ProjectVirt/login?error=bothfieldsempty");
-		} else if (request.getParameter("user") == "") {
-			context.setAttribute("error", "You must provide a username");
-			response.sendRedirect("/ProjectVirt/login?error=emptyusername");
-		} else if (request.getParameter("password") == "") {
-			context.setAttribute("error", "You must provide a password");
-			response.sendRedirect("/ProjectVirt/login?error=emptypassword");
-		}
-		else{
-		
-			// Making new bean for the customer
-			CustomerBean custBean = new CustomerBean();
+		finally {
 
-			// Getting parameters from form (login.html)
-			custBean.setUserName(request.getParameter("user"));
-			try {
-				custBean.setPassword(new PasswordService().getInstance()
-						.encrypt(request.getParameter("password")));
-			} catch (ServiceUnavailableException e) {
-				e.printStackTrace();
-			}
-
-			// Making new login Data Access Object
-			UserDAO checkLog = new UserDAO();
-
-			// Make connection, fill bean and return it
-			custBean = checkLog.login(custBean);
-
-			// If bean is not null, a database connection has been initiated
-			if (custBean != null) {
-
-				/**
-				 * If the user is succesfully authenticated, and the bean has
-				 * been filled with information, a new session can be made
-				 */
-				if (custBean.isValid()) {
-
-					// Get session and fill it with the username
-					HttpSession session = request.getSession();
-					session.setAttribute("customer", custBean);
-
-					/**
-					 * Moet een JSON response worden!
-					 */
-//					Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-//			        String json = gson.toJson(custBean);
-//			        response.setContentType("application/json");
-			        
-					
-					/**
-					 * If rememberMe is checked, a cookie will be exchanged to
-					 * the user
-					 */
-					if (request.getParameter("rememberme") != null) {
-
-						// Making new cookie from username
-						Cookie loginCookie = new Cookie("user",
-								custBean.getUsername());
-
-						// setting cookie to expiry in 30 mins
-						loginCookie.setMaxAge(2592000);
-						response.addCookie(loginCookie);
-						//custBean.setRememberMe(true);
-					}
-					
-					//response.getWriter().write(json.toString());
-//					// Redirect to servlet
-					response.sendRedirect("/ProjectVirt/customer/home");
-
-				}
-
-				/**
-				 * Else, print that the password is wrong and close the print
-				 */
-				else if (!custBean.valid) {
-					context.setAttribute("error", "Wrong username or password");
-					response.sendRedirect("/ProjectVirt/login?error=wrongusernamepassword");
-				}
-			}
-
-			/**
-			 * If returned null, something is wrong with the database
-			 */
-			else {
-				context.setAttribute("error", "Cannot connect to DB");
-				response.sendRedirect("/ProjectVirt/login/error?response=nodatabase");
-			}
-			
+			String json = gson.toJson(custBean);
+			response.setContentType("application/json");
+			response.getWriter().write(json.toString());
 		}
 	}
 
@@ -398,118 +371,67 @@ public class OperationalBackEnd extends HttpServlet {
 	private void processRegister(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 
-		if (request.getParameter("user") == ""
-				|| request.getParameter("password") == ""
-				|| request.getParameter("firstname") == ""
-				|| request.getParameter("lastname") == ""
-				|| request.getParameter("user") == "") {
-			response.sendRedirect("/ProjectVirt/register?error=fieldsnotfilled");
+		// Making new bean for the customer
+		CustomerBean custBean = new CustomerBean();
 
+		// Getting parameters from form (login.html)
+		custBean.setUserName(request.getParameter("user"));
 
+		try {
+			custBean.setPassword(new PasswordService().getInstance().encrypt(
+					request.getParameter("password")));
+		} catch (ServiceUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+		/**
+		 * Setting all the requests into the bean for processing
+		 */
+		custBean.setDateOfBirth(request.getParameter("dateofbirth"));
+		custBean.setFirstName(request.getParameter("firstname"));
+		custBean.setLastName(request.getParameter("lastname"));
+		custBean.setEmail(request.getParameter("email"));
+		custBean.setPhone(request.getParameter("phone"));
+		custBean.setAddress(request.getParameter("address"));
+		custBean.setZipCode(request.getParameter("zipcode"));
 
-		else{
-			// Making new bean for the customer
-			CustomerBean custBean = new CustomerBean();
+		// Making new login Data Access Object
+		UserDAO checkLog = new UserDAO();
 
-			// Getting parameters from form (login.html)
-			custBean.setUserName(request.getParameter("user"));
+		// Make connection, fill bean and return it
+		custBean = checkLog.register(custBean);
 
-			try {
-				custBean.setPassword(new PasswordService().getInstance()
-						.encrypt(request.getParameter("password")));
-			} catch (ServiceUnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			custBean.setDateOfBirth(request.getParameter("dateofbirth"));
-			custBean.setFirstName(request.getParameter("firstname"));
-			custBean.setLastName(request.getParameter("lastname"));
-			custBean.setEmail(request.getParameter("email"));
-			custBean.setPhone(request.getParameter("phone"));
-			custBean.setAddress(request.getParameter("address"));
-			custBean.setZipCode(request.getParameter("zipcode"));
+		// Setting GSON
+		Gson gson = null;
 
-			// Making new login Data Access Object
-			UserDAO checkLog = new UserDAO();
-
-			// Make connection, fill bean and return it
-			custBean = checkLog.register(custBean);
-			// If bean is not null, a database connection has been initiated
-			if (custBean != null) {
-
-				/**
-				 * If the user is succesfully authenticated, and the bean has
-				 * been filled with information, a new session can be made
-				 */
-				if (custBean.isValid()) {
-
-					// Set parameter succesful back!
-
-				}
-
-				
-				
-			}
-			/**
-			 * If returned null, something is wrong with the database
-			 */
-			else {
-				response.sendRedirect(request.getRequestURI()
-						+ "/error?response=nodatabase");
-			}
-		}
-		}
-			
-
-	/**
-	 * Method for destroying the session
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws IOException
-	 * @throws ServiceUnavailableException
-	 */
-	private void processLogout(final HttpServletRequest request,
-			final HttpServletResponse response) throws IOException {
-
-		// Get session from other servlet
-		HttpSession session = request.getSession(false);
-
-			session.invalidate();
-			
-			// Setting cookie
-			Cookie loginCookie = null;
-
-			// Getting cookie
-			Cookie[] cookies = request.getCookies();
+		// If bean is not null, a database connection has been initiated
+		if (custBean != null) {
 
 			/**
-			 * If not null, set logincookie to cookie for destroying it
+			 * If the user is succesfully authenticated, and the bean has been
+			 * filled with information, a new session can be made
 			 */
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals("user")) {
-						loginCookie = cookie;
-						break;
-					}
+
+			if (custBean.isValid()) {
+				try {
+					final GsonBuilder gsonBuilder = new GsonBuilder();
+					gsonBuilder.registerTypeAdapter(CustomerBean.class,
+							new CustomerSerialiser());
+					gson = gsonBuilder.create();
+
+				} finally {
+
+					String json = gson.toJson(custBean);
+					response.setContentType("application/json");
+					response.getWriter().write(json.toString());
 				}
 			}
 
-			/**
-			 * Setting the age to 0 and add cookie cookie to the response again.
-			 * The cookie is now destroyed
-			 */
-			if (loginCookie != null) {
-				loginCookie.setMaxAge(0);
-				response.addCookie(loginCookie);
-			}
-
-			// Redirect to home page
-			response.sendRedirect(request.getRequestURI() + "/home");
-
-			return; // <--- Here.
 		}
+	}
 
 
+	
+	
 }

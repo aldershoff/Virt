@@ -41,16 +41,16 @@ public class CheckIfLoggedFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 		
-		// Making new session and getting the request
+		// Getting the session
         HttpSession session = req.getSession(false);
          
         /**
-         * If the session is null, a log will be initialized and will be redirected
+         * If the session has the userID (set inside the user servlet), a redirection to the home page will taken place
          */
-        if(session.getAttribute("loggedInUser") != null){
+        if(session.getAttribute("userID") != null){
             res.sendRedirect("/ProjectVirt/customer/home");
         }else{
-            // pass the request along the filter chain
+            // Let the request pass
             chain.doFilter(request, response);
         }
 	}

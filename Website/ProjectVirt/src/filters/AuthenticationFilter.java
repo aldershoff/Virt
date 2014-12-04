@@ -45,7 +45,7 @@ public class AuthenticationFilter implements Filter {
          
         // Getting requested URI
         String uri = req.getRequestURI();
-        //this.context.log("Requested Resource::"+uri);
+        this.context.log("Requested Resource::"+uri);
          
         // Making new session and getting the request
         HttpSession session = req.getSession(false);

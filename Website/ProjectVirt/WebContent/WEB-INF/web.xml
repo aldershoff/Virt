@@ -53,75 +53,47 @@
 		<servlet-name>Users</servlet-name>
 		<url-pattern>/register/error</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<servlet-class>businesslogic.OperationalBackEnd</servlet-class>
-	</servlet>
 	<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/login/processlogin</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/register/processregister</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/customer/controlpanel/getvms</url-pattern>
-	</servlet-mapping>
-		<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/customer/controlpanel/monitorvms</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/customer/logout</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>OperationalBackEnd</servlet-name>
-		<url-pattern>/customer/marketplace/buy/processbuy</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>AuthUsers</servlet-name>
-		<servlet-class>presentation.AuthUsers</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/home</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/controlpanel</url-pattern>
 	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>Users</servlet-name>
+		<url-pattern>/customer/controlpanel/monitor</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/marketplace</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/marketplace/windows</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/marketplace/debian</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/marketplace/slackware</url-pattern>
 	</servlet-mapping>
 		<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/marketplace/buy</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>AuthUsers</servlet-name>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/error</url-pattern>
 	</servlet-mapping>
-
-	<filter>
-		<filter-name>ServletFilter</filter-name>
-		<filter-class>filters.ServletFilter</filter-class>
-	</filter>
+	<servlet-mapping>
+		<servlet-name>Users</servlet-name>
+		<url-pattern>/customer/logout</url-pattern>
+	</servlet-mapping>
+	
 	<filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>filters.AuthenticationFilter</filter-class>
@@ -129,9 +101,9 @@
 	<filter-mapping>
 		<filter-name>AuthenticationFilter</filter-name>
 		<url-pattern>/customer/*</url-pattern>
-	</filter-mapping>
-<!-- 	<filter>
-		<filter-name>CheckIfLoggedFilter</filter-name>
+	</filter-mapping> 
+ 	<!-- <filter> -->
+<!-- 		<filter-name>CheckIfLoggedFilter</filter-name>
 		<filter-class>filters.CheckIfLoggedFilter</filter-class>
 	</filter>
 	<filter-mapping>

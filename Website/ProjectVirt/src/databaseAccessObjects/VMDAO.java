@@ -2,20 +2,11 @@ package databaseAccessObjects;
 
 import infrastructure.DBConnection;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.json.Json;
-import javax.json.stream.JsonGenerator;
-import javax.servlet.http.HttpServletResponse;
-
-import net.sf.json.JSONArray;
-
-import com.mysql.fabric.xmlrpc.base.Array;
 
 import beans.VMBean;
 
@@ -32,7 +23,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public ArrayList<VMBean> getVMs(int i) {
+	public ArrayList<VMBean> getVMs(String i) {
 
 		ArrayList<VMBean> VMBeanArray = new ArrayList<VMBean>();
 		
@@ -41,7 +32,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT vmName, vmid FROM vm WHERE userid = " + i;
+		final String SELECT_ALL_VM = "SELECT vmName, vmid FROM vm WHERE userid = " + i;
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -50,7 +41,7 @@ public class VMDAO {
 
 			try {				
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
+				PreparedStatement pstm = conn.prepareStatement(SELECT_ALL_VM);
 
 
 				// Execute the query
@@ -111,7 +102,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public VMBean getSpecificVM(VMBean bean, int userID, String vmID) {
+	public VMBean getSpecificVM(VMBean bean, String userID, String vmID) {
 
 		
 		// Making the connection

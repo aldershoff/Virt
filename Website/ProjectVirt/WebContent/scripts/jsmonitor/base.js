@@ -43,7 +43,7 @@ $( "#refresh-os" ).click(function() {
 	
 	//start ajax request
     $.ajax({
-        url: "/ProjectVirt/customer/controlpanel/monitorvms?request=monitor&vmid=" + parameter,
+        url: "/BackEnd/customer/controlpanel/monitorvms?request=monitor&vmid=" + parameter,
         //force to handle it as text
         dataType: "text",
         success: function(data) {

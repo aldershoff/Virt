@@ -46,7 +46,7 @@
 			<div id="container">
 				<div class="homepage">
 					<section class="lgncnt">
-						<form action="$baseUrl/login/processlogin" method="post">
+						<form action="$baseUrl/login" method="post" name="loginForm" id="loginForm">
 							<div class="login">
 
 								<div>
@@ -65,7 +65,7 @@
 								</div>
 								<div>
 									<input type="hidden" value="login" name="request" />
-									<input type="submit" value="login" />
+									<input id="submit" name="submit" type="submit" value="login" />
 								</div>
 								$!{error}
 							</div>

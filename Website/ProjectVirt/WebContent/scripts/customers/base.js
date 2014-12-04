@@ -1,32 +1,35 @@
 $(document).ready(function(){
 	
-	//start ajax request
-    $.ajax({
-        url: "/ProjectVirt/customer/controlpanel/getvms?request=getallvm",
-        //force to handle it as text
-        dataType: "text",
-        success: function(data) {
-            
-            //data downloaded so we call parseJSON function 
-            //and pass downloaded data
-            var json = $.parseJSON(data);
-            //now json variable contains data in json format
-            //let's display a few items
-            
-            $.each(JSON.parse(data), function(idx, vmBeanArray) {
-            	$('#showallvms').append("<a href='/ProjectVirt/customer/controlpanel?request=monitor&vmid=" +  vmBeanArray.vmID + "'>" + vmBeanArray.vmName + "</a>" + "<br />");
-            });
-            
- 
-            
-            
-        },
-    error: function(xhr, textStatus, errorThrown){
-    	  $('#showallvms').html(errorThrown);
-    	 
-     }
-       
-    });
+
+	
+//	//start ajax request
+//    $.ajax({
+//    	
+//        url: "/BackEnd/customer/controlpanel/getvms?request=getallvm",
+//        //force to handle it as text
+//        dataType: "text",
+//        success: function(data) {
+//            
+//            //data downloaded so we call parseJSON function 
+//            //and pass downloaded data
+//            var json = $.parseJSON(data);
+//            //now json variable contains data in json format
+//            //let's display a few items
+//            
+//            $.each(JSON.parse(data), function(idx, vmBeanArray) {
+//            	$('#showallvms').append("<a href='/ProjectVirt/customer/controlpanel?request=monitor&vmid=" +  vmBeanArray.vmID + "'>" + vmBeanArray.vmName + "</a>" + "<br />");
+//            });
+//            
+// 
+//            
+//            
+//        },
+//    error: function(xhr, textStatus, errorThrown){
+//    	  $('#showallvms').html(errorThrown);
+//    	 
+//     }
+//       
+//    });
 });
 
 

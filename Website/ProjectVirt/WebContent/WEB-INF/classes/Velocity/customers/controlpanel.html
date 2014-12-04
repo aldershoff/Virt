@@ -54,19 +54,17 @@
 				You currently have $amountVMs <br /> Here, the list of vms will
 				appear <br /> <br />
 				<ul>
-				<div id="showallvms">
+				$!{error}
 				
+				<a href="$baseUrl/customer/controlpanel/monitor?vmid=$vmID">$!{vmName} $!{vmID}</a>
+				<br />
 				
-				</div>
-			
-					<!-- #foreach( $vm in $vmBeanArray )
+				#foreach( $vm in $vmBeanArray )
 					<li><a href="$baseUrl/customer/controlpanel?request=getvm&vmid=$vm.getVmID()">$vm.getVMName()</a></li>
 					<br />
-					 #end -->
+					 #end
 					 
-					<!--  #if($vmBean)
-						VMNaam is: <a href="$baseUrl/customer/controlpanel?request=monitor&vmid=$vmBean.getVmID()">$vmBean.getVMName()</a> en VM ID = $vmBean.getVmID()
-					#end -->
+					
 					 
 				</ul>
 				<br class="clear" />

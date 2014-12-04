@@ -14,7 +14,7 @@ public class VMBean {
 	/**
 	 * Setting the variables needed
 	 */
-	private int vmID;
+	private long vmID;
 	private String vmName;
 	private String vmCPU;
 	private String vmMemory;
@@ -132,11 +132,11 @@ public class VMBean {
 		valid = newValid;
 	}
 
-	public int getVmID() {
+	public long getVmID() {
 		return vmID;
 	}
 
-	public void setVmID(int vmID) {
+	public void setVmID(long vmID) {
 		this.vmID = vmID;
 	}
 
