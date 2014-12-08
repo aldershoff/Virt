@@ -57,45 +57,44 @@
 								<p>Please select the required server specifications below</p>
 							</div>
 							<div>
-								<select>
-									<option value="vmOS">Windows server 2008</option>
-								</select> <br> <br> <select name ="RAM">
-									<option value="vmRAM" name="vmRAM">Select Ram</option>
-									<option value="512mbmem">512 mb</option>
-									<option value="1gbmem">1 gb</option>
-									<option value="2gbmem">2 gb</option>
-									<option value="4gbmem">4 gb</option>
-									<option value="8gbmem">8 gb</option>
-									<option value="16gbmem">16 gb</option>
-								</select> <br> <br> <select name="CPU">
+								<select name="VMOS">
+									<option value="windows">Windows</option>
+							</select> <br> <br> <select name ="VMRAM">
+									<option value="vmRAM">Select Ram</option>
+									<option value="512MB">512 mb</option>
+									<option value="1GB">1 gb</option>
+									<option value="2GB">2 gb</option>
+									<option value="4GB">4 gb</option>
+									<option value="8GB">8 gb</option>
+									<option value="16GB">16 gb</option>
+								</select> <br> <br> <select name="VMCPU">
 									<option value="vmCPU">Select CPU cores</option>
 									<option value="1core">1 core</option>
 									<option value="2core">2 core</option>
 									<option value="3core">4 core</option>
 									<option value="4core">8 core</option>
 									<option value="5core">16 core</option>
-								</select> <br> <br> <select name="HDD">
+								</select> <br> <br> <select name="VMHDD">
 									<option value="vmHDD">Select Diskspace</option>
-									<option value="40gbstor">40 gb</option>
-									<option value="80gbstor">80 gb</option>
-									<option value="160gbstor">160 gb</option>
-								</select> <br> <br> <select name="SLA">
+									<option value="40GB">40 gb</option>
+									<option value="80GB">80 gb</option>
+									<option value="160GB">160 gb</option>
+								</select> <br> <br> <select name="VMSLA">
 									<option value="vmSLA">Select Service level</option>
-									<option value="goldsla">Gold</option>
-									<option value="silversla">Silver</option>
-									<option value="bronzesla">Bronze</option>
+									<option value="gold">Gold</option>
+									<option value="silver">Silver</option>
+									<option value="bronze">Bronze</option>
 								</select> <br> <br>
-
 							</div>
 							<div>
-								<input type="hidden" value="buy" name="request" />
-								<input type="checkbox" id="Iaccept" /> <label for="Iaccept">I
-									accept the <a href="pdf/ToA_Plaintech.pdf">terms of
+								<input name="accept" type="checkbox" id="accept" /> <label for="Iaccept">I
+									accept the <a href="$baseUrl/pdf/ToA_Plaintech.pdf">terms of
 										agreement</a>
 								</label> <br> <br>
 								<p>Please make sure the correct server specifications are
 									selected before submitting</p>
 							</div>
+							$!{error} $!{success}
 							<div>
 								<input type="submit" value="submit" />
 							</div>

@@ -2,6 +2,7 @@ package businesslogic;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.json.Json;
 import javax.json.stream.JsonGenerator;
@@ -14,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.RandomStringUtils;
+
+import jsonserializers.BuyCustomerVMSerialiser;
 import jsonserializers.CustomerSerialiser;
 import jsonserializers.GetUserVMSerialiser;
 import security.PasswordService;
@@ -276,7 +280,7 @@ public class OperationalBackEnd extends HttpServlet {
 	}
 
 	/**
-	 * Must finish this method, does not work yet!!
+	 * Method for adding new VM for user
 	 * 
 	 * @param request
 	 * @param response
@@ -284,11 +288,70 @@ public class OperationalBackEnd extends HttpServlet {
 	 */
 	private void buyUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
+		
+		/**
+		 * Getting all parameters needed for creating VM
+		 */
+		String userID = request.getParameter("userID");
+		
+		// Make new DAO
 		BuyDAO buyDAO = new BuyDAO();
 
+		/**
+		 * Make new bean and insert DAO with all parameters
+		 */
 		VMBean vmBean = new VMBean();
-		// vmBean = buyDAO.addVM(vmBean, custBean.getUserID());
+		
+		/**
+		 * Setting all parameters from user inside the vmBean
+		 */
+		vmBean.setVMOS(request.getParameter("VMOS"));
+		vmBean.setVMMemory(request.getParameter("VMRAM"));
+		vmBean.setVMCPU(request.getParameter("VMCPU"));
+		vmBean.setVMDiskSpace(request.getParameter("VMHDD"));
+		vmBean.setVMSLA(request.getParameter("VMSLA"));
+		
+		switch(vmBean.getVMOS()){
+		case "debian":
+			vmBean.setVMName("Debian VM - " + (RandomStringUtils.random(8, true, true)));
+			break;
+		case "windows":
+			vmBean.setVMName("Windows VM - " + (RandomStringUtils.random(8, true, true)));
+			break;
+		case "slackware":
+			vmBean.setVMName("SlackWare VM - " + (RandomStringUtils.random(8, true, true)));
+			break;
+			
+		}
+		
+		// Set the bean and fill it
+		vmBean = buyDAO.addVM(vmBean, userID);
 
+		Gson gson = null;
+		
+		// If bean is not null, a database connection has been initiated
+				if (vmBean != null) {
+
+					/**
+					 * If the VM is succesfully added to the database, the user will get a response back
+					 */
+
+					if (vmBean.isValid()) {
+						
+						try {
+							final GsonBuilder gsonBuilder = new GsonBuilder();
+							gsonBuilder.registerTypeAdapter(VMBean.class,
+									new BuyCustomerVMSerialiser());
+							gson = gsonBuilder.create();
+
+						} finally {
+
+							String json = gson.toJson(vmBean);
+							response.setContentType("application/json");
+							response.getWriter().write(json.toString());
+						}
+					}
+				}
 	}
 
 	/**
@@ -388,13 +451,8 @@ public class OperationalBackEnd extends HttpServlet {
 		/**
 		 * Setting all the requests into the bean for processing
 		 */
-		custBean.setDateOfBirth(request.getParameter("dateofbirth"));
-		custBean.setFirstName(request.getParameter("firstname"));
-		custBean.setLastName(request.getParameter("lastname"));
 		custBean.setEmail(request.getParameter("email"));
-		custBean.setPhone(request.getParameter("phone"));
-		custBean.setAddress(request.getParameter("address"));
-		custBean.setZipCode(request.getParameter("zipcode"));
+
 
 		// Making new login Data Access Object
 		UserDAO checkLog = new UserDAO();

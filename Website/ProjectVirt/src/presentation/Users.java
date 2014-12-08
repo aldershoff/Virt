@@ -31,6 +31,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
+import security.PasswordService;
 import beans.VMBean;
 
 @WebServlet(name = "/Users", loadOnStartup = 1)
@@ -95,7 +96,7 @@ public class Users extends HttpServlet {
 			 * browse through this method
 			 */
 			if (!userPath.startsWith("/customer")) {
-				setCustomerUrlTemplates(userPath);
+				setGETCustomerUrlTemplates(userPath);
 			}
 
 			/**
@@ -109,7 +110,7 @@ public class Users extends HttpServlet {
 				HttpSession session = request.getSession(false);
 
 				// Go to the authenticatedUrlTemplates
-				setCustomerAuthenticatedUrlTemplates(userPath, session,
+				setGETCustomerAuthenticatedUrlTemplates(userPath, session,
 						response, request);
 			}
 
@@ -137,26 +138,34 @@ public class Users extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-
-			// Setting the servletpath and sending it to the Switch method
-			String userPath = request.getServletPath();
-
 			// Setting the writer
 			out = response.getWriter();
 
+			// Setting the servletpath and sending it to the Switch method
+			String userPath = request.getRequestURI().substring(
+					request.getContextPath().length());
+
 			/**
-			 * When doing a post, the switch will look for the right one to
-			 * choose
+			 * If the userpath does not start with customer, the user will
+			 * browse through this method
 			 */
-			switch (userPath) {
-			case "/login":
-				postSubmitForm(request, response);
-				break;
-			case "/register":
-				postRegisterForm(request, response);
-				break;
-			default:
-				break;
+			if (!userPath.startsWith("/customer")) {
+				setPOSTCustomerUrls(userPath, response, request);
+			}
+
+			/**
+			 * If the userpath starts with customer, an authenticated url has
+			 * been requested. In this case, the filter will be activated and
+			 * will check for a legit session. If the session is legit, the
+			 * session will be made
+			 */
+			else {
+				// Making session
+				HttpSession session = request.getSession(false);
+
+				// Go to the authenticatedUrlTemplates
+				setPOSTCustomerAuthenticatedUrls(userPath, session, response,
+						request);
 			}
 
 		} finally {
@@ -172,7 +181,7 @@ public class Users extends HttpServlet {
 	 * 
 	 * @param userPath
 	 */
-	private void setCustomerUrlTemplates(String userPath) {
+	private void setGETCustomerUrlTemplates(String userPath) {
 		switch (userPath) {
 		case "/home":
 			template = Velocity.getTemplate("Velocity/index.html");
@@ -213,7 +222,7 @@ public class Users extends HttpServlet {
 	 * @throws RuntimeException
 	 * @throws ParseException
 	 */
-	private void setCustomerAuthenticatedUrlTemplates(String userPath,
+	private void setGETCustomerAuthenticatedUrlTemplates(String userPath,
 			HttpSession session, HttpServletResponse response,
 			HttpServletRequest request) throws IllegalStateException,
 			UnsupportedEncodingException, IOException, RuntimeException,
@@ -289,13 +298,77 @@ public class Users extends HttpServlet {
 				break;
 			case "/customer/marketplace/slackware":
 				template = Velocity
-						.getTemplate("Velocity/customers/windows.html");
+						.getTemplate("Velocity/customers/slackware.html");
 				break;
-			
+
 			case "/customer/logout":
 				processLogout(request, response);
 				break;
+			}
 		}
+	}
+
+	/**
+	 * Non privileged POSTS will be processed here
+	 * @param userPath
+	 * @param response
+	 * @param request
+	 * @throws IOException
+	 */
+	private void setPOSTCustomerUrls(String userPath,
+			HttpServletResponse response, HttpServletRequest request)
+			throws IOException {
+
+		/**
+		 * Switch for determing the users path
+		 */
+		switch (userPath) {
+		case "/login":
+			postSubmitForm(request, response);
+			break;
+		case "/register":
+			postRegisterForm(request, response);
+			break;
+		}
+
+	}
+
+	/**
+	 * Privileged POST requests will be processed here
+	 * 
+	 * @param userPath
+	 * @param session
+	 * @param response
+	 * @param request
+	 */
+	private void setPOSTCustomerAuthenticatedUrls(String userPath,
+			HttpSession session, HttpServletResponse response,
+			HttpServletRequest request) {
+
+		/**
+		 * Getting the session username and userID
+		 */
+		String sessionUsername = (String) session.getAttribute("username");
+		long sessionUserID = (long) session.getAttribute("userID");
+
+		/**
+		 * Making sure that the user has a valid session. If these variables are
+		 * null, the user has not logged in properly
+		 */
+		if (sessionUsername != null && sessionUserID != 0) {
+
+			// putting the username and ID in the context
+			vsl_Context.put("name", sessionUsername);
+			vsl_Context.put("id", sessionUserID);
+
+			/**
+			 * Switch for determing the users path
+			 */
+			switch (userPath) {
+			case "/customer/marketplace/buy":
+				postBuyCustomerVM(request, response, sessionUserID);
+				break;
+			}
 		}
 	}
 
@@ -349,7 +422,7 @@ public class Users extends HttpServlet {
 				for (int i = 0; i < listdata.size(); i++) {
 					VMBean bean = new VMBean();
 					bean.setVMName((String) listdata.get(i).get("vmName"));
-					bean.setVmID((long) listdata.get(i).get("vmID"));
+					bean.setVMID((long) listdata.get(i).get("vmID"));
 					vmBeanArray.add(bean);
 				}
 
@@ -395,9 +468,12 @@ public class Users extends HttpServlet {
 	private void getUserVMs(HttpServletRequest request,
 			HttpServletResponse response, long sessionUserID) {
 
+		// Get VMID from parameter
+		String ParameterVMID = request.getParameter("vmid");
+
 		// Setting the URL for getting data from the back-end
 		String getSpecifiedVMUrl = "http://localhost:8080/BackEnd/customer/controlpanel/getvms?request=getvm&vmid="
-				+ request.getParameter("vmid") + "&userID=" + sessionUserID;
+				+ ParameterVMID + "&userID=" + sessionUserID;
 
 		// Setting variables used later
 		long vmID = 0;
@@ -449,14 +525,14 @@ public class Users extends HttpServlet {
 		}
 	}
 
-	
 	/**
 	 * Still working on this one...
+	 * 
 	 * @param request
 	 * @param response
 	 */
 	private void postRegisterForm(HttpServletRequest request,
-			HttpServletResponse response){
+			HttpServletResponse response) {
 		if (request.getParameter("user") == ""
 				|| request.getParameter("password") == ""
 				|| request.getParameter("firstname") == ""
@@ -464,10 +540,9 @@ public class Users extends HttpServlet {
 				|| request.getParameter("user") == "") {
 			vsl_Context.put("error", "Not all fields are filled!");
 
-
 		}
 
-		else{
+		else {
 			/**
 			 * Set postparameters to give with the request
 			 */
@@ -490,23 +565,21 @@ public class Users extends HttpServlet {
 					.getParameter("address")));
 			postParameters.add(new BasicNameValuePair("zipcode", request
 					.getParameter("zipcode")));
-			
-		
+
 			JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
 					"http://localhost:8080/BackEnd/register/processregister",
 					postParameters);
-			
 
 			/**
 			 * Try to parse the JSON Object, given by the server
 			 */
 			try {
-				
+
 				/**
 				 * If json is null, connection could not be made
 				 */
 				if (json != null) {
-					
+
 					/**
 					 * Get the JSON variables
 					 */
@@ -515,7 +588,8 @@ public class Users extends HttpServlet {
 					boolean userIsValid = (boolean) json.get("valid");
 
 					/**
-					 * If the user is valid, a session will be made and the session variables will be set
+					 * If the user is valid, a session will be made and the
+					 * session variables will be set
 					 */
 					if (userIsValid) {
 						HttpSession session = request.getSession();
@@ -528,7 +602,8 @@ public class Users extends HttpServlet {
 						vsl_Context.put("error", "Wrong username or password");
 					}
 				} else {
-					vsl_Context.put("error", "Connection with server could not be made..");
+					vsl_Context.put("error",
+							"Connection with server could not be made..");
 
 				}
 			} catch (IOException e) {
@@ -539,10 +614,12 @@ public class Users extends HttpServlet {
 			}
 		}
 	}
-	
+
 	/**
-	 * Method for posting the submit form to the back-end server. It will check and give a valid JSON, with the user, back.
-	 * If it will not give any JSON content back, the user is invalid
+	 * Method for posting the submit form to the back-end server. It will check
+	 * and give a valid JSON, with the user, back. If it will not give any JSON
+	 * content back, the user is invalid
+	 * 
 	 * @param request
 	 * @param response
 	 * @throws IOException
@@ -575,6 +652,7 @@ public class Users extends HttpServlet {
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			postParameters.add(new BasicNameValuePair("user", request
 					.getParameter("user")));
+
 			postParameters.add(new BasicNameValuePair("password", request
 					.getParameter("password")));
 
@@ -584,17 +662,17 @@ public class Users extends HttpServlet {
 			JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
 					"http://localhost:8080/BackEnd/login/processlogin",
 					postParameters);
-			
+
 			/**
 			 * Try to parse the JSON Object, given by the server
 			 */
 			try {
-				
+
 				/**
 				 * If json is null, connection could not be made
 				 */
 				if (json != null) {
-					
+
 					/**
 					 * Get the JSON variables
 					 */
@@ -603,7 +681,8 @@ public class Users extends HttpServlet {
 					boolean userIsValid = (boolean) json.get("valid");
 
 					/**
-					 * If the user is valid, a session will be made and the session variables will be set
+					 * If the user is valid, a session will be made and the
+					 * session variables will be set
 					 */
 					if (userIsValid) {
 						HttpSession session = request.getSession();
@@ -616,7 +695,8 @@ public class Users extends HttpServlet {
 						vsl_Context.put("error", "Wrong username or password");
 					}
 				} else {
-					vsl_Context.put("error", "Connection with server could not be made..");
+					vsl_Context.put("error",
+							"Connection with server could not be made..");
 
 				}
 			} finally {
@@ -624,6 +704,108 @@ public class Users extends HttpServlet {
 			}
 
 		}
+	}
+
+	/**
+	 * When user has requested a new VM, the process will begin here
+	 * @param request
+	 * @param response
+	 * @param sessionUserID
+	 */
+	private void postBuyCustomerVM(HttpServletRequest request,
+			HttpServletResponse response, long sessionUserID) {
+		/**
+		 * Checking if the fields were not left empty
+		 */
+		if (request.getParameter("VMRAM").equals("vmRAM") 
+				|| request.getParameter("VMCPU").equals("vmCPU") ||
+				request.getParameter("VMHDD").equals("vmHDD") ||
+				request.getParameter("VMSLA").equals("vmSLA")){
+			vsl_Context.put("error", "Please provide input in each field");
+		}
+		else if(request.getParameter("accept") == null){
+			vsl_Context.put("error", "Please accept terms of condition");
+		}
+		else {
+
+				/**
+				 * Set postparameters to give with the request
+				 */
+				ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+				postParameters.add(new BasicNameValuePair("VMOS", request
+						.getParameter("VMOS")));
+				postParameters.add(new BasicNameValuePair("VMRAM", request
+						.getParameter("VMRAM")));
+				postParameters.add(new BasicNameValuePair("VMCPU", request
+						.getParameter("VMCPU")));
+				postParameters.add(new BasicNameValuePair("VMHDD", request
+						.getParameter("VMHDD")));
+				postParameters.add(new BasicNameValuePair("VMSLA", request
+						.getParameter("VMSLA")));
+
+				/**
+				 * Set the url for JSON + the postparameters
+				 */
+				JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
+						"http://localhost:8080/BackEnd/customer/marketplace/buy/processbuy?userID="
+								+ sessionUserID, postParameters);
+
+				/**
+				 * Try to parse the JSON Object, given by the server
+				 */
+				try {
+
+					/**
+					 * If json is null, connection could not be made
+					 */
+					if (json != null) {
+
+						/**
+						 * Get the JSON variables
+						 */
+						boolean vmIsValid = (boolean) json.get("valid");
+
+						/**
+						 * If the user is valid, a session will be made and the
+						 * session variables will be set
+						 */
+						if (vmIsValid) {
+							vsl_Context
+									.put("success",
+											"Succesfully added VM. It will take a minute or 30 before the VM is monitorable!");
+						} else {
+							vsl_Context.put("error",
+									"Wrong username or password");
+						}
+					} else {
+						vsl_Context.put("error",
+								"Connection with server could not be made..");
+
+					}
+				} finally {
+					
+					/**
+					 * Check which template to load again
+					 */
+					switch(request.getParameter("VMOS")){
+					case "debian":
+						template = Velocity
+						.getTemplate("Velocity/customers/debian.html");
+						break;
+					case "windows":
+						template = Velocity
+						.getTemplate("Velocity/customers/windows.html");
+						break;
+					case "slackware":
+						template = Velocity
+						.getTemplate("Velocity/customers/slackware.html");
+						break;
+					}
+					
+				}
+
+			}
+		
 	}
 
 	/**
@@ -637,47 +819,44 @@ public class Users extends HttpServlet {
 	private void processLogout(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 
-
-		 HttpSession session = request.getSession();
-		   if (session!=null) {
-		      session.invalidate();
-		   }
-			
-			// Setting cookie
-			Cookie loginCookie = null;
-
-			// Getting cookie
-			Cookie[] cookies = request.getCookies();
-
-			/**
-			 * If not null, set logincookie to cookie for destroying it
-			 */
-			if (cookies != null) {
-				for (Cookie cookie : cookies) {
-					if (cookie.getName().equals("user")) {
-						loginCookie = cookie;
-						break;
-					}
-				}
-			}
-
-			/**
-			 * Setting the age to 0 and add cookie cookie to the response again.
-			 * The cookie is now destroyed
-			 */
-			if (loginCookie != null) {
-				loginCookie.setMaxAge(0);
-				response.addCookie(loginCookie);
-			}
-
-			// Redirect to home page
-			response.sendRedirect(request.getRequestURI() + "/home");
-
-			return;
+		HttpSession session = request.getSession();
+		if (session != null) {
+			session.invalidate();
 		}
 
-	
-	
+		// Setting cookie
+		Cookie loginCookie = null;
+
+		// Getting cookie
+		Cookie[] cookies = request.getCookies();
+
+		/**
+		 * If not null, set logincookie to cookie for destroying it
+		 */
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("user")) {
+					loginCookie = cookie;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Setting the age to 0 and add cookie cookie to the response again. The
+		 * cookie is now destroyed
+		 */
+		if (loginCookie != null) {
+			loginCookie.setMaxAge(0);
+			response.addCookie(loginCookie);
+		}
+
+		// Redirect to home page
+		response.sendRedirect(request.getRequestURI() + "/home");
+
+		return;
+	}
+
 	/**
 	 * Delete all the velocity objects, so objects can be called again when
 	 * reloading the Users Servlet

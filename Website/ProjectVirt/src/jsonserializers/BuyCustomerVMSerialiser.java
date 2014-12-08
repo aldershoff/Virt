@@ -10,28 +10,24 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 /**
- * Class for sending appropiate data for the VM's of the User
+ * Serialiser for adding the data needed to send from the Bean If this is not
+ * done this way, all the information, maybe not needed information, would be
+ * send back with JSON
  * 
  * @author KjellZijlemaker
  *
  */
-public class GetUserVMSerialiser implements JsonSerializer<VMBean> {
+public class BuyCustomerVMSerialiser implements JsonSerializer<VMBean> {
 
 	@Override
 	public JsonElement serialize(VMBean vmBean, Type typeOfSrc,
 			JsonSerializationContext context) {
 
 		/**
-		 * Set the properties and the VMBean members that will be needed
+		 * Set the properties and the customer bean members that will be needed
 		 * to serialise to JSON and return it
 		 */
 		final JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("vmID", vmBean.getVMID());
-		jsonObject.addProperty("vmName", vmBean.getVMName());
-		jsonObject.addProperty("vmCPU", vmBean.getVMCPU());
-		jsonObject.addProperty("vmMemory", vmBean.getVMMemory());
-		jsonObject.addProperty("vmDiskSpace", vmBean.getVMDiskSpace());
-		jsonObject.addProperty("vmIP", vmBean.getVMIP());
 		jsonObject.addProperty("valid", vmBean.isValid());
 
 		return jsonObject;

@@ -50,52 +50,51 @@
 		<div id="container">
 			<div class="homepage">
 				<section class="lgncnt">
-					<form>
+					<form action="$baseUrl/customer/marketplace/buy" method="post">
 						<div class="login">
 							<div>
 								<i></i> <span>Server specifications</span>
 								<p>Please select the required server specifications below</p>
 							</div>
 							<div>
-								<select>
-									<option value="3">Slackware</option>
-								</select> <br> <br> <select>
+								<select name="VMOS">
+									<option value="slackware">SlackWare</option>
+							</select> <br> <br> <select name ="VMRAM">
 									<option value="vmRAM">Select Ram</option>
-									<option value="1">512 mb</option>
-									<option value="2">1 gb</option>
-									<option value="3">2 gb</option>
-									<option value="4">4 gb</option>
-									<option value="5">8 gb</option>
-									<option value="6">16 gb</option>
-								</select> <br> <br> <select>
+									<option value="512MB">512 mb</option>
+									<option value="1GB">1 gb</option>
+									<option value="2GB">2 gb</option>
+									<option value="4GB">4 gb</option>
+									<option value="8GB">8 gb</option>
+									<option value="16GB">16 gb</option>
+								</select> <br> <br> <select name="VMCPU">
 									<option value="vmCPU">Select CPU cores</option>
-									<option value="1">1 core</option>
-									<option value="2">2 core</option>
-									<option value="3">4 core</option>
-									<option value="4">8 core</option>
-									<option value="5">16 core</option>
-								</select> <br> <br> <select>
+									<option value="1core">1 core</option>
+									<option value="2core">2 core</option>
+									<option value="3core">4 core</option>
+									<option value="4core">8 core</option>
+									<option value="5core">16 core</option>
+								</select> <br> <br> <select name="VMHDD">
 									<option value="vmHDD">Select Diskspace</option>
-									<option value="1">10 gb</option>
-									<option value="2">20 gb</option>
-									<option value="3">40 gb</option>
-									<option value="4">80 gb</option>
-									<option value="5">160 gb</option>
-								</select> <br> <br> <select>
+									<option value="40GB">40 gb</option>
+									<option value="80GB">80 gb</option>
+									<option value="160GB">160 gb</option>
+								</select> <br> <br> <select name="VMSLA">
 									<option value="vmSLA">Select Service level</option>
-									<option value="1">Gold</option>
-									<option value="2">Silver</option>
-									<option value="3">Bronze</option>
+									<option value="gold">Gold</option>
+									<option value="silver">Silver</option>
+									<option value="bronze">Bronze</option>
 								</select> <br> <br>
 							</div>
 							<div>
-								<input type="checkbox" id="Iaccept" /> <label for="Iaccept">I
-									accept the <a href="pdf/ToA_Plaintech.pdf">terms of
+								<input name="accept" type="checkbox" id="accept" /> <label for="Iaccept">I
+									accept the <a href="$baseUrl/pdf/ToA_Plaintech.pdf">terms of
 										agreement</a>
 								</label> <br> <br>
 								<p>Please make sure the correct server specifications are
 									selected before submitting</p>
 							</div>
+							$!{error} $!{success}
 							<div>
 								<input type="submit" value="submit" />
 							</div>

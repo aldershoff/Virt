@@ -15,11 +15,13 @@ public class VMBean {
 	 * Setting the variables needed
 	 */
 	private long vmID;
+	private String vmOS;
 	private String vmName;
 	private String vmCPU;
 	private String vmMemory;
 	private String vmDiskSpace;
 	private String vmIP;
+	private String vmSLA;
 	public ArrayList<VMBean> VMs = new ArrayList<VMBean>();
 	public boolean valid;
 
@@ -132,12 +134,28 @@ public class VMBean {
 		valid = newValid;
 	}
 
-	public long getVmID() {
+	public long getVMID() {
 		return vmID;
 	}
 
-	public void setVmID(long vmID) {
+	public void setVMID(long vmID) {
 		this.vmID = vmID;
+	}
+
+	public String getVMOS() {
+		return vmOS;
+	}
+
+	public void setVMOS(String vmOS) {
+		this.vmOS = vmOS;
+	}
+
+	public String getVMSLA() {
+		return vmSLA;
+	}
+
+	public void setVMSLA(String vmSLA) {
+		this.vmSLA = vmSLA;
 	}
 
 	

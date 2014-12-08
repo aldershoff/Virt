@@ -29,18 +29,17 @@ public class BuyDAO {
 
 	/**
 	 * Executes the login query, but will also add information to the Bean
-	 * 
 	 * @return
 	 */
-	public VMBean addVM(VMBean vmBean,int customerID) {
+	public VMBean addVM(VMBean vmBean, String userID) {
 
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into vm(vmName, vmCpu, vmMemory, vmDiskSpace, vmIP, userid)"
-				+ "values(?,?,?,?,?,?)";
+		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, SLA, monthlyPrice, user_userID)"
+				+ "values(?,?,?,?,?,?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -55,10 +54,14 @@ public class BuyDAO {
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, vmBean.getVMName());
 				pstm.setString(2, vmBean.getVMCPU());
-				pstm.setString(3, vmBean.getVMMemory());
+				pstm.setString(3, vmBean.getVMOS());
 				pstm.setString(4, vmBean.getVMDiskSpace());
-				pstm.setString(5, vmBean.getVMIP());
-				pstm.setInt(6, customerID);
+				pstm.setString(5, vmBean.getVMMemory());
+				pstm.setString(6, vmBean.getVMIP());
+				pstm.setString(7, vmBean.getVMSLA());
+				pstm.setString(8, "8");
+				pstm.setString(9, userID);
+				
 				// Execute the query
 				rs = pstm.executeUpdate();
 

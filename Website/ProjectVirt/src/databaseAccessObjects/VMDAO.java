@@ -23,7 +23,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public ArrayList<VMBean> getVMs(String i) {
+	public ArrayList<VMBean> getVMs(String userID) {
 
 		ArrayList<VMBean> VMBeanArray = new ArrayList<VMBean>();
 		
@@ -32,7 +32,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String SELECT_ALL_VM = "SELECT vmName, vmid FROM vm WHERE userid = " + i;
+		final String SELECT_ALL_VM = "SELECT VMName, VMID FROM VM WHERE user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -43,7 +43,8 @@ public class VMDAO {
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(SELECT_ALL_VM);
 
-
+				pstm.setString(1, userID);
+				
 				// Execute the query
 				rs = pstm.executeQuery();
 
@@ -58,7 +59,7 @@ public class VMDAO {
 					// Setting the information inside the Bean, from the
 					// database information
 					bean.setVMName(rs.getString("vmName"));
-					bean.setVmID(rs.getInt("vmid"));
+					bean.setVMID(rs.getInt("vmid"));
 					bean.setValid(true);
 					VMBeanArray.add(bean);
 					
@@ -110,7 +111,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT vmName, vmid FROM vm WHERE userid = " + userID + " AND vmid = " + vmID;
+		final String GET_SPECIFIC_VM = "SELECT VMName, VMID FROM VM WHERE user_UserID = ? AND vmid = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -119,8 +120,11 @@ public class VMDAO {
 
 			try {				
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(VERIFY_USER);
-
+				PreparedStatement pstm = conn.prepareStatement(GET_SPECIFIC_VM);
+				
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, userID);
+				pstm.setString(2, vmID);
 
 				// Execute the query
 				rs = pstm.executeQuery();
@@ -134,8 +138,8 @@ public class VMDAO {
 					
 					// Setting the information inside the Bean, from the
 					// database information
-					bean.setVMName(rs.getString("vmName"));
-					bean.setVmID(rs.getInt("vmid"));
+					bean.setVMName(rs.getString("VMName"));
+					bean.setVMID(rs.getInt("VMID"));
 					bean.setValid(true);
 					
 				}

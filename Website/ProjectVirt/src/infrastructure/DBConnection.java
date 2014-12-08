@@ -31,7 +31,7 @@ public class DBConnection {
 
 			// Setting server and database names
 			String serverName = "localhost";
-			String mydatabase = "projectVirt";
+			String mydatabase = "virt";
 
 			// Setting the url with all the above variables
 			String url = "jdbc:mysql://" + serverName + "/" + mydatabase; // a
@@ -39,7 +39,7 @@ public class DBConnection {
 			// url
 			// Setting login and password for database
 			String sqlusername = "root";
-			String sqlpassword = "";
+			String sqlpassword = "VirtTeam1DBP@55W0rdH@xx0r5";
 
 			// Initiazing the connection with the drivermanager for making a
 			// real connection

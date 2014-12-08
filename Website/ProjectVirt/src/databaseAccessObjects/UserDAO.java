@@ -41,7 +41,7 @@ public class UserDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT username, password, userid FROM users WHERE username = ?";
+		final String VERIFY_USER = "SELECT UserName, UserPassword, UserID FROM users WHERE UserName = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -67,9 +67,9 @@ public class UserDAO {
 
 					// Setting the information inside the Bean, from the
 					// database information
-					bean.setUserName(rs.getString("username"));
-					bean.setPassword(rs.getString("password"));
-					bean.setUserID(rs.getInt("userid"));
+					bean.setUserName(rs.getString("UserName"));
+					bean.setPassword(rs.getString("UserPassword"));
+					bean.setUserID(rs.getInt("UserID"));
 
 					/**
 					 * Check if username and password is correct
@@ -131,8 +131,8 @@ public class UserDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String VERIFY_USER = "insert into users(username, password, dateofbirth, firstname, lastname, email, phone, address, zipcode)"
-				+ "values(?,?,?,?,?,?,?,?,?)";
+		final String VERIFY_USER = "insert into users(UserName, UserPassword, UserType, UserEmail)"
+				+ "values(?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -147,13 +147,8 @@ public class UserDAO {
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, bean.getUsername());
 				pstm.setString(2, bean.getPassword());
-				pstm.setString(3, bean.getDateOfBirth());
-				pstm.setString(4, bean.getFirstName());
-				pstm.setString(5, bean.getLastName());
-				pstm.setString(6, bean.getEmail());
-				pstm.setString(7, bean.getPhone());
-				pstm.setString(8, bean.getAddress());
-				pstm.setString(9, bean.getZipCode());
+				pstm.setString(3, "user");
+				pstm.setString(4, bean.getEmail());
 
 				// Execute the query
 				rs = pstm.executeUpdate();
