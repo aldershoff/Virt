@@ -55,7 +55,7 @@
 								</div>
 								<div>
 									<input type="text" name="user" id="username"
-										placeholder="username here"  value ="$!{formUsername}"/> 
+										placeholder="username here"  value ="$!{username}"/> 
 										<input type="password" name="password" id="password" placeholder="password here" />
 								</div>
 								<div>
@@ -64,13 +64,20 @@
 									<li><a href="home"><b>forgot password ?</b></a></li>
 								</div>
 								<div>
-									<input type="hidden" value="login" name="request" />
 									<input id="submit" name="submit" type="submit" value="login" />
 								</div>
+								
+								  #if($pin)
+      									<input type="text" name="pin" id="pin"
+										placeholder="pin here"/> 
+										<input type="hidden" value="login" name="pinsubmit" />
+										<input id="pinsubmit" name="pinsubmit" type="submit" />
+  									#end
 								$!{error}
 							</div>
 						</form>
 					</section>
+		
 				</div>
 			</div>
 		</div>

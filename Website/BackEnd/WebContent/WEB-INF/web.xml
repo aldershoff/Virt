@@ -34,4 +34,13 @@
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/customer/marketplace/buy/processbuy</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/insertUserMobileID</url-pattern>
+	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/getUserMobileID</url-pattern>
+	</servlet-mapping>
+	
 </web-app>

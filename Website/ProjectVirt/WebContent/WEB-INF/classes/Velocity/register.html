@@ -52,24 +52,23 @@
 									<p>Please fill in your personal details below</p>
 								</div>
 								<div>
-									<input type="text" placeholder="username" name="user" /> <input
+									<input type="text" placeholder="username" name="user" value ="$!{username}"/> <input
 										type="password" placeholder="password" name="password" /> <input
-										type="text" placeholder="Date of birth" name="dateofbirth" />
-									<input type="text" placeholder="First name" name="firstname" />
-									<input type="text" placeholder="Last name" name="lastname" /> <input
-										type="text" placeholder="Email" name="email" /> <input
-										type="text" placeholder="Phone" name="phone" /> <input
-										type="text" placeholder="Address" name="address" /> <input
-										type="text" placeholder="Zip code" name="zipcode" />
-										<input type="hidden" value="register" name="request" />
+										type="text" placeholder="Date of birth" name="dateofbirth" value ="$!{dateofbirth}"/>
+									<input type="text" placeholder="First name" name="firstname" value ="$!{firstname}"/>
+									<input type="text" placeholder="Last name" name="lastname" value ="$!{lastname}"/> <input
+										type="text" placeholder="Email" name="email" value ="$!{email}"/> <input
+										type="text" placeholder="Phone" name="phone" value ="$!{phone}"/> <input
+										type="text" placeholder="Address" name="address" value ="$!{address}"/> <input
+										type="text" placeholder="Zip code" name="zipcode" value ="$!{zipcode}"/>
 								</div>
 								<div>
-									<input type="checkbox" id="Iaccept" name="Iaccept" /> <label
+									<input type="checkbox" id="accept" name="accept" /> <label
 										for="Iaccept">I accept the <a href="home">terms of
 											agreement</a></label> <br> <br>
 									<p>Please make sure all entered details are correct before
 										registering</p>
-									$!{error}
+									$!{error} $!{success}
 								</div>
 								<div>
 									<input type="submit" value="register" />

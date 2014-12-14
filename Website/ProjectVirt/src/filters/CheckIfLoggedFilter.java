@@ -19,16 +19,17 @@ import javax.servlet.http.HttpSession;
 @WebFilter("/CheckIfLoggedFilter")
 public class CheckIfLoggedFilter implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public CheckIfLoggedFilter() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public CheckIfLoggedFilter() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
+	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
 	}
@@ -36,28 +37,32 @@ public class CheckIfLoggedFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		 
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
+
 		HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
-		
+		HttpServletResponse res = (HttpServletResponse) response;
+
 		// Getting the session
-        HttpSession session = req.getSession(false);
-         
-        /**
-         * If the session has the userID (set inside the user servlet), a redirection to the home page will taken place
-         */
-        if(session.getAttribute("userID") != null){
-            res.sendRedirect("/ProjectVirt/customer/home");
-        }else{
-            // Let the request pass
-            chain.doFilter(request, response);
-        }
+		HttpSession session = req.getSession(false);
+
+		/**
+		 * If the session has the userID (set inside the user servlet), a
+		 * redirection to the home page will taken place
+		 */
+		if (session.getAttribute("userID") != null) {
+			res.sendRedirect("/ProjectVirt/customer/home");
+		} else {
+			// Let the request pass
+			chain.doFilter(request, response);
+		}
 	}
 
 	/**
 	 * @see Filter#init(FilterConfig)
 	 */
+	@Override
 	public void init(FilterConfig fConfig) throws ServletException {
 		// TODO Auto-generated method stub
 	}

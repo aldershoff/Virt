@@ -7,20 +7,10 @@ package infrastructure;
 import java.util.UUID;
 
 import org.libvirt.Connect;
-import org.libvirt.ConnectAuth;
-import org.libvirt.ConnectAuthDefault;
 import org.libvirt.Domain;
-import org.libvirt.DomainInfo;
 import org.libvirt.LibvirtException;
-import org.libvirt.NodeInfo;
 import org.libvirt.StoragePool;
 import org.libvirt.StorageVol;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.UUID;
-import java.io.File;
-import java.io.IOException;
 
 public class TestVM {
 

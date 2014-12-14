@@ -94,7 +94,7 @@
 		<url-pattern>/customer/logout</url-pattern>
 	</servlet-mapping>
 	
-	<filter>
+	 <filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>filters.AuthenticationFilter</filter-class>
 	</filter>

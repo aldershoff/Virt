@@ -2,12 +2,8 @@ package infrastructure;
 
 
 import org.libvirt.Connect;
-import org.libvirt.ConnectAuth;
-import org.libvirt.ConnectAuthDefault;
 import org.libvirt.Domain;
-import org.libvirt.DomainInfo;
 import org.libvirt.LibvirtException;
-import org.libvirt.NodeInfo;
 import org.libvirt.VcpuInfo;
 
 
