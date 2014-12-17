@@ -38,7 +38,7 @@ public class BuyDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, SLA, monthlyPrice, user_userID)"
+		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, VMSLA, VMMonthlyPrice, user_userID)"
 				+ "values(?,?,?,?,?,?,?,?,?)";
 
 		/**

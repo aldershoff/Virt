@@ -22,6 +22,8 @@ public class VMBean {
 	private String vmDiskSpace;
 	private String vmIP;
 	private String vmSLA;
+	private String vmState;
+	private String vmMonthlyPrice;
 	public ArrayList<VMBean> VMs = new ArrayList<VMBean>();
 	public boolean valid;
 
@@ -156,6 +158,22 @@ public class VMBean {
 
 	public void setVMSLA(String vmSLA) {
 		this.vmSLA = vmSLA;
+	}
+
+	public String getVMMonthlyPrice() {
+		return vmMonthlyPrice;
+	}
+
+	public void setVMMonthlyPrice(String vmMonthlyPrice) {
+		this.vmMonthlyPrice = vmMonthlyPrice;
+	}
+
+	public String getVMState() {
+		return vmState;
+	}
+
+	public void setVMState(String vmState) {
+		this.vmState = vmState;
 	}
 
 	

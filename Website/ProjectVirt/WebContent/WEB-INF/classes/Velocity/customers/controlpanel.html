@@ -36,11 +36,10 @@
 		<div id="featured_slide">
 			<div id="featured_content">
 				<ul>
-					<li><img src="$baseUrl/images/services_main.jpg" alt="" />
+					<li><img src="$baseUrl/images/monitor.jpeg" alt="" />
 						<div class="floater">
 							<br> <br>
-							<h1>Delivering the services you need, To get the results you
-								want!</h1></li>
+							<h1>Monitor your VM in just a second, with the revolutionary control panel!</h1></li>
 				</ul>
 			</div>
 		</div>
@@ -51,26 +50,82 @@
 	<div class="wrapper col3">
 		<div id="container">
 			<div class="homepage">
-				Here, the list of vms will
-				appear <br /> <br />
+				#if($vmBeanArray)
+			
+				<h2>Here, the list of vms will
+				appear </h2>
 				<ul>
-				$!{error}
-				
-				<a href="$baseUrl/customer/controlpanel/monitor?vmid=$vmID">$!{vmName} $!{vmID}</a>
-				<br />
-				
+		
 				#foreach( $vm in $vmBeanArray )
 					<li><a href="$baseUrl/customer/controlpanel?request=getvm&vmid=$vm.getVMID()">$vm.getVMName()</a></li>
 					<br />
 					 #end
-					 
-					
+				 
+				$!{error} $!{success}
 					 
 				</ul>
 				<br class="clear" />
 			</div>
+			#else
+			#if($!{error} || $!{success})
+			
+				$!{error} $!{success}
+			
+				#else
+					<h2>Basic server statistics
+					appear</h2> <p /> <p />
+					<table class="table table-hover">
+					  <thead>
+					<tr>
+					    <th>ID</th>
+					    <th>Hostname</th> 
+					    <th>Operating System</th>
+					    <th>CPU</th>
+					    <th>Total Ram</th>
+					    <th>Total Harddisk space</th>
+					    <th>Ip address</th>
+					    <th>SLA</th>
+					    <th>Monthly price</th>
+					    <th>Status</th>
+					  </tr>
+					    </thead>
+					       <tbody>
+					  <tr id="monitorVM">
+					    <td>$!{vm.getVMID()}</td>
+					    <td>$!{vm.getVMName()}</td> 
+					    <td>$!{vm.getVMOS()}</td> 
+					    <td>$!{vm.getVMCPU()}</td>
+					    <td>$!{vm.getVMMemory()}</td>
+					    <td>$!{vm.getVMDiskSpace()}</td>
+					    <td>$!{vm.getVMIP()}</td>
+					    <td>$!{vm.getVMSLA()}</td>
+					    <td>$!{vm.getVMMonthlyPrice()}</td>
+					    <td>$!{vm.getVMState()}</td>
+					    
+					  </tr>
+						   </tbody>
+					</table>	
+					
+					<form action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
+	   					 <input type="submit" name="action" value="Start">
+	   					  <input type="submit" name="action" value="Stop">
+	   					  <input type="submit" name="action" value="Edit">
+	   					   <input type="submit" name="action" value="Delete" onClick="return confirm_delete()">
+					</form>
+					<p />
+					<li><a href="$baseUrl/customer/controlpanel/monitor?vmid=$vm.getVMID()">Click here to monitor the Virtual machine realtime!</a></li>
+					<br />
+				#end
+			#end
 		</div>
 	</div>
-       
 
+	<script type="text/javascript">
+	$("#monitorVM").click(function(){
+		window.location = "$baseUrl/customer/controlpanel/monitor?vmid=" + test;
+		});
+	function confirm_delete() {
+		return confirm('Do you really want to delete the virtual machine: $vm.getVMName()? Please confirm!');
+	}
+	</script>
 	#parse( "/Velocity/includes/customers/footer.html" )

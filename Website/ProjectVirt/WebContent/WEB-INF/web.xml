@@ -43,6 +43,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Users</servlet-name>
+		<url-pattern>/login/twofactor</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Users</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
@@ -64,6 +68,10 @@
 		<servlet-mapping>
 		<servlet-name>Users</servlet-name>
 		<url-pattern>/customer/controlpanel/monitor</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Users</servlet-name>
+		<url-pattern>/customer/controlpanel/vmcontrol</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Users</servlet-name>
@@ -94,7 +102,7 @@
 		<url-pattern>/customer/logout</url-pattern>
 	</servlet-mapping>
 	
-	 <filter>
+	  <filter>
 		<filter-name>AuthenticationFilter</filter-name>
 		<filter-class>filters.AuthenticationFilter</filter-class>
 	</filter>

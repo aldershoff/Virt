@@ -17,101 +17,27 @@ import java.sql.SQLException;
  */
 public class TwoFactorDAO {
 
-		/**
-		 * Setting the database connection and connection This will be static,
-		 * because only one connection will need instantiation
-		 */
-		private static DBConnection dbConn = null;
-		private static Connection conn = null;
+	/**
+	 * Setting the database connection and connection This will be static,
+	 * because only one connection will need instantiation
+	 */
+	private static DBConnection dbConn = null;
+	private static Connection conn = null;
 
-	
-		/**
-		 * Executes the login query, but will also add information to the Bean
-		 * 
-		 * @return
-		 */
-		public int getMobileID(String regID, String userID) {
-
-			// Making the connection
-			conn = makeConn();
-
-			// Setting the resultset and query
-			ResultSet rs = null;
-			final String GET_MOBILE_ID = "SELECT UserMobileID FROM users WHERE UserID = ?";
-			String databaseRegID = null;
-			
-			/**
-			 * If connection is not null, the query can proceed
-			 */
-			if (conn != null) {
-
-				try {
-
-					// Make prepared statement with the desired query
-					PreparedStatement pstm = conn.prepareStatement(GET_MOBILE_ID);
-
-					// Setting the parameters (places where the "?" exist)
-					pstm.setString(1, userID);
-
-					// Execute the query
-					rs = pstm.executeQuery();
-
-					/**
-					 * While the resultset will go to the next result, store the
-					 * variables. rs.next will only
-					 */
-					while (rs.next()) {
-
-						// Setting the information inside the Bean, from the
-						// database information
-						databaseRegID = rs.getString("UserMobileID");
-
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				finally{
-					/**
-					 * Check if userRegID equals the one got by the user
-					 */
-					if (!regID.equals("") || !databaseRegID.equals("")) {
-						if (regID.equals(databaseRegID)) {
-							return 1;
-						} else {
-							return 0;
-						}
-
-					} 
-				}
-			}
-			
-
-			// If the connection was not made, return nothing
-			else {
-				return 2;
-			}
-
-			// Return the bean for using the data
-			return 0;
-		}
-
-		
-		
 	/**
 	 * Executes the login query, but will also add information to the Bean
 	 * 
 	 * @return
 	 */
-	public int registerMobileID(String regID) {
+	public int getMobileID(String userID) {
 
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
-		int rs = 0;
-		final String INSERT_MOBILE_ID = "insert into users(UserMobileID)"
-				+ "values(?)";
+		ResultSet rs = null;
+		final String GET_MOBILE_ID = "SELECT UserMobileID FROM users WHERE UserID = ?";
+		String databaseRegID = null;
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -121,10 +47,77 @@ public class TwoFactorDAO {
 			try {
 
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(INSERT_MOBILE_ID);
+				PreparedStatement pstm = conn.prepareStatement(GET_MOBILE_ID);
+
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, userID);
+
+				// Execute the query
+				rs = pstm.executeQuery();
+
+				/**
+				 * While the resultset will go to the next result, store the
+				 * variables. rs.next will only
+				 */
+				while (rs.next()) {
+
+					// Setting the information inside the Bean, from the
+					// database information
+					databaseRegID = rs.getString("UserMobileID");
+
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
+				/**
+				 * Extra check for checking if the database regID is not empty
+				 */
+				if (!databaseRegID.equals("")) {
+
+					return 1;
+				}
+
+			}
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return 2;
+		}
+
+		// User does not have an ID yet, must log into the Android app
+		return 0;
+	}
+
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * 
+	 * @return
+	 */
+	public int registerMobileID(String regID, String userID) {
+
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		int rs = 0;
+		final String INSERT_MOBILE_ID = "update users set users.UserMobileID= ? where users.UserID = ?";
+
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {
+
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn
+						.prepareStatement(INSERT_MOBILE_ID);
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, regID);
+				pstm.setString(2, userID);
 
 				// Execute the query
 				rs = pstm.executeUpdate();
@@ -190,5 +183,5 @@ public class TwoFactorDAO {
 		}
 
 	}
-	
+
 }

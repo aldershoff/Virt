@@ -32,6 +32,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/controlpanel/vmcontrol</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/customer/marketplace/buy/processbuy</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

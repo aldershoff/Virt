@@ -1,5 +1,13 @@
 $(document).ready(function(){
+
 	
+	$("#monitorVM").click(function(){
+		var vmID = getUrlParameter("vmid");
+		window.location = "/ProjectVirt/customer/controlpanel/monitor?vmid=" + vmID;
+		});
+
+});
+   
 
 	
 //	//start ajax request
@@ -30,7 +38,7 @@ $(document).ready(function(){
 //     }
 //       
 //    });
-});
+
 
 
 /**

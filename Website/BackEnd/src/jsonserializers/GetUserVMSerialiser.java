@@ -29,9 +29,13 @@ public class GetUserVMSerialiser implements JsonSerializer<VMBean> {
 		jsonObject.addProperty("vmID", vmBean.getVMID());
 		jsonObject.addProperty("vmName", vmBean.getVMName());
 		jsonObject.addProperty("vmCPU", vmBean.getVMCPU());
-		jsonObject.addProperty("vmMemory", vmBean.getVMMemory());
+		jsonObject.addProperty("vmOS", vmBean.getVMOS());
 		jsonObject.addProperty("vmDiskSpace", vmBean.getVMDiskSpace());
+		jsonObject.addProperty("vmMemory", vmBean.getVMMemory());
 		jsonObject.addProperty("vmIP", vmBean.getVMIP());
+		jsonObject.addProperty("vmSLA", vmBean.getVMSLA());
+		jsonObject.addProperty("vmMonthlyPrice", vmBean.getVMMonthlyPrice());
+		jsonObject.addProperty("vmState", vmBean.getVMState());
 		jsonObject.addProperty("valid", vmBean.isValid());
 
 		return jsonObject;

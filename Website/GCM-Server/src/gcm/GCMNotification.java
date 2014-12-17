@@ -1,14 +1,7 @@
 package gcm;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +16,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.simple.JSONObject;
 
 import com.google.android.gcm.server.Message;
-import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 
 /**
@@ -50,11 +42,11 @@ public class GCMNotification extends HttpServlet {
 
 		}
 
+		@SuppressWarnings("unchecked")
 		protected void doPost(HttpServletRequest request,
 				HttpServletResponse response) throws ServletException, IOException {
 
 
-		Result resultSend = null;
 		String regID = "";
 		String share = request.getParameter("shareRegId");
 
@@ -70,93 +62,94 @@ public class GCMNotification extends HttpServlet {
 				// If the adnroid device wants to share id:
 				if (share != null && !share.isEmpty()) {
 					regID = request.getParameter("regId");
-					PrintWriter writer = new PrintWriter("GCMRegId.txt");
-					writer.println(regID);
-					writer.close();
+					String userID = request.getParameter("userId");
+					
+					// Write the ID to the database
+					long result = writeToDatabase(regID, userID, request);
+					
+					JSONObject jobj = new JSONObject();
+					try{
+					if(result == 1){
+						jobj.put("success", "1");
+					}
+					else if(result == 2){
+						jobj.put("success", "2");
+					}
+					else{
+						jobj.put("success", "0");
+					}
+					}
+					finally{
+						response.setContentType("application/json");
+						response.getWriter().write(jobj.toString());
+					}
 				}
 			}
 
 		}
 		
-		/**
-		 * Android sends a message back
-		 */
-		else if (request.getParameterMap().containsKey("androidConfirm")) {
-			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			try {
-				if (request.getParameter("androidConfirm").contains("1")) {
-
-					String callBackRegID = request.getParameter("regID");
-
-					postParameters.add(new BasicNameValuePair("regID",
-							callBackRegID));
-					postParameters.add(new BasicNameValuePair("result", "1"));
-				} else {
-					postParameters.add(new BasicNameValuePair("result", "0"));
-				}
-			} finally {
-				JSONObject json = JsonPOSTParser
-						.postJsonFromUrl(
-								request,
-								"http://localhost:8080/BackEnd/customer/insertUserMobileID",
-								postParameters);
-			}
-
-		}
 
 		/**
 		 * Else, the user requested to send message to Android device
 		 */
+
 		else {
+			JSONObject jobj = new JSONObject();
+			try {
 
-			BufferedReader br = new BufferedReader(new FileReader(
-					"GCMRegId.txt"));
-			regID = br.readLine();
-			br.close();
+				String userID = request.getParameter("userID");
 
-			String userID = request.getParameter("userID");
+				// Here, we will check if the database contains the regID with
+				// userID
+				long result = readFromDatabase(userID, request);
 
-			// Here, we will check if the database contains the regID with
-			// userID
-			int result = readFromDatabase(regID, userID, request);
+				// if the user has a regID, corresponding with the user, the
+				// user
+				// will get message
+				if (result == 1) {
+					try {
 
-			// if the user has a regID, corrosponding with the user, the user
-			// will get message
-			if (result == 1) {
-				try {
+						String userMessage = request.getParameter("message");
+						Sender sender = new Sender(GOOGLE_SERVER_KEY);
+						Message message = new Message.Builder().timeToLive(30)
+								.delayWhileIdle(true)
+								.addData(MESSAGE_KEY, userMessage).build();
 
-					String userMessage = request.getParameter("message");
-					Sender sender = new Sender(GOOGLE_SERVER_KEY);
-					Message message = new Message.Builder().timeToLive(30)
-							.delayWhileIdle(true)
-							.addData(MESSAGE_KEY, userMessage).build();
+						System.out.println("regId: " + regID);
 
-					System.out.println("regId: " + regID);
+						sender.send(message, regID, 1);
+					} catch (IOException ioe) {
+						ioe.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
-					resultSend = sender.send(message, regID, 1);
-				} catch (IOException ioe) {
-					ioe.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
+					// JSONObject obj = new JSONObject();
+					jobj.put("success",
+							"Message underway! Please check your mobile frequently.");
+			
+				} else if (result == 2) {
+					jobj.put("error", "Something went really wrong...");
+					response.getWriter().write(jobj.toString());
+					this.log("Something went wrong");
+				} else {
+					jobj.put("error",
+							"No android device found. Please download the app and login.");
+
+					this.log("please log in");
 				}
 
-			
-//				JSONObject obj = new JSONObject();
-//				obj.put("result", "1");
-//				
-//				response.getWriter().write(obj.toString());
-				
-			} else {
-				// Else, the user will have to log in the app for regID
-				// authentication first!
+			}
+
+			finally {
+				response.setContentType("application/json");
+				response.getWriter().write(jobj.toString());
+
 			}
 		}
-				
-				
-					
-				}
-				
+
+	}
 				
 //		writeToDatabase(regID, request);
 //		request.setAttribute("pushStatus", "GCM RegId Received.");
@@ -166,18 +159,17 @@ public class GCMNotification extends HttpServlet {
 				
 		
 
-		private void writeToDatabase(String regId, HttpServletRequest request) throws IOException {
+		private long writeToDatabase(String regId, String userID, HttpServletRequest request) throws IOException {
 			
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			postParameters.add(new BasicNameValuePair("regID", regId));
+			postParameters.add(new BasicNameValuePair("userID", userID));
 
 			JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
 					"http://localhost:8080/BackEnd/customer/insertUserMobileID",
 					postParameters);
 
-			if(json.containsKey("result") && json.containsValue("1")){
-				// Send message to...
-			}
+			return (long) json.get("result");
 			
 
 		}
@@ -190,20 +182,45 @@ public class GCMNotification extends HttpServlet {
 		 * @return
 		 * @throws IOException
 		 */
-		private int readFromDatabase(String regId, String userID, HttpServletRequest request) throws IOException {
-//			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-//			postParameters.add(new BasicNameValuePair("regID", regId));
-//			postParameters.add(new BasicNameValuePair("userID", userID));
-//			
-//			JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
-//					"http://localhost:8080/BackEnd/customer/getUserMobileID",
-//					postParameters);
-//
-//			if(json.containsKey("result") && json.containsValue("1")){
-//				return 1;
-//			}
-			return 1;
+		private long readFromDatabase(String userID, HttpServletRequest request) throws IOException {
+			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+			postParameters.add(new BasicNameValuePair("userID", userID));
+			
+			JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
+					"http://localhost:8080/BackEnd/customer/getUserMobileID",
+					postParameters);
+
+			return (long) json.get("result");
 			
 		}
+		
+		
+		
+//		/**
+//		 * Android sends a message back
+//		 */
+//		else if (request.getParameterMap().containsKey("androidConfirm")) {
+//			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+//
+//			try {
+//				if (request.getParameter("androidConfirm").contains("1")) {
+//
+//					String callBackRegID = request.getParameter("regID");
+//
+//					postParameters.add(new BasicNameValuePair("regID",
+//							callBackRegID));
+//					postParameters.add(new BasicNameValuePair("result", "1"));
+//				} else {
+//					postParameters.add(new BasicNameValuePair("result", "0"));
+//				}
+//			} finally {
+//				JsonPOSTParser
+//						.postJsonFromUrl(
+//								request,
+//								"http://localhost:8080/BackEnd/customer/insertUserMobileID",
+//								postParameters);
+//			}
+//
+//		}
 	
 }
