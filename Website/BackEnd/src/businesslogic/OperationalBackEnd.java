@@ -160,21 +160,20 @@ public class OperationalBackEnd extends HttpServlet {
 					request, response);
 			String userID = request.getParameter("userID");
 			String vmID = request.getParameter("vmID");
-			
+
 			switch (request.getParameter("action")) {
 			case "Start":
-				vmControl.startVM();
+				vmControl.startVM(userID, vmID);
 				break;
-
 			case "Stop":
+				vmControl.stopVM(userID, vmID);
 				break;
 			case "Edit":
+				vmControl.editVM(userID, vmID);
 				break;
 			case "Delete":
-
 				vmControl.deleteVM(userID, vmID);
 				break;
-
 			default:
 				break;
 			}

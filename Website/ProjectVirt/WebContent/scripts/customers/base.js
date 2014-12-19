@@ -12,7 +12,12 @@ $(document).ready(function(){
 		window.location = "/ProjectVirt/customer/controlpanel/monitor?vmid=" + vmID;
 		});
 
-});
+
+	$('#refreshVMPage').click(function(){
+			var vmID = getUrlParameter("vmid");
+		   window.location.href='/ProjectVirt/customer/controlpanel?request=getvm&vmid=' + vmID;
+		})
+
 
 $('#refreshVMState').click(function(){
 	alert("refresh the state");
@@ -39,10 +44,8 @@ $('#refreshVMState').click(function(){
     	 
      }
 });
+    
 });
-   
-
-
 
 
 /**
@@ -64,4 +67,4 @@ function getUrlParameter(sParam)
     }
 }          
 	
-
+});

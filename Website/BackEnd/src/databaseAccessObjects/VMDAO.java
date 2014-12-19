@@ -32,7 +32,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String SELECT_ALL_VM = "SELECT VMID, VMName, VMOS, VMState FROM VM WHERE user_UserID = ?";
+		final String SELECT_ALL_VM = "SELECT VMID, VMName, VMOS, VMState FROM VM WHERE user_UserID = ? && VMIsActive = 1";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -147,7 +147,6 @@ public class VMDAO {
 					bean.setVMOS(rs.getString("VMOS"));
 					bean.setVMDiskSpace(rs.getString("VMHDD"));
 					bean.setVMMemory(rs.getString("VMMemory"));
-					bean.setVMIP(rs.getString("VMIP"));
 					bean.setVMSLA(rs.getString("VMSLA"));
 					bean.setVMMonthlyPrice(rs.getString("VMMonthlyPrice"));
 					bean.setVMState(rs.getString("VMState"));
@@ -193,7 +192,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public int deleteSpecificVM(String vmID, String userID) {
+	public int startSpecificVMState(String vmID, String userID) {
 
 		
 		// Making the connection
@@ -201,7 +200,8 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String GET_SPECIFIC_VM = "DELETE FROM VM WHERE VMID = ? AND VM.user_UserID = ?";
+		
+		final String START_SPECIFIC_VM = "UPDATE VM SET VMState = 'Running' WHERE VMID = ? AND VM.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -210,7 +210,217 @@ public class VMDAO {
 
 			try {				
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(GET_SPECIFIC_VM);
+				PreparedStatement pstm = conn.prepareStatement(START_SPECIFIC_VM);
+				
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, vmID);
+				pstm.setString(2, userID);
+
+
+				// Execute the query
+				rs = pstm.executeUpdate();
+
+				
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+				if (rs == 1) {
+					return 1;
+				}
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return 2;
+		}
+
+		// Return 0 if not successful
+		return 0;
+	}
+	
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * 
+	 * @return
+	 */
+	public int stopSpecificVM(String vmID, String userID) {
+
+		
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		int rs = 0;
+		
+		final String STOP_SPECIFIC_VM = "UPDATE VM SET VMState = 'Stopped' WHERE VMID = ? AND VM.user_UserID = ?";
+
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {				
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(STOP_SPECIFIC_VM);
+				
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, vmID);
+				pstm.setString(2, userID);
+
+
+				// Execute the query
+				rs = pstm.executeUpdate();
+
+				
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+				if (rs == 1) {
+					return 1;
+				}
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return 2;
+		}
+
+		// Return 0 if not successful
+		return 0;
+	}
+	
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * 
+	 * @return
+	 */
+	public int editSpecificVM(String vmID, String userID) {
+
+		
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		int rs = 0;
+		
+		final String DELETE_SPECIFIC_VM = "UPDATE VM SET VMIsActive = 0 WHERE VMID = ? AND VM.user_UserID = ?";
+
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {				
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(DELETE_SPECIFIC_VM);
+				
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, vmID);
+				pstm.setString(2, userID);
+
+
+				// Execute the query
+				rs = pstm.executeUpdate();
+
+				
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+				if (rs == 1) {
+					return 1;
+				}
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return 2;
+		}
+
+		// Return 0 if not successful
+		return 0;
+	}
+	
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * 
+	 * @return
+	 */
+	public int deleteSpecificVM(String vmID, String userID) {
+
+		
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		int rs = 0;
+		
+		final String DELETE_SPECIFIC_VM = "UPDATE VM SET VMIsActive = 0 WHERE VMID = ? AND VM.user_UserID = ?";
+
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {				
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(DELETE_SPECIFIC_VM);
 				
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, vmID);

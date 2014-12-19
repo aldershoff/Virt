@@ -84,19 +84,23 @@ public class ProcessUserBuyService {
 		}
 		
 	
-		UUID makeVMLibvirtResult = null;
-		try {
-			makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(), vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()), Integer.parseInt(vmBean.getVMDiskSpace()), Integer.parseInt(vmBean.getVMCPU()));
-		} catch (LibvirtException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		UUID makeVMLibvirtResult = java.util.UUID.randomUUID();
+//		try {
+//			makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(), vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()), Integer.parseInt(vmBean.getVMDiskSpace()), Integer.parseInt(vmBean.getVMCPU()));
+//		} catch (LibvirtException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		JSONObject jobj = new JSONObject();
 		String error = "";
 		String json = "";
 		
-		if(makeVMLibvirtResult != null){
+		//if(makeVMLibvirtResult != null){
+			
+			// Set the vm on active mode
+			vmBean.setVMIsActive(1);
+			
 			// Set the bean and fill it
 			vmBean = buyDAO.addVM(vmBean, userID, makeVMLibvirtResult);
 
@@ -143,12 +147,12 @@ public class ProcessUserBuyService {
 				}
 			}
 			
-		}
-		else{
-			response.setContentType("application/json");
-			jobj.put("error", "LIBVIRT ERROR");
-			response.getWriter().write(jobj.toString());
-		}
+//		}
+//		else{
+//			response.setContentType("application/json");
+//			jobj.put("error", "LIBVIRT ERROR");
+//			response.getWriter().write(jobj.toString());
+//		}
 		
 
 	}

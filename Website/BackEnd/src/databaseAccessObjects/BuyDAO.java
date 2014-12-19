@@ -39,7 +39,7 @@ public class BuyDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, VMSLA, VMMonthlyPrice, VMUUID, user_userID)"
+		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, user_userID)"
 				+ "values(?,?,?,?,?,?,?,?,?,?)";
 
 		/**
@@ -58,10 +58,10 @@ public class BuyDAO {
 				pstm.setString(3, vmBean.getVMOS());
 				pstm.setString(4, vmBean.getVMDiskSpace());
 				pstm.setString(5, vmBean.getVMMemory());
-				pstm.setString(6, vmBean.getVMIP());
-				pstm.setString(7, vmBean.getVMSLA());
-				pstm.setString(8, "8");
-				pstm.setString(9, uuid.toString());
+				pstm.setString(6, vmBean.getVMSLA());
+				pstm.setString(7, "8");
+				pstm.setString(8, uuid.toString());
+				pstm.setInt(9, (int) vmBean.getVMIsActive());
 				pstm.setString(10, userID);
 				
 				// Execute the query

@@ -86,11 +86,17 @@
 				<br class="clear" />
 			</div>
 			#else
-			#if($!{error} || $!{success})
 			
-				$!{error} $!{success}
 			
-				#else
+				#if ($!{error} || $!{success})
+					<h2>$!{error} $!{success}</h2>
+					Please click on the button to go back to the VM overview!
+					<br />
+					
+					<input type="button" id="refreshVMPage" name="refreshPage" value="Go back">
+				
+			#else
+				
 					<h2>Server statistics</h2>
 					Click on your Virtual Machine for real-time monitoring!
 					<p />
@@ -126,8 +132,8 @@
 						   </tbody>
 					</table>	
 					<br />
-					<form action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
-	   					 <input type="submit" name="action" value="Start">
+					<form id="controlVMForm" action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
+	   				<input type="submit" name="action" value="Start">
 	   					  <input type="submit" name="action" value="Stop">
 	   					  <input type="submit" name="action" value="Edit">
 	   					   <input type="submit" name="action" value="Delete" onClick="return confirm_delete()">
