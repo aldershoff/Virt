@@ -1,0 +1,239 @@
+body {
+    padding: 0;
+    margin: 0;
+    font-family: Arial;
+    font-size: 17px;
+    background-color: #F8ECE0;
+}
+
+
+
+/*
+Header
+*/
+
+#header{
+	background: grey;
+	width:100%;
+	position: fixed;
+	top: 0;
+	left:0;
+}
+
+#banner {
+	color:#000;
+	text-align: left;
+	background-color: #E6E6E6;
+	font-size: 36px;
+}
+
+/*
+Menu bar with dropdown function
+*/
+
+#menu{
+	background: #222;
+
+	}
+
+
+
+#dropdownmenu{
+	width: 100%;
+	margin: 0 auto;
+	text-align: left;
+
+}
+
+#menu ul{
+	list-style-type: none;
+	padding: 0;
+    margin: 0;
+    position: relative;
+    min-width: 200px;
+    
+
+}
+
+#menu ul li {
+	display: inline-block;	
+}
+
+
+#menu ul li a, visited {
+	color: #CCC;
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+}
+
+#menu ul li:hover{
+	background-color: #333;
+}
+
+#menu ul li:hover ul{
+	display: block;
+}
+
+  
+#menu ul ul {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    border: 5px solid #222;
+    border-top: 0;
+    margin-left: -5px;
+}
+
+#menu ul ul li {
+    display: block;
+
+}
+
+#menu ul ul li a:hover {
+    color: #699;
+} 
+
+.active{
+	background-color:  #699 ;
+	
+
+}
+
+/*
+Context
+*/
+
+#context{
+	margin-top: 150px;
+	height:500px;
+	background-color: #F8ECE0;
+}
+
+
+/*
+
+Widget
+
+*/
+
+.widgetbox{
+	background-color: #ccc;
+	width:80%;
+	margin:0 auto;
+	margin-top: 20px;
+}
+
+.widgetheader {
+	background: linear-gradient(#F2F2F2, #D8D8D8);
+	border-style: ridge;
+	text-align: center; 
+}
+
+
+
+
+.widgetmenu{
+	background: linear-gradient(#F2F2F2, #D8D8D8);
+	border-style:ridge;
+	text-align: center
+	
+	
+
+}
+
+
+/*
+
+Widgetbox
+
+*/
+.widgetdropdown{
+	width: 100%;
+	margin: 0 auto;
+	text-align: right;
+
+
+}
+
+.widgetmenu ul{
+	list-style-type: none;
+	padding: 0;
+    margin: 0;
+    position: relative;
+    min-width: 40px;
+    text-align: right;
+    
+
+}
+
+.widgetmenu ul li {
+	display: inline-block;	
+}
+
+
+.widgetmenu ul li a, visited {
+	color: #000;
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.widgetmenu ul li:hover{
+	background-color: #fff;
+}
+
+.widgetmenu ul li:hover ul{
+	display: block;
+}
+
+  
+.widgetmenu ul ul {
+    display: none;
+    position: absolute;
+    background: linear-gradient(#D8D8D8, #F2F2F2);
+    margin-left: -5px;
+}
+
+.widgetmenu ul ul li {
+    display: block;
+
+}
+
+.widgetmenu ul ul li a:hover {
+    color: #699;
+} 
+
+
+
+/*
+charts
+*/
+.chartbox{
+	background-color: #F8ECE0;
+	border-style: ridge;
+
+}
+
+
+
+
+/*
+Table list
+*/
+
+.tablelist{
+	background-color: #F8ECE0;
+	border-style: ridge;
+
+}
+
+
+.tablelist ul li{
+	border: 1px solid black;
+	margin-bottom: 2px;
+	list-style-type: none;
+
+}
+
