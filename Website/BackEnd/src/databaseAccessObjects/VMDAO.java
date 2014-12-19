@@ -32,7 +32,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String SELECT_ALL_VM = "SELECT VMName, VMID FROM VM WHERE user_UserID = ?";
+		final String SELECT_ALL_VM = "SELECT VMID, VMName, VMOS, VMState FROM VM WHERE user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -58,8 +58,11 @@ public class VMDAO {
 					
 					// Setting the information inside the Bean, from the
 					// database information
-					bean.setVMName(rs.getString("vmName"));
-					bean.setVMID(rs.getInt("vmid"));
+					bean.setVMID(rs.getInt("VMID"));
+					bean.setVMName(rs.getString("VMName"));
+					bean.setVMOS(rs.getString("VMOS"));
+					bean.setVMState(rs.getString("VMState"));
+					
 					bean.setValid(true);
 					VMBeanArray.add(bean);
 					

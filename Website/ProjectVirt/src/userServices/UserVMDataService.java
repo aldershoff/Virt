@@ -21,12 +21,28 @@ import beans.VMBean;
 
 import com.google.gson.Gson;
 
+/**
+ * Service for getting all the data for the virtual machines.
+ * @author KjellZijlemaker
+ * @version 1.0
+ * @since 1.0
+ *
+ */
 public class UserVMDataService {
 	
+	/**
+	 * Variables that will be used globally
+	 */
 	private VelocityContext vsl_Context;
 	private Template template;
 	private PrintWriter out;
 	
+	/**
+	 * Constructor for initialing the global variables
+	 * @param vsl_Context
+	 * @param template
+	 * @param out
+	 */
 	public UserVMDataService(VelocityContext vsl_Context, Template template, PrintWriter out){
 		this.vsl_Context = vsl_Context;
 		this.template = template;
@@ -88,8 +104,8 @@ public class UserVMDataService {
 					vmBeanArray = new ArrayList<VMBean>();
 					for (int i = 0; i < listdata.size(); i++) {
 						VMBean bean = new VMBean();
-						bean.setVMName((String) listdata.get(i).get("vmName"));
-						bean.setVMID((long) listdata.get(i).get("vmID"));
+						Gson gson = new Gson();
+						bean = gson.fromJson(listdata.get(i).toString(), VMBean.class);
 						vmBeanArray.add(bean);
 					}
 

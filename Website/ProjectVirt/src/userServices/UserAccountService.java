@@ -23,12 +23,30 @@ import org.json.simple.JSONObject;
 
 import security.PasswordService;
 
+/**
+ * Service for the account of the user. e.d. like logging in, registering and
+ * logging out.
+ * 
+ * @author KjellZijlemaker
+ * @version 1.0
+ * @since 1.0
+ */
 public class UserAccountService {
 
+	/**
+	 * Variables that will be used globally
+	 */
 	private VelocityContext vsl_Context;
 	private Template template;
 	private PrintWriter out;
 
+	/**
+	 * Constructor for initialing the global variables
+	 * 
+	 * @param vsl_Context
+	 * @param template
+	 * @param out
+	 */
 	public UserAccountService(VelocityContext vsl_Context, Template template,
 			PrintWriter out) {
 		this.vsl_Context = vsl_Context;
@@ -37,7 +55,7 @@ public class UserAccountService {
 	}
 
 	/**
-	 * Method for registering the user with the form
+	 * Method for registering the user when requested
 	 * 
 	 * @param request
 	 * @param response
@@ -162,6 +180,10 @@ public class UserAccountService {
 	public void loginUser(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 
+		/**
+		 * If the request contains the pinsubmit, the user is logging in the
+		 * without the two-factor authentication pin-submit
+		 */
 		if (!request.getParameterMap().containsKey("pinsubmit")) {
 
 			/**
@@ -183,122 +205,8 @@ public class UserAccountService {
 			 * If everything was filled in correctly, the loginprocess can begin
 			 */
 			else {
+				setLoginOneFactor(request, response);
 
-				/**
-				 * Set postparameters to give with the request
-				 */
-				ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-				postParameters.add(new BasicNameValuePair("user", request
-						.getParameter("user")));
-
-				postParameters.add(new BasicNameValuePair("password", request
-						.getParameter("password")));
-
-				/**
-				 * Set the url for JSON + the postparameters
-				 */
-				JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
-						"http://localhost:8080/BackEnd/login/processlogin",
-						postParameters);
-
-				try {
-					/**
-					 * If json is null, connection could not be made
-					 */
-					if (json != null) {
-
-						/**
-						 * Checking if the key does not contain an error
-						 * parameter and an extra check if the user is given
-						 * valid
-						 */
-						if (!json.containsKey("error")) {
-
-							// Setting boolean for validating the user (extra
-							// check)
-							boolean isValid = (Boolean) json.get("valid");
-
-							/**
-							 * Doing extra check to be sure that a session will
-							 * be made IF and ONLY IF the user is declared
-							 * valid. Will also check if Android requested the
-							 * login service
-							 */
-							if (isValid
-									&& !request.getParameterMap().containsKey(
-											"shareRegId")) {
-
-								/**
-								 * Get the JSON variables
-								 */
-								long userID = (long) json.get("userID");
-								String username = (String) json.get("username");
-
-								/**
-								 * If the user is valid, a session will be made
-								 * and the session variables will be set
-								 */
-								HttpSession session = request.getSession();
-								session.setAttribute("userID",
-										(long) json.get("userID"));
-								session.setAttribute("username",
-										(String) json.get("username"));
-
-								/**
-								 * If twofactor was chosen by the user, proceed
-								 * with implementation with two factor
-								 * authentication
-								 */
-								if (request.getParameter("twofactor") != null) {
-
-									setLoginTwoFactorSendMessage(session,
-											request, userID);
-
-								}
-
-								/**
-								 * Else, just login with redirection
-								 */
-								else {
-									response.sendRedirect("/ProjectVirt/customer/home");
-								}
-
-							}
-
-							/**
-							 * If it contains the requested URL parameter
-							 * shareRegId, given by Android, it will respond
-							 * with a success message
-							 */
-							else if (request.getParameterMap().containsKey(
-									"shareRegId")
-									&& request.getParameter("shareRegId")
-											.equals("1")) {
-
-								setLoginAndroidTwoFactor(request, response,
-										json);
-
-							}
-
-						} else {
-							vsl_Context.put("error", json.get("error"));
-						}
-					} else {
-						vsl_Context.put("error", "Can't connect with server");
-					}
-
-					/**
-					 * Save user input when error code appeared
-					 */
-				} catch (ServiceUnavailableException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					vsl_Context.put("username", request.getParameter("user"));
-					template = Velocity.getTemplate("Velocity/login.html");
-				}
 			}
 		}
 
@@ -311,10 +219,132 @@ public class UserAccountService {
 
 	}
 
-	
 	/**
-	 * If the user's authentication was OK, the user will now get a message send to
-	 * his Android device
+	 * Method for the one factor login. In this method, if the user requested
+	 * two factor, the service will call the two-factor login method 
+	 * 
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	private void setLoginOneFactor(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		/**
+		 * Set postparameters to give with the request
+		 */
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+		postParameters.add(new BasicNameValuePair("user", request
+				.getParameter("user")));
+
+		postParameters.add(new BasicNameValuePair("password", request
+				.getParameter("password")));
+
+		/**
+		 * Set the url for JSON + the postparameters
+		 */
+		JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
+				"http://localhost:8080/BackEnd/login/processlogin",
+				postParameters);
+
+		try {
+			/**
+			 * If json is null, connection could not be made
+			 */
+			if (json != null) {
+
+				/**
+				 * Checking if the key does not contain an error parameter and
+				 * an extra check if the user is given valid
+				 */
+				if (!json.containsKey("error")) {
+
+					// Setting boolean for validating the user (extra
+					// check)
+					boolean isValid = (Boolean) json.get("valid");
+
+					/**
+					 * Doing extra check to be sure that a session will be made
+					 * IF and ONLY IF the user is declared valid. Will also
+					 * check if Android requested the login service
+					 */
+					if (isValid
+							&& !request.getParameterMap().containsKey(
+									"shareRegId")) {
+
+						/**
+						 * Get the JSON variables
+						 */
+						long userID = (long) json.get("userID");
+
+						/**
+						 * If the user is valid, a session will be made and the
+						 * session variables will be set
+						 */
+						HttpSession session = request.getSession();
+						session.setAttribute("userID",
+								(long) json.get("userID"));
+						session.setAttribute("username",
+								(String) json.get("username"));
+
+						/**
+						 * If twofactor was chosen by the user, proceed with
+						 * implementation with two factor authentication
+						 */
+						if (request.getParameter("twofactor") != null) {
+
+							// Call the two-factor login authentication
+							setLoginTwoFactorSendMessage(session, request,
+									userID);
+
+						}
+
+						/**
+						 * Else, just login with redirection
+						 */
+						else {
+							response.sendRedirect("/ProjectVirt/customer/home");
+						}
+
+					}
+
+					/**
+					 * If it contains the requested URL parameter shareRegId,
+					 * given by Android, it will respond with a success message
+					 */
+					else if (request.getParameterMap()
+							.containsKey("shareRegId")
+							&& request.getParameter("shareRegId").equals("1")) {
+
+						// Call the Android login authentication
+						setLoginAndroidTwoFactor(request, response, json);
+
+					}
+
+				} else {
+					vsl_Context.put("error", json.get("error"));
+				}
+			} else {
+				vsl_Context.put("error", "Can't connect with server");
+			}
+
+			/**
+			 * Save user input when error code appeared
+			 */
+		} catch (ServiceUnavailableException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			vsl_Context.put("username", request.getParameter("user"));
+			template = Velocity.getTemplate("Velocity/login.html");
+		}
+	}
+
+	/**
+	 * If the user's authentication was OK, the user will now get a message send
+	 * to his Android device
+	 * 
 	 * @param session
 	 * @param request
 	 * @param userID
@@ -358,9 +388,9 @@ public class UserAccountService {
 	}
 
 	/**
-	 * If the user submitted the pin (after 1st factor login)
-	 * this method will check if the pin was valid, by checking
-	 * the random generated pin with the one inserted
+	 * If the user submitted the pin (after 1st factor login) this method will
+	 * check if the pin was valid, by checking the random generated pin with the
+	 * one inserted
 	 * 
 	 * @param request
 	 * @param response
@@ -399,8 +429,9 @@ public class UserAccountService {
 	}
 
 	/**
-	 * Method for logging in with an Android device. This is for getting the ID from
-	 * the GCM service and inserting it into the database for sending PIN messages
+	 * Method for logging in with an Android device. This is for getting the ID
+	 * from the GCM service and inserting it into the database for sending PIN
+	 * messages
 	 * 
 	 * @param request
 	 * @param response
@@ -429,6 +460,10 @@ public class UserAccountService {
 						gcmLoginMessagePostParameter);
 
 		JSONObject jobj = new JSONObject();
+		
+		/**
+		 * Send message back to the front-end servlet. 
+		 */
 		if (gcmLoginMessage.get("success").equals("1")) {
 
 			jobj.put("success", "1");

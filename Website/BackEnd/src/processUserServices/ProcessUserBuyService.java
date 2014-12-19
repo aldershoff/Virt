@@ -1,14 +1,17 @@
 package processUserServices;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jsonserializers.BuyCustomerVMSerialiser;
+import libvirtAccessObject.TestVM;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
+import org.libvirt.LibvirtException;
 
 import beans.VMBean;
 
@@ -36,9 +39,11 @@ public class ProcessUserBuyService {
 	 * @param request
 	 * @param response
 	 * @throws IOException
+	 * @throws LibvirtException 
+	 * @throws NumberFormatException 
 	 */
 	@SuppressWarnings("unchecked")
-	public void buyUserVM() throws IOException {
+	public void buyUserVM() throws IOException, NumberFormatException {
 
 		/**
 		 * Getting all parameters needed for creating VM
@@ -77,54 +82,74 @@ public class ProcessUserBuyService {
 			break;
 
 		}
-
-		// Set the bean and fill it
-		vmBean = buyDAO.addVM(vmBean, userID);
-
-		Gson gson = new Gson();
+		
+	
+		UUID makeVMLibvirtResult = null;
+		try {
+			makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(), vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()), Integer.parseInt(vmBean.getVMDiskSpace()), Integer.parseInt(vmBean.getVMCPU()));
+		} catch (LibvirtException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		JSONObject jobj = new JSONObject();
 		String error = "";
 		String json = "";
+		
+		if(makeVMLibvirtResult != null){
+			// Set the bean and fill it
+			vmBean = buyDAO.addVM(vmBean, userID, makeVMLibvirtResult);
 
-		try {
+			Gson gson = new Gson();
+			
 
-			// If bean is not null, a database connection has been initiated
-			if (vmBean != null) {
+			try {
 
-				/**
-				 * If the VM is succesfully added to the database, the user will
-				 * get a response back
-				 */
+				// If bean is not null, a database connection has been initiated
+				if (vmBean != null) {
 
-				if (vmBean.isValid()) {
+					/**
+					 * If the VM is succesfully added to the database, the user will
+					 * get a response back
+					 */
 
-					final GsonBuilder gsonBuilder = new GsonBuilder();
-					gsonBuilder.registerTypeAdapter(VMBean.class,
-							new BuyCustomerVMSerialiser());
-					gson = gsonBuilder.create();
+					if (vmBean.isValid()) {
 
-					json = gson.toJson(vmBean);
+						final GsonBuilder gsonBuilder = new GsonBuilder();
+						gsonBuilder.registerTypeAdapter(VMBean.class,
+								new BuyCustomerVMSerialiser());
+						gson = gsonBuilder.create();
 
+						json = gson.toJson(vmBean);
+
+					}
+
+					else {
+						error = "Something went wrong with buying the VM";
+						jobj.put("error", error);
+					}
 				}
 
 				else {
-					error = "Something went wrong with buying the VM";
+					error = "Could not connect to database..";
 					jobj.put("error", error);
 				}
+			} finally {
+				response.setContentType("application/json");
+				if (error != "") {
+					response.getWriter().write(jobj.toString());
+				} else {
+					response.getWriter().write(json.toString());
+				}
 			}
-
-			else {
-				error = "Could not connect to database..";
-				jobj.put("error", error);
-			}
-		} finally {
-			response.setContentType("application/json");
-			if (error != "") {
-				response.getWriter().write(jobj.toString());
-			} else {
-				response.getWriter().write(json.toString());
-			}
+			
 		}
+		else{
+			response.setContentType("application/json");
+			jobj.put("error", "LIBVIRT ERROR");
+			response.getWriter().write(jobj.toString());
+		}
+		
 
 	}
 	

@@ -1,4 +1,4 @@
-package infrastructure;
+package libvirtAccessObject;
 
 
 import org.libvirt.Connect;

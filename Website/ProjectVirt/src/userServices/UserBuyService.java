@@ -15,12 +15,29 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.json.simple.JSONObject;
 
+/**
+ * Service for buying on the website. This can be all sort of things
+ * like virtual machines, or extra SLA contracts
+ * @author KjellZijlemaker
+ * @version 1.0
+ * @since 1.0
+ */
 public class UserBuyService {
 
+	/**
+	 * Variables that will be used globally
+	 */
 	private VelocityContext vsl_Context;
 	private Template template;
 	private PrintWriter out;
 
+	/**
+	 * Constructor for initialing the global variables
+	 * 
+	 * @param vsl_Context
+	 * @param template
+	 * @param out
+	 */
 	public UserBuyService(VelocityContext vsl_Context, Template template, PrintWriter out){
 		this.vsl_Context = vsl_Context;
 		this.template = template;
@@ -28,7 +45,7 @@ public class UserBuyService {
 	}
 	
 	/**
-	 * When user has requested a new VM, the process will begin here
+	 * Method for buying a new VM
 	 * 
 	 * @param request
 	 * @param response

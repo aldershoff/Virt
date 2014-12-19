@@ -5,6 +5,7 @@ import infrastructure.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import beans.VMBean;
 
@@ -31,15 +32,15 @@ public class BuyDAO {
 	 * Executes the login query, but will also add information to the Bean
 	 * @return
 	 */
-	public VMBean addVM(VMBean vmBean, String userID) {
+	public VMBean addVM(VMBean vmBean, String userID, UUID uuid) {
 
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, VMSLA, VMMonthlyPrice, user_userID)"
-				+ "values(?,?,?,?,?,?,?,?,?)";
+		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMIP, VMSLA, VMMonthlyPrice, VMUUID, user_userID)"
+				+ "values(?,?,?,?,?,?,?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -60,7 +61,8 @@ public class BuyDAO {
 				pstm.setString(6, vmBean.getVMIP());
 				pstm.setString(7, vmBean.getVMSLA());
 				pstm.setString(8, "8");
-				pstm.setString(9, userID);
+				pstm.setString(9, uuid.toString());
+				pstm.setString(10, userID);
 				
 				// Execute the query
 				rs = pstm.executeUpdate();

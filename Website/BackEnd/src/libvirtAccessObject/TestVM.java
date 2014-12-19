@@ -1,4 +1,4 @@
-package infrastructure;
+package libvirtAccessObject;
 
 /**
  * Class for monitoring and creating different VM's on the hypervisor
@@ -72,7 +72,7 @@ public class TestVM {
 	
 	
 	@SuppressWarnings("null")
-	public static void createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
+	public static UUID createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
 		//setup libvirt connection, second parameter is a boolean for read-only 
 		Connect conn = new Connect("qemu:///system", false);
@@ -159,17 +159,19 @@ public class TestVM {
 				"</domain>");
 				//conn.domainXMLFromNative("", arg1, arg2)
 				//Domain newDm = conn.domainLookupByUUID(UUID);
+
 				newDm.create();
+
+				
+				return UUID;
 				
 				
-				if(newDm.isActive() == 0){
-					System.out.println("Error, domain is not running");
-				}
-			
 			} catch (LibvirtException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println(e);
+				
+				return null;
 			}
 			finally{
 				try {
@@ -180,5 +182,6 @@ public class TestVM {
 				}
 			}
 		}
+		return null;
 	}
 }

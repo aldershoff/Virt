@@ -408,6 +408,10 @@ public class Users extends HttpServlet {
 				case "Delete":
 					vmControl.deleteVM(request, response, vmID, sessionUserID, "Delete");
 					break;
+					
+				case "RefreshState":
+					vmControl.deleteVM(request, response, vmID, sessionUserID, "RefreshState");
+					break;
 				default:
 					break;
 				}
