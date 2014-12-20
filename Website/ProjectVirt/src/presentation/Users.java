@@ -290,8 +290,10 @@ public class Users extends HttpServlet {
 				break;
 
 			case "/customer/controlpanel/monitor":
-				template = Velocity
-						.getTemplate("Velocity/customers/monitor/index.html");
+				
+				UserVMDataService vmData = new UserVMDataService(vsl_Context, template, out);
+				vmData.getRealtimeVMData(request, response, sessionUserID);
+				
 				break;
 
 			case "/customer/marketplace":

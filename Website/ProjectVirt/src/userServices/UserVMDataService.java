@@ -154,11 +154,11 @@ public class UserVMDataService {
 			HttpServletResponse response, long sessionUserID) {
 
 		// Get VMID from parameter
-		String ParameterVMID = request.getParameter("vmid");
+		String parameterVMID = request.getParameter("vmid");
 
 		// Setting the URL for getting data from the back-end
 		String getSpecifiedVMUrl = "http://localhost:8080/BackEnd/customer/controlpanel/getvms?request=getvm&vmid="
-				+ ParameterVMID + "&userID=" + sessionUserID;
+				+ parameterVMID + "&userID=" + sessionUserID;
 
 		// Setting up the bean
 		VMBean vmBean = null;
@@ -215,6 +215,80 @@ public class UserVMDataService {
 			template = Velocity
 					.getTemplate("Velocity/customers/controlpanel.html");
 		}
+	}
+	
+	/**
+	 * Method for getting realtime data from the back-end servlet. The back-end will make a connection with the libvirt server
+	 * @param request
+	 * @param response
+	 * @param sessionUserID
+	 */
+	public void getRealtimeVMData(HttpServletRequest request,
+			HttpServletResponse response, long sessionUserID){
+		// Get VMID from parameter
+		String parameterVMID = request.getParameter("vmid");
+		
+		// Setting the URL for getting data from the back-end
+		String getRealtimeVMDataUrl = "http://localhost:8080/BackEnd/customer/controlpanel/monitorvms?vmid=" + parameterVMID + "&userID=" +sessionUserID;
+
+		// Setting up the bean
+		VMBean vmBean = null;
+		
+		/**
+		 * Try to parse object from the given URL
+		 */
+		try {
+			JSONObject json = JsonGETParser
+					.readJsonObjectFromUrl(getRealtimeVMDataUrl);
+
+			/**
+			 * If the JSON object is not null, a connection could be made
+			 */
+			if (json != null) {
+
+				/**
+				 * Check if the json String contains an error
+				 */
+				if (!json.containsKey("error")) {
+					Gson gson = new Gson();
+					vmBean = gson.fromJson(json.toString(), VMBean.class);
+
+				} else {
+					vsl_Context.put("error", json.get("error"));
+				}
+			}
+
+			/**
+			 * Else, show an error
+			 */
+			else {
+				vsl_Context.put("error",
+						"Connection with server could not be made..");
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		/**
+		 * Finally, put the objects inside the template
+		 */
+		finally {
+			vsl_Context.put("vm", vmBean);
+		
+
+			template = Velocity
+					.getTemplate("Velocity/customers/controlpanel.html");
+		}
+		
+		
+		
 	}
 	
 }

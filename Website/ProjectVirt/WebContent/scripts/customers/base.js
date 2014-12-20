@@ -6,12 +6,37 @@ $(document).ready(function(){
         window.location = "/ProjectVirt/customer/controlpanel?request=getvm&vmid=" + vmID;
  });
 	
-	// When clicking on one of the table hover links, the click will result in a redirection to the monitor
-	$("#monitorVM").click(function(){
-		var vmID = getUrlParameter("vmid");
-		window.location = "/ProjectVirt/customer/controlpanel/monitor?vmid=" + vmID;
-		});
+//	// When clicking on one of the table hover links, the click will result in a redirection to the monitor
+//	$("#monitorVM").click(function(){
+//		var vmID = getUrlParameter("vmid");
+//		window.location = "/ProjectVirt/customer/controlpanel/monitor?vmid=" + vmID;
+//		});
 
+	$("#refreshVMRealtime").click(function(){
+		// Get parameter from URL
+		var parameter = getUrlParameter('vmid');
+		
+		//start ajax request
+	    $.ajax({
+	        url: "/BackEnd/customer/controlpanel/monitorvms?request=monitor&vmid=" + parameter,
+	        //force to handle it as text
+	        dataType: "text",
+	        success: function(data) {
+	            
+	            //data downloaded so we call parseJSON function 
+	            //and pass downloaded data
+	            var json = $.parseJSON(data);
+	            //now json variable contains data in json format
+	            //let's display a few items
+	            alert(json.success)
+	            $('.general-data').html(json.name);
+	        },
+	    error: function(xhr, textStatus, errorThrown){
+	    	alert(errorThrown)
+	    	  $('.general-data').html(errorThrown);
+	     }
+	    });
+	});
 
 	$('#refreshVMPage').click(function(){
 			var vmID = getUrlParameter("vmid");

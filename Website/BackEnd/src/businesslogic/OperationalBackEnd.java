@@ -21,6 +21,7 @@ import processUserServices.ProcessUserVMDataService;
 import jsonserializers.BuyCustomerVMSerialiser;
 import jsonserializers.CustomerSerialiser;
 import jsonserializers.GetUserVMSerialiser;
+import libvirtAccessObject.TestVM;
 import security.PasswordService;
 import beans.CustomerBean;
 import beans.VMBean;
@@ -117,7 +118,7 @@ public class OperationalBackEnd extends HttpServlet {
 			}
 			break;
 		case "/customer/controlpanel/monitorvms":
-			getMonitorUserVM(request, response);
+			getRealtimeUserVM(request, response);
 			break;
 		default:
 			break;
@@ -200,38 +201,54 @@ public class OperationalBackEnd extends HttpServlet {
 	 * @param response
 	 * @throws IOException
 	 */
-	private void getMonitorUserVM(final HttpServletRequest request,
+	private void getRealtimeUserVM(final HttpServletRequest request,
 			final HttpServletResponse response) throws IOException {
 
 		/**
-		 * Setting VMDAO and bean for filling data
+		 * Get the data from libvirt object example
 		 */
-		VMDAO VMDAO = new VMDAO();
-		VMBean vmBean = null;
-		Gson gson = null;
-
-		/**
-		 * Set parameters
-		 */
-		String vmID = request.getParameter("vmid");
-		String userID = request.getParameter("userID");
-
-		/**
-		 * Fill the data
-		 */
-		vmBean = new VMBean();
-		vmBean = VMDAO.getSpecificVM(vmBean, userID, vmID);
-
-		/**
-		 * If bean is valid, send new vmBean back as response.
-		 */
-		if (vmBean.isValid()) {
-
-			/*
-			 * Set realtime data here, preverably from Libvirt
-			 */
-
-		}
+//		VMBean vmBean = new VMBean();
+//		Gson gson = new Gson();
+//		String json = "";
+//		TestVM vmData = new TestVM();
+//		
+//		try{
+//		vmBean = vmData.getData(vmBean);
+//		
+//		if(vmBean != null){
+//			json = gson.toJson(vmBean);
+//		}
+//		
+//		
+//		}
+//		finally{
+//			response.setContentType("application/json");
+//			response.getWriter().write(json.toString());
+//		}
+		
+//		
+//		/**
+//		 * Set parameters
+//		 */
+//		String vmID = request.getParameter("vmid");
+//		String userID = request.getParameter("userID");
+//
+//		/**
+//		 * Fill the data
+//		 */
+//		vmBean = new VMBean();
+//		vmBean = VMDAO.getSpecificVM(vmBean, userID, vmID);
+//
+//		/**
+//		 * If bean is valid, send new vmBean back as response.
+//		 */
+//		if (vmBean.isValid()) {
+//
+//			/*
+//			 * Set realtime data here, preverably from Libvirt
+//			 */
+//
+//		}
 
 	}
 

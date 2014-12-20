@@ -107,16 +107,16 @@
 					    <th>Hostname</th> 
 					    <th>Operating System</th>
 					    <th>CPU</th>
-					    <th>Total Ram</th>
-					    <th>Total Harddisk space</th>
-					    <th>Ip address</th>
+					    <th>Total RAM</th>
+					    <th>Total HDD space</th>
+					    <th>IP address</th>
 					    <th>SLA</th>
 					    <th>Monthly price</th>
 					    <th>Status</th>
 					  </tr>
 					    </thead>
 					       <tbody>
-					  <tr id="monitorVM">
+					  <tr>
 					    <td>$!{vm.getVMID()}</td>
 					    <td>$!{vm.getVMName()}</td> 
 					    <td>$!{vm.getVMOS()}</td> 
@@ -138,8 +138,44 @@
 	   					  <input type="submit" name="action" value="Edit">
 	   					   <input type="submit" name="action" value="Delete" onClick="return confirm_delete()">
 					</form>
+					
+					
+					<br />
+			<h2>Realtime Statistics  <input type="button" id="refreshVMRealtime" name="refreshVMRealtime" value="Refresh"></h2>
+			<table class="table table-hover">
+					  <thead>
+					<tr>
+						<th>Hostname</th> 
+					    <th>Operating System</th> 
+					    <th>Active CPU</th>
+					    <th>Total RAM</th>
+					    <th>RAM in use</th>
+					    <th>RAM free</th>
+					    <th>IP address</th>
+					    <th>Total HDD space</th>
+					    <th>Available HDD space</th>
+					  </tr>
+					    </thead>
+					       <tbody>
+					  <tr>
+					    <td id="vmHostname">$!{vm.getVMID()}</td>
+					    <td id="vmOS">$!{vm.getVMName()}</td> 
+					    <td id="vmActCPU">$!{vm.getVMOS()}</td> 
+					    <td id="vmTotRAM">$!{vm.getVMCPU()}</td>
+					    <td id="vmInUseRAM">$!{vm.getVMMemory()}</td>
+					    <td id="vmFreeRam">$!{vm.getVMDiskSpace()}</td>
+					    <td id="vmIPAddr">$!{vm.getVMIP()}</td>
+					    <td id="vmTotHDD">$!{vm.getVMSLA()}</td>
+					    <td id="vmFreeHDD">$!{vm.getVMSLA()}</td>
+					    
+					    
+					  </tr>
+						   </tbody>
+					</table>	
+
 				#end
 			#end
+			
 		</div>
 	</div>
 
