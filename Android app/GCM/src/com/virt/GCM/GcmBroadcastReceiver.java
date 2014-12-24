@@ -6,6 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
+/**
+ * Class helper for receiving the broadcast messages
+ * 
+ * @author KjellZijlemaker
+ * 
+ */
 public class GcmBroadcastReceiver extends WakefulBroadcastReceiver {
 
 	@Override

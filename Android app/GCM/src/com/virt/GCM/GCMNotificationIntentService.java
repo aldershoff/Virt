@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
@@ -13,12 +15,22 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+/**
+ * Intentservice for handling the intent messages from the GCM server and
+ * sending them to the user
+ * 
+ * @author KjellZijlemaker
+ * 
+ */
 public class GCMNotificationIntentService extends IntentService {
 
 	public static final int NOTIFICATION_ID = 1;
 	private NotificationManager mNotificationManager;
 	NotificationCompat.Builder builder;
 
+	/**
+	 * Setting message key
+	 */
 	public GCMNotificationIntentService() {
 		super("GcmIntentService");
 	}
@@ -32,6 +44,10 @@ public class GCMNotificationIntentService extends IntentService {
 
 		String messageType = gcm.getMessageType(intent);
 
+		/**
+		 * Getting google message and sending getting the notification ready for
+		 * sending to the user
+		 */
 		if (!extras.isEmpty()) {
 			if (GoogleCloudMessaging.MESSAGE_TYPE_SEND_ERROR
 					.equals(messageType)) {
@@ -55,28 +71,44 @@ public class GCMNotificationIntentService extends IntentService {
 				}
 				Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 
-				sendNotification("PlainTech:  "
-						+ extras.get(Config.MESSAGE_KEY));
+				sendNotification("PlainTech  " + extras.get(Config.MESSAGE_KEY));
 				Log.i(TAG, "Received: " + extras.toString());
 			}
 		}
 		WakefulBroadcastReceiver.completeWakefulIntent(intent);
 	}
 
+	/**
+	 * Sending the notification to the user
+	 * 
+	 * @param msg
+	 */
 	private void sendNotification(String msg) {
 		Log.d(TAG, "Preparing to send notification...: " + msg);
 		mNotificationManager = (NotificationManager) this
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 
+		// Making intent when clicking on the message
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-				new Intent(this, ProcessLoginActivity.class), 0);
+				new Intent(this, ShowPinDetailedActivity.class).putExtra(
+						"pinMessage", msg), 0);
 
+		// Sound for getting usermessage
+		Uri uri = RingtoneManager
+				.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+		/**
+		 * Setting all the options for the message
+		 */
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.gcm_cloud)
-				.setContentTitle("GCM Notification")
+				this).setSmallIcon(R.drawable.logo_plaintech)
+				.setContentTitle("PlainTech Pin")
 				.setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-				.setContentText(msg);
+				.setContentText(msg).setSound(uri);
 
+		/**
+		 * Set the intent
+		 */
 		mBuilder.setContentIntent(contentIntent);
 		mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
 		Log.d(TAG, "Notification sent successfully.");
