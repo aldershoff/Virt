@@ -29,7 +29,7 @@ public class TwoFactorDAO {
 	 * 
 	 * @return
 	 */
-	public int getMobileID(String userID) {
+	public String getMobileID(String userID) {
 
 		// Making the connection
 		conn = makeConn();
@@ -69,25 +69,16 @@ public class TwoFactorDAO {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} finally {
-				/**
-				 * Extra check for checking if the database regID is not empty
-				 */
-				if (!databaseRegID.equals("")) {
-
-					return 1;
-				}
+			} 
 
 			}
+		else{
+			return null;
 		}
+		
 
-		// If the connection was not made, return nothing
-		else {
-			return 2;
-		}
-
-		// User does not have an ID yet, must log into the Android app
-		return 0;
+		// Return the regID
+		return databaseRegID;
 	}
 
 	/**
@@ -102,7 +93,7 @@ public class TwoFactorDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String INSERT_MOBILE_ID = "update users set users.UserMobileID= ? where users.UserID = ?";
+		final String INSERT_MOBILE_ID = "UPDATE users SET users.UserMobileID = ? WHERE UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed

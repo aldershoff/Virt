@@ -39,8 +39,8 @@ public class BuyDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, user_userID)"
-				+ "values(?,?,?,?,?,?,?,?,?,?)";
+		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, VMOrderDate, user_userID)"
+				+ "values(?,?,?,?,?,?,?,?,?,?,?)";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -48,6 +48,13 @@ public class BuyDAO {
 		if (conn != null) {
 
 			try {
+				
+				java.util.Date dt = new java.util.Date();
+
+				java.text.SimpleDateFormat sdf = 
+				     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+				String currentTime = sdf.format(dt);
 
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(ADD_VM);
@@ -62,7 +69,8 @@ public class BuyDAO {
 				pstm.setString(7, "8");
 				pstm.setString(8, uuid.toString());
 				pstm.setInt(9, (int) vmBean.getVMIsActive());
-				pstm.setString(10, userID);
+				pstm.setString(10, currentTime);
+				pstm.setString(11, userID);
 				
 				// Execute the query
 				rs = pstm.executeUpdate();

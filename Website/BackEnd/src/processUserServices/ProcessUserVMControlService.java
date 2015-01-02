@@ -272,4 +272,84 @@ public class ProcessUserVMControlService {
 
 		}
 	}
+	@SuppressWarnings("unchecked")
+	public void refreshVMState(String userID, String vmID) throws IOException {
+
+		JSONObject jobj = new JSONObject();
+		String error = "";
+
+		/**
+		 * Making new DAO and get the results
+		 */
+		VMDAO refreshVMState = new VMDAO();
+		
+
+		/**
+		 * Function for also making connection with libvirt API
+		 */
+		VMmanagementTest vmManagement = new VMmanagementTest();
+		
+		int resultLibVirt = vmManagement.refreshVMState("VMUUID");
+		
+			if(resultLibVirt != 2){
+				if(resultLibVirt == 1){
+					int result = refreshVMState.deleteSpecificVM(vmID, userID);
+					try {
+						if (result != 2) {
+
+							/**
+							 * If the bean is valid, it will return a new JSON response
+							 */
+							if (result == 1) {
+								jobj.put("success", "VM succesfully deleted!");
+
+							} else {
+								error = "Could not delete VM...";
+								jobj.put("error", error);
+							}
+						} else {
+							error = "Can't connect with database";
+							jobj.put("error", error);
+
+						}
+
+					} finally {
+						response.setContentType("application/json");
+						response.getWriter().write(jobj.toString());
+
+					}
+				}
+			}
+			else{
+				error = "Can't connect with libVirt!";
+				jobj.put("error", error);
+			}
+		
+
+		
+		try {
+			if (result != 2) {
+
+				/**
+				 * If the bean is valid, it will return a new JSON response
+				 */
+				if (result == 1) {
+					jobj.put("success", "VM succesfully deleted!");
+
+				} else {
+					error = "Could not delete VM...";
+					jobj.put("error", error);
+				}
+			} else {
+				error = "Can't connect with database";
+				jobj.put("error", error);
+
+			}
+
+		} finally {
+			response.setContentType("application/json");
+			response.getWriter().write(jobj.toString());
+
+		}
+	}
 }

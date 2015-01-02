@@ -36,6 +36,7 @@ public class UserVMDataService {
 	private VelocityContext vsl_Context;
 	private Template template;
 	private PrintWriter out;
+	private HttpServletRequest request;
 	
 	/**
 	 * Constructor for initialing the global variables
@@ -43,10 +44,11 @@ public class UserVMDataService {
 	 * @param template
 	 * @param out
 	 */
-	public UserVMDataService(VelocityContext vsl_Context, Template template, PrintWriter out){
+	public UserVMDataService(VelocityContext vsl_Context, Template template, PrintWriter out, HttpServletRequest request){
 		this.vsl_Context = vsl_Context;
 		this.template = template;
 		this.out = out;
+		this.request = request;
 	}
 	
 	/**
@@ -58,8 +60,7 @@ public class UserVMDataService {
 	 * @param response
 	 * @param sessionUserID
 	 */
-	public void getAllUserVMs(HttpServletRequest request,
-			HttpServletResponse response, long sessionUserID) {
+	public void getAllUserVMs(long sessionUserID) {
 		/**
 		 * Setting URL and Bean for giving data to Velocity
 		 */
@@ -134,9 +135,6 @@ public class UserVMDataService {
 		 */
 		finally {
 			vsl_Context.put("vmBeanArray", vmBeanArray);
-
-			template = Velocity
-					.getTemplate("Velocity/customers/controlpanel.html");
 		}
 	}
 
@@ -150,8 +148,7 @@ public class UserVMDataService {
 	 * @param response
 	 * @param sessionUserID
 	 */
-	public void getUserVMs(HttpServletRequest request,
-			HttpServletResponse response, long sessionUserID) {
+	public void getUserVMs(long sessionUserID) {
 
 		// Get VMID from parameter
 		String parameterVMID = request.getParameter("vmid");
@@ -210,10 +207,6 @@ public class UserVMDataService {
 		 */
 		finally {
 			vsl_Context.put("vm", vmBean);
-		
-
-			template = Velocity
-					.getTemplate("Velocity/customers/controlpanel.html");
 		}
 	}
 	
@@ -223,8 +216,7 @@ public class UserVMDataService {
 	 * @param response
 	 * @param sessionUserID
 	 */
-	public void getRealtimeVMData(HttpServletRequest request,
-			HttpServletResponse response, long sessionUserID){
+	public void getRealtimeVMData(long sessionUserID){
 		// Get VMID from parameter
 		String parameterVMID = request.getParameter("vmid");
 		
@@ -281,10 +273,6 @@ public class UserVMDataService {
 		 */
 		finally {
 			vsl_Context.put("vm", vmBean);
-		
-
-			template = Velocity
-					.getTemplate("Velocity/customers/controlpanel.html");
 		}
 		
 		

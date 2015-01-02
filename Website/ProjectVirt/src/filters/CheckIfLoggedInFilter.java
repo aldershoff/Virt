@@ -5,28 +5,24 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Filter for checking if a session has been made in the authenticated pages
- * 
- * @author kjellzijlemaker
- *
+ * Servlet Filter implementation class CheckIfLoggedFilter
  */
-public class AuthenticationFilter implements Filter {
-
-	private ServletContext context;
+@WebFilter("/CheckIfLoggedFilter")
+public class CheckIfLoggedInFilter implements Filter {
 
 	/**
 	 * Default constructor.
 	 */
-	public AuthenticationFilter() {
+	public CheckIfLoggedInFilter() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -44,25 +40,26 @@ public class AuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
+
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 
-		// Getting requested URI
-		String uri = req.getRequestURI();
-		//this.context.log("Requested Resource::" + uri);
-
-		// Making new session and getting the request
+		// Getting the session
 		HttpSession session = req.getSession(false);
 
+		if(session != null){
 		/**
-		 * If the session is null, a log will be initialized and will be
-		 * redirected
+		 * If the session has the userID (set inside the user servlet), a
+		 * redirection to the home page will taken place
 		 */
-		if (session == null || session.getAttribute("pincode") != null) {
-			this.context.log("Unauthorized access request");
-			res.sendRedirect("/ProjectVirt/login");
+		if (session.getAttribute("userID") != null && session.getAttribute("username") != null && session.getAttribute("pincode") == null) {
+			res.sendRedirect("/ProjectVirt/customer/home");
 		} else {
-			// pass the request along the filter chain
+			// Let the request pass
+			chain.doFilter(request, response);
+		}
+		}
+		else{
 			chain.doFilter(request, response);
 		}
 	}
@@ -72,8 +69,7 @@ public class AuthenticationFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig fConfig) throws ServletException {
-		this.context = fConfig.getServletContext();
-		this.context.log("AuthenticationFilter initialized");
+		// TODO Auto-generated method stub
 	}
 
 }

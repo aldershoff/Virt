@@ -14,22 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet Filter implementation class CheckIfLoggedFilter
+ * Servlet Filter implementation class CheckForTwoFactorPin
  */
-@WebFilter("/CheckIfLoggedFilter")
-public class CheckIfLoggedFilter implements Filter {
+@WebFilter("/CheckForTwoFactorPin")
+public class CheckForTwoFactorPinFilter implements Filter {
 
 	/**
 	 * Default constructor.
 	 */
-	public CheckIfLoggedFilter() {
+	public CheckForTwoFactorPinFilter() {
 		// TODO Auto-generated constructor stub
 	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
-	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
 	}
@@ -37,24 +36,26 @@ public class CheckIfLoggedFilter implements Filter {
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
-	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-
 		HttpServletRequest req = (HttpServletRequest) request;
-		HttpServletResponse res = (HttpServletResponse) response;
 
 		// Getting the session
 		HttpSession session = req.getSession(false);
 
-		/**
-		 * If the session has the userID (set inside the user servlet), a
-		 * redirection to the home page will taken place
-		 */
-		if (session.getAttribute("userID") != null) {
-			res.sendRedirect("/ProjectVirt/customer/home");
+		if (session != null) {
+			/**
+			 * If the user still has the pincode, then the pincode shall be removed
+			 * and will be requested once again
+			 */
+			if (session.getAttribute("pincode") != null) {
+				session.invalidate();
+			} else {
+				// Let the request pass
+				chain.doFilter(request, response);
+			}
 		} else {
-			// Let the request pass
+
 			chain.doFilter(request, response);
 		}
 	}
@@ -62,7 +63,6 @@ public class CheckIfLoggedFilter implements Filter {
 	/**
 	 * @see Filter#init(FilterConfig)
 	 */
-	@Override
 	public void init(FilterConfig fConfig) throws ServletException {
 		// TODO Auto-generated method stub
 	}

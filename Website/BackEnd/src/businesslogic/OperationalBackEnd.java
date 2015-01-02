@@ -19,7 +19,7 @@ import processUserServices.ProcessUserBuyService;
 import processUserServices.ProcessUserVMControlService;
 import processUserServices.ProcessUserVMDataService;
 import jsonserializers.BuyCustomerVMSerialiser;
-import jsonserializers.CustomerSerialiser;
+import jsonserializers.LoginUserSerialiser;
 import jsonserializers.GetUserVMSerialiser;
 import libvirtAccessObject.TestVM;
 import security.PasswordService;
@@ -120,6 +120,14 @@ public class OperationalBackEnd extends HttpServlet {
 		case "/customer/controlpanel/monitorvms":
 			getRealtimeUserVM(request, response);
 			break;
+		case "/customer/getprofiledetails":
+			
+			/**
+			 * Call the userdetails method
+			 */
+			ProcessUserAccountService getUserDetails = new ProcessUserAccountService(request, response);
+			getUserDetails.processGetUserDetails();
+			break;
 		default:
 			break;
 		}
@@ -188,6 +196,17 @@ public class OperationalBackEnd extends HttpServlet {
 		case "/customer/getUserMobileID":
 			getRegIDMobile(request, response);
 			break;
+			
+		case "/customer/profile/updateprofiledetails":
+			ProcessUserAccountService updateProfile = new ProcessUserAccountService(request, response);
+			updateProfile.processUpdateUserProfileDetails();
+			break;
+		
+		case "/customer/profile/updateaccountdetails":
+			ProcessUserAccountService updateAccount = new ProcessUserAccountService(request, response);
+			updateAccount.processUpdateUserAccountDetails();
+			break;
+			
 		default:
 			break;
 		}
@@ -284,13 +303,6 @@ public class OperationalBackEnd extends HttpServlet {
 		int result = mobile.registerMobileID(regID, userID);
 
 		/**
-		 * Logging if database is not reachable..
-		 */
-		if (result == 2) {
-
-		}
-
-		/**
 		 * Sending back the result
 		 */
 		JSONObject jobj = new JSONObject();
@@ -321,14 +333,8 @@ public class OperationalBackEnd extends HttpServlet {
 		 * Making contact with database and get result
 		 */
 		TwoFactorDAO mobile = new TwoFactorDAO();
-		int result = mobile.getMobileID(userID);
+		String result = mobile.getMobileID(userID);
 
-		/**
-		 * Logging if database is not reachable..
-		 */
-		if (result == 2) {
-
-		}
 
 		/**
 		 * Sending back the result

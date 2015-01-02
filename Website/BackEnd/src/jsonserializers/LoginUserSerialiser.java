@@ -17,7 +17,7 @@ import com.google.gson.JsonSerializer;
  * @author KjellZijlemaker
  *
  */
-public class CustomerSerialiser implements JsonSerializer<CustomerBean> {
+public class LoginUserSerialiser implements JsonSerializer<CustomerBean> {
 
 	@Override
 	public JsonElement serialize(CustomerBean customer, Type typeOfSrc,
@@ -30,6 +30,7 @@ public class CustomerSerialiser implements JsonSerializer<CustomerBean> {
 		final JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("userID", customer.getUserID());
 		jsonObject.addProperty("username", customer.getUsername());
+		jsonObject.addProperty("userTwoFactor", customer.isTwoFactor());
 		jsonObject.addProperty("valid", customer.isValid());
 
 		return jsonObject;

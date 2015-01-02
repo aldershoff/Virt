@@ -145,13 +145,13 @@ public class Users extends HttpServlet {
 		String userPath = request.getRequestURI().substring(
 				request.getContextPath().length());
 
-		try {
 			/**
 			 * If the userpath does not start with customer, the user will
 			 * browse through this method
 			 */
 			if (!userPath.startsWith("/customer")) {
 				setPOSTCustomerUrls(userPath, response, request);
+				
 			}
 
 			/**
@@ -167,14 +167,14 @@ public class Users extends HttpServlet {
 				// Go to the authenticatedUrlTemplates
 				setPOSTCustomerAuthenticatedUrls(userPath, session, response,
 						request);
+				
+				template.merge(vsl_Context, out);
+				cleanVelocity();
+				vsl_Context.put("baseUrl", request.getContextPath());
+				out.close();
 
 			}
-		} finally {
-			template.merge(vsl_Context, out);
-			cleanVelocity();
-			vsl_Context.put("baseUrl", request.getContextPath());
-			out.close();
-		}
+		
 
 	}
 
@@ -258,6 +258,17 @@ public class Users extends HttpServlet {
 				template = Velocity
 						.getTemplate("Velocity/customers/index.html");
 				break;
+				
+			case "/customer/profile":
+				template = Velocity
+				.getTemplate("Velocity/customers/profile.html");
+				
+				// Making new object
+				UserAccountService userDetails = new UserAccountService(vsl_Context, template, out, request, response);
+				
+				// Calling the getUserDetails method for getting the details for user
+				userDetails.getUserDetails(sessionUserID);
+				break;
 
 			/**
 			 * In this URL, all the VMs will be called or one specific VM will
@@ -269,14 +280,14 @@ public class Users extends HttpServlet {
 						.getTemplate("Velocity/customers/controlpanel.html");
 
 				userVM = new UserVMDataService(vsl_Context, template,
-						out);
+						out, request);
 				/**
 				 * If the request contains the parameter with getVM, not all the
 				 * VMS should be requested
 				 */
 				if (request.getParameterMap().containsKey("request")
 						&& request.getParameter("request").contains("getvm")) {
-					userVM.getUserVMs(request, response, sessionUserID);
+					userVM.getUserVMs(sessionUserID);
 				}
 
 				/**
@@ -284,16 +295,23 @@ public class Users extends HttpServlet {
 				 * VMs will be called
 				 */
 				else {
-					userVM.getAllUserVMs(request, response, sessionUserID);
+					userVM.getAllUserVMs(sessionUserID);
 				}
 
 				break;
 
 			case "/customer/controlpanel/monitor":
 				
-				UserVMDataService vmData = new UserVMDataService(vsl_Context, template, out);
-				vmData.getRealtimeVMData(request, response, sessionUserID);
+				UserVMDataService vmData = new UserVMDataService(vsl_Context, template, out, request);
+				vmData.getRealtimeVMData(sessionUserID);
 				
+				break;
+				
+				
+			case "/customer/controlpanel/vmcontrol/editvm":
+				UserVMDataService getVMData = new UserVMDataService(vsl_Context, template, out, request);
+				template = Velocity.getTemplate("Velocity/customers/editvm.html");
+				getVMData.getUserVMs(sessionUserID);
 				break;
 
 			case "/customer/marketplace":
@@ -315,8 +333,8 @@ public class Users extends HttpServlet {
 
 			case "/customer/logout":
 				UserAccountService logout = new UserAccountService(vsl_Context,
-						template, out);
-				logout.logoutUser(request, response);
+						template, out, request, response);
+				logout.logoutUser();
 				break;
 			}
 		}
@@ -341,13 +359,19 @@ public class Users extends HttpServlet {
 		switch (userPath) {
 
 		case "/login":
-			userAccount = new UserAccountService(vsl_Context, template, out);
-			userAccount.loginUser(request, response);
+			userAccount = new UserAccountService(vsl_Context, template, out, request, response);
+			userAccount.loginUser();
 			break;
 		case "/register":
-			userAccount = new UserAccountService(vsl_Context, template, out);
-			userAccount.registerUser(request, response);
+			userAccount = new UserAccountService(vsl_Context, template, out, request, response);
+			userAccount.registerUser();
+			
+			template.merge(vsl_Context, out);
+			vsl_Context.put("baseUrl", request.getContextPath());
+			cleanVelocity();
+			out.close();
 			break;
+		
 		}
 
 	}
@@ -359,10 +383,11 @@ public class Users extends HttpServlet {
 	 * @param session
 	 * @param response
 	 * @param request
+	 * @throws IOException 
 	 */
 	private void setPOSTCustomerAuthenticatedUrls(String userPath,
 			HttpSession session, HttpServletResponse response,
-			HttpServletRequest request) {
+			HttpServletRequest request) throws IOException {
 
 		/**
 		 * Getting the session username and userID
@@ -386,40 +411,54 @@ public class Users extends HttpServlet {
 			 */
 			switch (userPath) {
 			case "/customer/marketplace/buy":
-				UserBuyService userBuy = new UserBuyService(vsl_Context, template, out);
-				userBuy.buyCustomerVM(request, response, sessionUserID);
+				UserBuyService userBuy = new UserBuyService(vsl_Context, template, out, request);
+				userBuy.buyCustomerVM(sessionUserID);
+				break;
+						
+			case "/customer/profile/updateprofile":
+				UserAccountService updateProfile = new UserAccountService(vsl_Context, template, out, request, response);
+				updateProfile.updateUserProfileDetails(sessionUserID);
 				break;
 				
+			case "/customer/profile/updateaccount":
+				UserAccountService updateAccount = new UserAccountService(vsl_Context, template, out, request, response);
+				updateAccount.updateUserAccountDetails(sessionUserID);
+				break;
+				
+			
 			case "/customer/controlpanel/vmcontrol":
 				
-				UserVMControlService vmControl = new UserVMControlService(vsl_Context, template, out);
+				UserVMControlService vmControl = new UserVMControlService(vsl_Context, template, out, request, response);
 				String vmID = request.getParameter("vmid");
 				switch (request.getParameter("action")) {
 				case "Start":
-					vmControl.startVM(request, response, vmID, sessionUserID, "Start");
+					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+					vmControl.startVM(vmID, sessionUserID, "Start");
 					break;
 
 				case "Stop":
-					vmControl.stopVM(request, response, vmID, sessionUserID, "Stop");
-					break;
-					
-				case "Edit":
-					vmControl.editVM(request, response, vmID, sessionUserID, "Edit");
+					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+					vmControl.stopVM(vmID, sessionUserID, "Stop");
 					break;
 					
 				case "Delete":
-					vmControl.deleteVM(request, response, vmID, sessionUserID, "Delete");
+					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+					vmControl.deleteVM(vmID, sessionUserID, "Delete");
+					break;
+				
+				case "Edit":
+					template = Velocity.getTemplate("Velocity/customers/editvm.html");
+					vmControl.editVM(vmID, sessionUserID, "Edit");
 					break;
 					
 				case "RefreshState":
-					vmControl.deleteVM(request, response, vmID, sessionUserID, "RefreshState");
+					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+					vmControl.refreshVMState(vmID, sessionUserID, "RefreshState");
 					break;
 				default:
 					break;
 				}
 				
-				
-				break;
 			}
 		}
 	}

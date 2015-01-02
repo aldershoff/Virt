@@ -1,4 +1,4 @@
-#parse( "/Velocity/includes/header.html" )
+#parse( "/Velocity/includes/customers/header.html" )
 <body id="top">
 
 
@@ -26,7 +26,10 @@
 					<li><a href="$baseUrl/customer/logout">Logout</a></li>
 				</ul>
 			</div>
-				Welcome back, $name!
+			<br />
+			Welcome back, $name!
+			<br />
+			<a href="$baseUrl/customer/profile" style="color:#CCCCCC; background-color:#000; font-size:x-small;">Click here to view your profile!</a>
 			<br class="clear" />
 		</div>
 	</div>
@@ -87,4 +90,4 @@
 	</div>
 
 
-	#parse( "/Velocity/includes/footer.html" )
+	#parse( "/Velocity/includes/customers/footer.html" )

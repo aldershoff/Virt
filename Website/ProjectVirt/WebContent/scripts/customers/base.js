@@ -43,10 +43,8 @@ $(document).ready(function(){
 		   window.location.href='/ProjectVirt/customer/controlpanel?request=getvm&vmid=' + vmID;
 		})
 
-
 $('#refreshVMState').click(function(){
 	alert("refresh the state");
-	
 	//start ajax request
     $.ajax({
     	type: "POST",/*method type*/
@@ -54,6 +52,7 @@ $('#refreshVMState').click(function(){
         url: "/ProjectVirt/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()",
         data: '{"data":"' + param + '"}',/*parameter pass data is parameter name param is value */
         dataType: "json",
+       
         success: function(data) {
             
             //data downloaded so we call parseJSON function 

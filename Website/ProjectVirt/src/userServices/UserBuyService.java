@@ -30,6 +30,7 @@ public class UserBuyService {
 	private VelocityContext vsl_Context;
 	private Template template;
 	private PrintWriter out;
+	private HttpServletRequest request;
 
 	/**
 	 * Constructor for initialing the global variables
@@ -38,10 +39,11 @@ public class UserBuyService {
 	 * @param template
 	 * @param out
 	 */
-	public UserBuyService(VelocityContext vsl_Context, Template template, PrintWriter out){
+	public UserBuyService(VelocityContext vsl_Context, Template template, PrintWriter out, HttpServletRequest request){
 		this.vsl_Context = vsl_Context;
 		this.template = template;
 		this.out = out;
+		this.request = request;
 	}
 	
 	/**
@@ -51,8 +53,7 @@ public class UserBuyService {
 	 * @param response
 	 * @param sessionUserID
 	 */
-	public void buyCustomerVM(HttpServletRequest request,
-			HttpServletResponse response, long sessionUserID) {
+	public void buyCustomerVM(long sessionUserID) {
 		/**
 		 * Checking if the fields were not left empty
 		 */

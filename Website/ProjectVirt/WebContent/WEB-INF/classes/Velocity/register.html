@@ -52,9 +52,9 @@
 									<p>Please fill in your personal details below</p>
 								</div>
 								<div>
-									<input type="text" placeholder="username" name="user" value ="$!{username}"/> <input
-										type="password" placeholder="password" name="password" /> <input
-										type="text" placeholder="Date of birth" name="dateofbirth" value ="$!{dateofbirth}"/>
+									<input type="text" placeholder="Username" name="user" value ="$!{username}"/> <input
+										type="password" placeholder="Password" name="password" /> <input
+										type="text" placeholder="Company" name="company" value ="$!{company}"/>
 									<input type="text" placeholder="First name" name="firstname" value ="$!{firstname}"/>
 									<input type="text" placeholder="Last name" name="lastname" value ="$!{lastname}"/> <input
 										type="text" placeholder="Email" name="email" value ="$!{email}"/> <input
@@ -63,11 +63,16 @@
 										type="text" placeholder="Zip code" name="zipcode" value ="$!{zipcode}"/>
 								</div>
 								<div>
+									<input
+										type="checkbox" id="twofactor" name="twofactor" /> <label
+										for="twofactor">Register with extra authentication</label> 
+										<br />
+										<br />
 									<input type="checkbox" id="accept" name="accept" /> <label
 										for="Iaccept">I accept the <a href="home">terms of
 											agreement</a></label> <br> <br>
 									<p>Please make sure all entered details are correct before
-										registering</p>
+										registering! Also, when registered with extra authentication. Please download the app from the Android appstore and follow the instructions!</p>
 									$!{error} $!{success}
 								</div>
 								<div>

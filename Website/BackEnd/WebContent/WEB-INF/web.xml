@@ -46,5 +46,17 @@
 		<servlet-name>OperationalBackEnd</servlet-name>
 		<url-pattern>/customer/getUserMobileID</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/getprofiledetails</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/profile/updateprofiledetails</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OperationalBackEnd</servlet-name>
+		<url-pattern>/customer/profile/updateaccountdetails</url-pattern>
+	</servlet-mapping>
 	
 </web-app>

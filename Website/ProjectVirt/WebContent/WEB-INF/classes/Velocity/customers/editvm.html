@@ -1,0 +1,145 @@
+#parse( "/Velocity/includes/customers/header.html" )
+<body id="top">
+
+
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/customer/home">Home</a></li>
+					<li><a href="$baseUrl/customer/controlpanel">Control Panel</a></li>
+					<li><a href="$baseUrl/customer/marketplace">VM Marketplace</a>
+						<ul>
+							<li><a href="$baseUrl/customer/marketplace/windows">Windows
+									server 2008</a></li>
+							<li><a href="$baseUrl/customer/marketplace/debian">Debian</a></li>
+							<li><a href="$baseUrl/customer/marketplace/slackware">Slackware</a></li>
+						</ul></li>
+					<li><a href="$baseUrl/customer/logout">Logout</a></li>
+				</ul>
+			</div>
+			<br /> Welcome back, $name! <br /> <a
+				href="$baseUrl/customer/profile"
+				style="color: #CCCCCC; background-color: #000; font-size: x-small;">Click
+				here to view your profile!</a> <br class="clear" />
+		</div>
+	</div>
+
+
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/monitor.jpeg" alt="" />
+						<div class="floater">
+							<br> <br>
+							<h1>Here, you can view and change your profile settings!</h1></li>
+				</ul>
+				</div>
+			
+			</div>
+		</div>
+
+	<div class="container">
+
+
+		<h2>Edit your VM</h2>
+		<hr>
+		<div class="row">
+			<!-- edit form column -->
+			<div class="col-md-9 personal-info">
+				<div class="alert alert-info alert-dismissable">
+					<a class="panel-close close" data-dismiss="alert">×</a> <i
+						class="fa fa-coffee"></i> <strong> Please check your VM
+						details carefully before editing! To change the hostname, please
+						contact support.</strong>
+				</div>
+				<h3>VM Info</h3>
+
+				<form class="form-horizontal" role="form"
+					action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Hostname:</label>
+						<div class="col-lg-8">
+							<input class="form-control" type="text" value="$vm.getVMName()"
+								readonly>
+						</div>
+					</div>
+					<br />
+					<div class="form-group">
+
+						<label class="col-lg-3 control-label">Total RAM:</label> <select
+							name="VMRAM">
+							<option value="vmRAM">Current - $vm.getVMMemory() GB/MB</option>
+							<option value="512">512 mb</option>
+							<option value="1">1 GB</option>
+							<option value="2">2 GB</option>
+							<option value="4">4 GB</option>
+							<option value="8">8 GB</option>
+							<option value="16">16 GB</option>
+						</select>
+
+					</div>
+					<br />
+					<div class="form-group">
+						<label class="col-lg-3 control-label">CPU Cores:</label> <select
+							name="VMCPU">
+							<option value="vmCPU">Current - $vm.getVMCPU() Core</option>
+							<option value="1">1 core</option>
+							<option value="2">2 core</option>
+							<option value="3">4 core</option>
+							<option value="4">8 core</option>
+							<option value="5">16 core</option>
+						</select>
+					</div>
+					<br />
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Total HDD Space:</label> <select
+							name="VMHDD">
+							<option value="vmHDD">Current - $vm.getVMDiskSpace() GB</option>
+							<option value="40">40 GB</option>
+							<option value="80">80 GB</option>
+							<option value="160">160 GB</option>
+						</select>
+					</div>
+					<br />
+					<div class="form-group">
+						<label class="col-lg-3 control-label">SLA:</label> <select
+							name="VMSLA">
+							<option value="vmSLA">Current - $vm.getVMSLA()</option>
+							<option value="gold">Gold</option>
+							<option value="silver">Silver</option>
+							<option value="bronze">Bronze</option>
+						</select>
+					</div>
+
+					<br />
+					<div class="form-group">
+						<label class="col-md-3 control-label"></label>
+						<div class="col-md-8">
+							<input type="hidden" name="action"
+								value="Edit"> <input type="submit"
+								class="btn btn-primary" value="Save Changes"> <span></span>
+							<input type="reset" class="btn btn-default" value="Cancel">
+						</div>
+					</div>
+					<br /> $!{error} $!{success}
+				</form>
+			</div>
+</div>
+</div>
+
+
+		<hr>
+		<script>
+window.scrollTo(0,400);
+</script>
+</body>
+#parse( "/Velocity/includes/customers/footer.html" )

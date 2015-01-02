@@ -19,13 +19,13 @@ public class CustomerBean {
 	private String password;
 	@Expose private String firstName;
 	@Expose private String lastName;
-	@Expose private String dateOfBirth;
 	@Expose private String email;
 	@Expose private String phone;
 	@Expose private String address;
-	@Expose private String zipCode;
-	@Expose private String error;
+	@Expose private String zipcode;
 	@Expose private boolean remember;
+	@Expose private int twoFactor;
+	private String company;
 	@Expose public boolean valid;
 
 	/**
@@ -138,15 +138,7 @@ public class CustomerBean {
 	public void setValid(boolean newValid) {
 		valid = newValid;
 	}
-
-	public String getDateOfBirth() {
-		return dateOfBirth;
-	}
-
-	public void setDateOfBirth(String dateOfBirth) {
-		this.dateOfBirth = dateOfBirth;
-	}
-
+	
 	public String getEmail() {
 		return email;
 	}
@@ -172,11 +164,11 @@ public class CustomerBean {
 	}
 
 	public String getZipCode() {
-		return zipCode;
+		return zipcode;
 	}
 
 	public void setZipCode(String zipCode) {
-		this.zipCode = zipCode;
+		this.zipcode = zipCode;
 	}
 
 	public int getUserID() {
@@ -186,12 +178,20 @@ public class CustomerBean {
 	public void setUserID(int i) {
 		this.userID = i;
 	}
-	
-	public String getError() {
-		return this.error;
+
+	public int isTwoFactor() {
+		return twoFactor;
 	}
 
-	public void setError(String error) {
-		this.error = error;
+	public void setTwoFactor(int twoFactor) {
+		this.twoFactor = twoFactor;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 }

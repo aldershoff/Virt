@@ -27,7 +27,11 @@
 					<li><a href="$baseUrl/customer/logout">Logout</a></li>
 				</ul>
 			</div>
-			Welcome back, $name! <br class="clear" />
+			<br />
+			Welcome back, $name!
+			<br />
+			<a href="$baseUrl/customer/profile" style="color:#CCCCCC; background-color:#000; font-size:x-small;">Click here to view your profile!</a>
+			<br class="clear" />
 		</div>
 	</div>
 
@@ -44,7 +48,7 @@
 			</div>
 		</div>
 	</div>
-	</div>
+	
 
 
 	<div class="wrapper col3">
@@ -72,7 +76,9 @@
 								<td>$vm.getVMName()</td>
 								<td>$vm.getVMOS()</td>
 								<td>$!{vm.getVMState()}</td>
-								<td> <input type="button" id="refreshVMState" name="action" value="Refresh VM State"></td>
+								
+								<td><form method="POST" action="$baseUrl/customer/controlpanel/vmcontrol?action=RefreshState"> <input type="hidden" name="vmid" value="$vm.getVMID()"><input type="submit" value="Refresh VM State"></form></td>
+								
 							</tr>
 					 #end 
 					</tbody>
@@ -120,9 +126,9 @@
 					    <td>$!{vm.getVMID()}</td>
 					    <td>$!{vm.getVMName()}</td> 
 					    <td>$!{vm.getVMOS()}</td> 
-					    <td>$!{vm.getVMCPU()}</td>
-					    <td>$!{vm.getVMMemory()}</td>
-					    <td>$!{vm.getVMDiskSpace()}</td>
+					    <td>$!{vm.getVMCPU()} cores</td>
+					    <td>$!{vm.getVMMemory()} GB/MB</td>
+					    <td>$!{vm.getVMDiskSpace()} GB</td>
 					    <td>$!{vm.getVMIP()}</td>
 					    <td>$!{vm.getVMSLA()}</td>
 					    <td>$!{vm.getVMMonthlyPrice()}</td>
@@ -135,10 +141,12 @@
 					<form id="controlVMForm" action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
 	   				<input type="submit" name="action" value="Start">
 	   					  <input type="submit" name="action" value="Stop">
-	   					  <input type="submit" name="action" value="Edit">
 	   					   <input type="submit" name="action" value="Delete" onClick="return confirm_delete()">
 					</form>
-					
+					<form action="$baseUrl/customer/controlpanel/vmcontrol/editvm" style="margin-left: 133px; margin-top: -55px;">	
+					<input type="hidden" name="vmid" value="$vm.getVMID()">
+					<input type="submit" value="Edit VM">
+					</form>
 					
 					<br />
 			<h2>Realtime Statistics  <input type="button" id="refreshVMRealtime" name="refreshVMRealtime" value="Refresh"></h2>
@@ -183,5 +191,6 @@
 	function confirm_delete() {
 		return confirm('Do you really want to delete the virtual machine: $vm.getVMName()? Please confirm!');
 	}
+	window.scrollTo(0,430);
 	</script>
 	#parse( "/Velocity/includes/customers/footer.html" )

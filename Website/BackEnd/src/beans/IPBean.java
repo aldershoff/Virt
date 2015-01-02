@@ -14,7 +14,7 @@ public class IPBean {
 	/**
 	 * Setting the variables needed
 	 */
-	Private string IPAddress;
+	private String IPAddress;
 
 	/**
 	 * Returning Available IP
