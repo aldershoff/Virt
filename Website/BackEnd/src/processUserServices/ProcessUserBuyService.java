@@ -104,8 +104,17 @@ public class ProcessUserBuyService {
 			// Set the bean and fill it
 			vmBean = buyDAO.addVM(vmBean, userID, makeVMLibvirtResult);
 
-			Gson gson = new Gson();
+			int assignVMUP = buyDAO.AssignVMIP(vmBean.getVMID());
 			
+			if(assignVMUP == 1){
+				vmBean.setVmIPIsActive(1);
+			}
+			else{
+				vmBean.setVmIPIsActive(0);
+			}
+			
+			
+			Gson gson = new Gson();
 
 			try {
 
@@ -119,6 +128,7 @@ public class ProcessUserBuyService {
 
 					if (vmBean.isValid()) {
 
+						
 						final GsonBuilder gsonBuilder = new GsonBuilder();
 						gsonBuilder.registerTypeAdapter(VMBean.class,
 								new BuyCustomerVMSerialiser());

@@ -111,7 +111,7 @@ public class UserVMControlService {
 	}
 
 	/**
-	 * Method for giving request to back-end, to stop the chosen VM
+	 * Method for giving request to back-end, to stop the chosen VM 
 	 * @param request
 	 * @param response
 	 * @param vmID
@@ -175,15 +175,17 @@ public class UserVMControlService {
 		// Setting new bean to fill the data
 		VMBean editVM = new VMBean();
 		try{
+			
 		/**
 		 * Set postparameters to give with the request
 		 */
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+		postParameters.add(new BasicNameValuePair("vmID", vmID));
+		postParameters.add(new BasicNameValuePair("vmName", request.getParameter("vmName")));
 		postParameters.add(new BasicNameValuePair("vmCPU", request.getParameter("VMCPU")));
 		postParameters.add(new BasicNameValuePair("vmRAM", request.getParameter("VMRAM")));
 		postParameters.add(new BasicNameValuePair("vmHDD", request.getParameter("VMHDD")));
 		postParameters.add(new BasicNameValuePair("vmSLA", request.getParameter("VMSLA")));
-		postParameters.add(new BasicNameValuePair("vmID", vmID));
 		postParameters.add(new BasicNameValuePair("userID", Long
 				.toString(userID)));
 		postParameters.add(new BasicNameValuePair("action", action));

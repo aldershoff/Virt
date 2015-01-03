@@ -151,14 +151,18 @@ public class UserDAO {
 				pstm.setString(3, "user");
 				pstm.setString(4, bean.getFirstName());
 				pstm.setString(5, bean.getLastName());
-				pstm.setString(6, bean.getCompany());
+				if (!bean.getCompany().isEmpty()) {
+					pstm.setString(6, bean.getCompany());
+				} else {
+					pstm.setString(6, "");
+				}
+
 				pstm.setString(7, bean.getEmail());
 				pstm.setString(8, bean.getPhone());
 				pstm.setString(9, bean.getAddress());
 				pstm.setString(10, bean.getZipCode());
 				pstm.setString(11, "");
 				pstm.setInt(12, bean.isTwoFactor());
-				
 
 				// Execute the query
 				rs = pstm.executeUpdate();
@@ -201,8 +205,6 @@ public class UserDAO {
 		return bean;
 	}
 
-	
-	
 	/**
 	 * Getting the user details for profile
 	 * 
@@ -225,7 +227,8 @@ public class UserDAO {
 			try {
 
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(GET_USER_DETAILS);
+				PreparedStatement pstm = conn
+						.prepareStatement(GET_USER_DETAILS);
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setInt(1, bean.getUserID());
@@ -284,10 +287,10 @@ public class UserDAO {
 		// Return the bean for using the data
 		return bean;
 	}
-	
-	
+
 	/**
-	 * Executes the query for changing the information for the user, but will also add information to the Bean
+	 * Executes the query for changing the information for the user, but will
+	 * also add information to the Bean
 	 * 
 	 * @return
 	 */
@@ -308,7 +311,8 @@ public class UserDAO {
 			try {
 
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(UPDATE_PROFILE_DETAILS_URL);
+				PreparedStatement pstm = conn
+						.prepareStatement(UPDATE_PROFILE_DETAILS_URL);
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, bean.getFirstName());
@@ -320,7 +324,6 @@ public class UserDAO {
 				pstm.setString(7, bean.getZipCode());
 				pstm.setInt(8, bean.isTwoFactor());
 				pstm.setInt(9, bean.getUserID());
-				
 
 				// Execute the query
 				rs = pstm.executeUpdate();
@@ -362,9 +365,10 @@ public class UserDAO {
 		// Return the bean for using the data
 		return bean;
 	}
-	
+
 	/**
-	 * Executes the query for changing the information for the user, but will also add information to the Bean
+	 * Executes the query for changing the information for the user, but will
+	 * also add information to the Bean
 	 * 
 	 * @return
 	 */
@@ -385,12 +389,12 @@ public class UserDAO {
 			try {
 
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(UPDATE_ACCOUNT_DETAILS_URL);
+				PreparedStatement pstm = conn
+						.prepareStatement(UPDATE_ACCOUNT_DETAILS_URL);
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, bean.getPassword());
 				pstm.setInt(2, bean.getUserID());
-				
 
 				// Execute the query
 				rs = pstm.executeUpdate();
@@ -433,8 +437,6 @@ public class UserDAO {
 		return bean;
 	}
 
-
-	
 	/**
 	 * Make the connection with the database and return it
 	 * 

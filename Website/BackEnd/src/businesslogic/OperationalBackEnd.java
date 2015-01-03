@@ -167,21 +167,20 @@ public class OperationalBackEnd extends HttpServlet {
 
 			ProcessUserVMControlService vmControl = new ProcessUserVMControlService(
 					request, response);
-			String userID = request.getParameter("userID");
-			String vmID = request.getParameter("vmID");
+			
 
 			switch (request.getParameter("action")) {
 			case "Start":
-				vmControl.startVM(userID, vmID);
+				vmControl.startVM();
 				break;
 			case "Stop":
-				vmControl.stopVM(userID, vmID);
+				vmControl.stopVM();
 				break;
 			case "Edit":
-				vmControl.editVM(userID, vmID);
+				vmControl.editVM();
 				break;
 			case "Delete":
-				vmControl.deleteVM(userID, vmID);
+				vmControl.deleteVM();
 				break;
 			default:
 				break;

@@ -71,7 +71,6 @@ public class TestVM {
 	 */
 	
 	
-	@SuppressWarnings("null")
 	public static UUID createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
 		//setup libvirt connection, second parameter is a boolean for read-only 

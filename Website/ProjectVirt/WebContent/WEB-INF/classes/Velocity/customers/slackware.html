@@ -93,11 +93,14 @@
 								<input name="accept" type="checkbox" id="accept" /> <label for="Iaccept">I
 									accept the <a href="$baseUrl/pdf/ToA_Plaintech.pdf">terms of
 										agreement</a>
-								</label> <br> <br>
+								</label> <br /> <br />
 								<p>Please make sure the correct server specifications are
 									selected before submitting</p>
+									<p />
+									$!{error}
+									<p />
+									$!{success}
 							</div>
-							$!{error} $!{success}
 							<div>
 								<input type="submit" value="submit" />
 							</div>

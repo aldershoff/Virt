@@ -5,10 +5,17 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jsonserializers.GetUserDetailsSerialiser;
+import jsonserializers.GetUserVMSerialiser;
 import libvirtAccessObject.VMmanagementTest;
 
 import org.json.simple.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import beans.CustomerBean;
+import beans.VMBean;
 import databaseAccessObjects.VMDAO;
 
 public class ProcessUserVMControlService {
@@ -23,9 +30,12 @@ public class ProcessUserVMControlService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void startVM(String userID, String vmID) throws IOException {
+	public void startVM() throws IOException {
 		JSONObject jobj = new JSONObject();
 		String error = "";
+		
+		String userID = request.getParameter("userID");
+		String vmID = request.getParameter("vmID");
 
 		/**
 		 * Making new DAO and get the results
@@ -105,10 +115,113 @@ public class ProcessUserVMControlService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void stopVM(String userID, String vmID) throws IOException {
+	public void editVM() throws IOException {
+		JSONObject jobj = new JSONObject();
+		String error = "";
+		String json = "";
+		
+		VMBean editVMBean = new VMBean();
+		String userID = request.getParameter("userID");
+		editVMBean.setVMID(Integer.parseInt(request.getParameter("vmID")));
+		editVMBean.setVMName(request.getParameter("vmName"));
+		editVMBean.setVMCPU(request.getParameter("vmCPU"));
+		editVMBean.setVMMemory(request.getParameter("vmRAM"));
+		editVMBean.setVMDiskSpace(request.getParameter("vmHDD"));
+		editVMBean.setVMSLA(request.getParameter("vmSLA"));
+		
+		
+		/**
+		 * Making new DAO and get the results
+		 */
+		VMDAO editVM = new VMDAO();
+		
+
+		/**
+		 * Function for also making connection with libvirt API
+		 */
+//		VMmanagementTest vmManagement = new VMmanagementTest();
+//		
+//		int resultLibVirt = vmManagement.deleteVM("VMUUID");
+//		
+//			if(resultLibVirt != 2){
+//				if(resultLibVirt == 1){
+//					int result = deleteVM.deleteSpecificVM(vmID, userID);
+//					try {
+//						if (result != 2) {
+//
+//							/**
+//							 * If the bean is valid, it will return a new JSON response
+//							 */
+//							if (result == 1) {
+//								jobj.put("success", "VM succesfully deleted!");
+//
+//							} else {
+//								error = "Could not delete VM...";
+//								jobj.put("error", error);
+//							}
+//						} else {
+//							error = "Can't connect with database";
+//							jobj.put("error", error);
+//
+//						}
+//
+//					} finally {
+//						response.setContentType("application/json");
+//						response.getWriter().write(jobj.toString());
+//
+//					}
+//				}
+//			}
+//			else{
+//				error = "Can't connect with libVirt!";
+//				jobj.put("error", error);
+//			}
+		
+		
+		int result = editVM.editSpecificVM(userID, editVMBean);
+
+		
+		try {
+			if (result != 2) {
+
+				/**
+				 * If the bean is valid, it will return a new JSON response
+				 */
+				if (result == 1) {
+					final GsonBuilder gsonBuilder = new GsonBuilder();
+					gsonBuilder.registerTypeAdapter(VMBean.class,
+							new GetUserVMSerialiser());
+					Gson gson = gsonBuilder.create();
+					json = gson.toJson(editVMBean);
+
+				} else {
+					error = "Could not edit VM...";
+					jobj.put("error", error);
+				}
+			} else {
+				error = "Can't connect with database";
+				jobj.put("error", error);
+
+			}
+
+		} finally {
+			response.setContentType("application/json");
+			if (error != "") {
+				response.getWriter().write(jobj.toString());
+			} else {
+				response.getWriter().write(json.toString());
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void stopVM() throws IOException {
 		JSONObject jobj = new JSONObject();
 		String error = "";
 
+		String userID = request.getParameter("userID");
+		String vmID = request.getParameter("vmID");
+		
 		/**
 		 * Making new DAO and get the results
 		 */
@@ -167,7 +280,7 @@ public class ProcessUserVMControlService {
 				 * If the bean is valid, it will return a new JSON response
 				 */
 				if (result == 1) {
-					jobj.put("success", "VM succesfully stopped!");
+					jobj.put("success", "VM succesfully edited!");
 
 				} else {
 					error = "Could not stop VM...";
@@ -186,16 +299,15 @@ public class ProcessUserVMControlService {
 		}
 	}
 
-	public void editVM(String userID, String vmID) {
-
-	}
-
 	@SuppressWarnings("unchecked")
-	public void deleteVM(String userID, String vmID) throws IOException {
+	public void deleteVM() throws IOException {
 
 		JSONObject jobj = new JSONObject();
 		String error = "";
 
+		String userID = request.getParameter("userID");
+		String vmID = request.getParameter("vmID");
+		
 		/**
 		 * Making new DAO and get the results
 		 */
@@ -277,6 +389,9 @@ public class ProcessUserVMControlService {
 
 		JSONObject jobj = new JSONObject();
 		String error = "";
+		
+		String userID = request.getParameter("userID");
+		String vmID = request.getParameter("vmID");
 
 		/**
 		 * Making new DAO and get the results

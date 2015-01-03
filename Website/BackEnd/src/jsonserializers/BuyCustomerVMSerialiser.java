@@ -29,6 +29,7 @@ public class BuyCustomerVMSerialiser implements JsonSerializer<VMBean> {
 		 */
 		final JsonObject jsonObject = new JsonObject();
 		jsonObject.addProperty("valid", vmBean.isValid());
+		jsonObject.addProperty("vmIPIsActive", vmBean.getVmIPIsActive());
 
 		return jsonObject;
 	}

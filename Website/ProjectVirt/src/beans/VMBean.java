@@ -25,6 +25,7 @@ public class VMBean {
 	private String vmState;
 	private String vmMonthlyPrice;
 	private String vmIsActive;
+	private long vmIPIsActive;
 	public ArrayList<VMBean> VMs = new ArrayList<VMBean>();
 	public boolean valid;
 
@@ -183,6 +184,14 @@ public class VMBean {
 
 	public void setVMIsActive(String vmIsActive) {
 		this.vmIsActive = vmIsActive;
+	}
+
+	public long getVmIPIsActive() {
+		return vmIPIsActive;
+	}
+
+	public void setVmIPIsActive(long vmIPIsActive) {
+		this.vmIPIsActive = vmIPIsActive;
 	}
 
 	

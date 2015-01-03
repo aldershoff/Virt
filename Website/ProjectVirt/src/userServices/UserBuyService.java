@@ -107,6 +107,10 @@ public class UserBuyService {
 						vsl_Context
 								.put("success",
 										"Succesfully added VM. It will take a minute or 30 before the VM is monitorable!");
+						
+						if((long)json.get("vmIPIsActive") == 0){
+							vsl_Context.put("error", "No more IP addresses available.. Please contact support!");
+						}
 					} else {
 						vsl_Context.put("error", json.get("error"));
 					}

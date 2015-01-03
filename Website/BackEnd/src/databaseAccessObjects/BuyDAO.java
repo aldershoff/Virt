@@ -4,6 +4,7 @@ import infrastructure.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -39,9 +40,12 @@ public class BuyDAO {
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String ADD_VM = "insert into VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, VMOrderDate, user_userID)"
-				+ "values(?,?,?,?,?,?,?,?,?,?,?)";
-
+		
+		// Adding the VM
+		final String ADD_VM = "INSERT INTO VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, VMOrderDate, user_userID)"
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+		final String GET_VM_ID = "select last_insert_id() as last_id from VM";
+		
 		/**
 		 * If connection is not null, the query can proceed
 		 */
@@ -49,15 +53,20 @@ public class BuyDAO {
 
 			try {
 				
-				java.util.Date dt = new java.util.Date();
-
-				java.text.SimpleDateFormat sdf = 
-				     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-				String currentTime = sdf.format(dt);
-
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(ADD_VM);
+				PreparedStatement pstm2 = conn.prepareStatement(GET_VM_ID);
+
+				
+				/**
+				 * Making timestamp for buying date
+				 */
+				java.util.Date dt = new java.util.Date();
+				java.text.SimpleDateFormat sdf = 
+				     new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String currentTime = sdf.format(dt);
+
+				
 
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, vmBean.getVMName());
@@ -75,6 +84,10 @@ public class BuyDAO {
 				// Execute the query
 				rs = pstm.executeUpdate();
 
+				ResultSet rs2 = pstm2.executeQuery();
+				if(rs2.next()){
+				vmBean.setVMID(Integer.parseInt(rs2.getString(1)));
+				}
 			}
 
 			/**
@@ -113,6 +126,84 @@ public class BuyDAO {
 		return vmBean;
 	}
 
+	
+	/**
+	 * Executes the login query, but will also add information to the Bean
+	 * @return
+	 */
+	public int AssignVMIP(long vmID) {
+
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		ResultSet hasIP;
+		int addedIP = 0;
+		
+		// Searching and returning possible IP
+		final String GET_VM_IP = "SELECT ID FROM `netaddress` WHERE IsActive = 0";
+				
+		// Setting the IP active
+		final String ADD_VM_IP = "UPDATE netaddress SET IsActive= 1, VM_VMID = ? WHERE ID= ?";
+		
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {
+				
+				final int IPID;
+				
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(GET_VM_IP);
+				PreparedStatement pstm2 = conn.prepareStatement(ADD_VM_IP);
+	
+				hasIP = pstm.executeQuery();
+				
+				if(hasIP.next()){
+					IPID = hasIP.getInt("ID");
+					pstm2.setInt(1, (int) vmID);
+					pstm2.setInt(2, IPID);
+					addedIP = pstm2.executeUpdate();
+				}
+
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+				if (addedIP == 1) {
+					return 1;
+				} 
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return 2;
+		}
+
+		// Return the bean for using the data
+		return 0;
+	}
+	
 	/**
 	 * Make the connection with the database and return it
 	 * 

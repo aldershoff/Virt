@@ -114,7 +114,8 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String GET_SPECIFIC_VM = "SELECT * FROM VM WHERE user_UserID = ? AND vmid = ?";
+		final String GET_SPECIFIC_VM = "SELECT * FROM VM WHERE vm.user_UserID = ? AND vm.vmid = ?";
+		final String GET_VM_IPADDRESS = "SELECT * FROM netaddress WHERE netaddress.VM_VMID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -124,6 +125,7 @@ public class VMDAO {
 			try {				
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(GET_SPECIFIC_VM);
+				PreparedStatement pstm2 = conn.prepareStatement(GET_VM_IPADDRESS);
 				
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, userID);
@@ -151,6 +153,17 @@ public class VMDAO {
 					bean.setVMMonthlyPrice(rs.getString("VMMonthlyPrice"));
 					bean.setVMState(rs.getString("VMState"));
 					bean.setValid(true);
+					
+					
+					/**
+					 * Execute query inside query for getting the IPaddress and active state
+					 */
+					pstm2.setString(1, vmID);
+					ResultSet rs2 = pstm2.executeQuery();
+					while(rs2.next()){
+						bean.setVmIPIsActive(rs2.getInt("IsActive"));
+						bean.setVMIP(rs2.getString("IpAddress"));
+					}
 					
 				}
 			}
@@ -332,7 +345,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public int editSpecificVM(String vmID, String userID) {
+	public int editSpecificVM(String userID, VMBean bean) {
 
 		
 		// Making the connection
@@ -341,7 +354,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String DELETE_SPECIFIC_VM = "UPDATE VM SET VMIsActive = 0 WHERE VMID = ? AND VM.user_UserID = ?";
+		final String EDIT_SPECIFIC_VM = "UPDATE VM SET VMCpu = ?, VMMemory = ?, VMHDD = ?, VMSLA = ? WHERE VMID = ? AND VM.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -350,11 +363,15 @@ public class VMDAO {
 
 			try {				
 				// Make prepared statement with the desired query
-				PreparedStatement pstm = conn.prepareStatement(DELETE_SPECIFIC_VM);
+				PreparedStatement pstm = conn.prepareStatement(EDIT_SPECIFIC_VM);
 				
 				// Setting the parameters (places where the "?" exist)
-				pstm.setString(1, vmID);
-				pstm.setString(2, userID);
+				pstm.setString(1, bean.getVMCPU());
+				pstm.setString(2, bean.getVMMemory());
+				pstm.setString(3, bean.getVMDiskSpace());
+				pstm.setString(4, bean.getVMSLA());
+				pstm.setInt(5, (int) bean.getVMID());
+				pstm.setString(6, userID);
 
 
 				// Execute the query
@@ -412,7 +429,8 @@ public class VMDAO {
 		int rs = 0;
 		
 		final String DELETE_SPECIFIC_VM = "UPDATE VM SET VMIsActive = 0 WHERE VMID = ? AND VM.user_UserID = ?";
-
+		final String UNASSIGN_SPECIFIC_VM_IP = "UPDATE netaddress SET IsActive = 0, VM_VMID = 0 WHERE VM_VMID = ?";
+		
 		/**
 		 * If connection is not null, the query can proceed
 		 */
@@ -421,6 +439,7 @@ public class VMDAO {
 			try {				
 				// Make prepared statement with the desired query
 				PreparedStatement pstm = conn.prepareStatement(DELETE_SPECIFIC_VM);
+				PreparedStatement pstm2 = conn.prepareStatement(UNASSIGN_SPECIFIC_VM_IP);
 				
 				// Setting the parameters (places where the "?" exist)
 				pstm.setString(1, vmID);
@@ -429,7 +448,12 @@ public class VMDAO {
 
 				// Execute the query
 				rs = pstm.executeUpdate();
-
+				
+				/**
+				 * Execute second query
+				 */
+				pstm2.setInt(1, Integer.parseInt(vmID));
+				pstm2.executeUpdate();
 				
 			}
 

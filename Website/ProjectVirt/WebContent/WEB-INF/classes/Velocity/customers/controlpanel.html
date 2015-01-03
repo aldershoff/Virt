@@ -129,9 +129,9 @@
 					    <td>$!{vm.getVMCPU()} cores</td>
 					    <td>$!{vm.getVMMemory()} GB/MB</td>
 					    <td>$!{vm.getVMDiskSpace()} GB</td>
-					    <td>$!{vm.getVMIP()}</td>
+					    <td>#if ($!{vm.getVMIP()})$!{vm.getVMIP()} #else No IP address assigned... #end</td>
 					    <td>$!{vm.getVMSLA()}</td>
-					    <td>$!{vm.getVMMonthlyPrice()}</td>
+					    <td>$!{vm.getVMMonthlyPrice()} euro's</td>
 					    <td>$!{vm.getVMState()}</td>
 					    
 					  </tr>

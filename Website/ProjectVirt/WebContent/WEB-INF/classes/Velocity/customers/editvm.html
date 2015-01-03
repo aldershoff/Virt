@@ -69,7 +69,7 @@
 						<label class="col-lg-3 control-label">Hostname:</label>
 						<div class="col-lg-8">
 							<input class="form-control" type="text" value="$vm.getVMName()"
-								readonly>
+								name="vmName" readonly >
 						</div>
 					</div>
 					<br />
@@ -77,7 +77,7 @@
 
 						<label class="col-lg-3 control-label">Total RAM:</label> <select
 							name="VMRAM">
-							<option value="vmRAM">Current - $vm.getVMMemory() GB/MB</option>
+							<option value="$vm.getVMMemory()">Current - $vm.getVMMemory() GB/MB</option>
 							<option value="512">512 mb</option>
 							<option value="1">1 GB</option>
 							<option value="2">2 GB</option>
@@ -91,7 +91,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 control-label">CPU Cores:</label> <select
 							name="VMCPU">
-							<option value="vmCPU">Current - $vm.getVMCPU() Core</option>
+							<option value="$vm.getVMCPU()">Current - $vm.getVMCPU() Core</option>
 							<option value="1">1 core</option>
 							<option value="2">2 core</option>
 							<option value="3">4 core</option>
@@ -103,7 +103,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Total HDD Space:</label> <select
 							name="VMHDD">
-							<option value="vmHDD">Current - $vm.getVMDiskSpace() GB</option>
+							<option value="$vm.getVMDiskSpace()">Current - $vm.getVMDiskSpace() GB</option>
 							<option value="40">40 GB</option>
 							<option value="80">80 GB</option>
 							<option value="160">160 GB</option>
@@ -113,7 +113,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 control-label">SLA:</label> <select
 							name="VMSLA">
-							<option value="vmSLA">Current - $vm.getVMSLA()</option>
+							<option value="$vm.getVMSLA()">Current - $vm.getVMSLA()</option>
 							<option value="gold">Gold</option>
 							<option value="silver">Silver</option>
 							<option value="bronze">Bronze</option>
