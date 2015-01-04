@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>ProjectVirtAdmin</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+   <servlet>
+		<servlet-name>Admin</servlet-name>
+		<servlet-class>presentation.Admin</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/home</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/profile</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/overview</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/overview/getusers</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/overview/userrights</url-pattern>
+	</servlet-mapping>
+		<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/profile/updateprofile</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/profile/updateaccount</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>Admin</servlet-name>
+		<url-pattern>/admin/logout</url-pattern>
+	</servlet-mapping>
+	 <filter>
+    <filter-name>AuthenticationFilter</filter-name>
+    <filter-class>filters.AuthenticationFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>AuthenticationFilter</filter-name>
+    <url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>CheckIfLoggedInFilter</filter-name>
+    <filter-class>filters.CheckIfLoggedInFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>filters.CheckIfLoggedInFilter</filter-name>
+    <url-pattern>/login/*</url-pattern>
+  </filter-mapping>
+	
+	
+</web-app>

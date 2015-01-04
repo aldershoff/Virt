@@ -1,0 +1,171 @@
+#parse( "/Velocity/includes/admin/header.html" )
+
+<body id="top">
+
+
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/admin/home">Home</a></li>
+					<li class="active"><a href="$baseUrl/admin/overview">Overview</a></li>
+					<li><a href="$baseUrl/admin/logout">Logout</a></li>
+				</ul>
+			</div>
+			<br />
+			Welcome back, $name!
+			<br />
+			<a href="$baseUrl/admin/profile" style="color:#CCCCCC; background-color:#000; font-size:x-small;">Click here to view your profile!</a>
+			<br class="clear" />
+		</div>
+	</div>
+
+
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/monitor.jpeg" alt="" />
+						<div class="floater">
+							<br> <br>
+							<h1>Helping the admins for a better place in the cloud</h1></li>
+				</ul>
+			</div>
+			
+		</div>
+	</div>
+	
+
+
+	<div class="wrapper col3">
+		<div id="container">
+			<div class="homepage">
+				#if($customerBeanArray)
+			
+				<h2>User Overview </h2>
+				Click on the desired User to see the virtual machines made by the user.
+				<br />
+				You can also change the user permissions on this page.
+				<p />
+				<ul>
+					<table id="getAllUsers" class="table table-hover">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Username</th>
+								<th>Company</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Phone</th>
+								<th>Address</th>
+								<th>Zip Code</th>
+								<th>Two Factor</th>
+								<th>User Type</th>
+							</tr>
+						</thead>
+						<tbody>
+						#foreach( $user in $customerBeanArray )
+							<tr id="getUserDetail">
+								<td id="userID">$user.getUserID()</td>
+								<td>$user.getUsername()</td>
+								<td>$user.getCompany()</td>
+								<td>$user.getFirstName()</td>
+								<td>$user.getLastName()</td>
+								<td>$user.getEmail()</td>
+								<td>$user.getPhone()</td>
+								<td>$user.getAddress()</td>
+								<td>$user.getZipCode()</td>
+								#if($user.isTwoFactor() == 1)
+								<td>Yes</td>
+								#else
+								<td>No</td>
+								#end
+								<td>$user.getUserType()</td>
+								#if($user.getUserType().equals("admin"))
+								<td><form method="POST" action="$baseUrl/admin/overview/userrights?request=user"> <input type="hidden" name="userid" value="$user.getUserID()"><input type="submit" value="Set rights User"></form></td>
+								#else
+								<td><form method="POST" action="$baseUrl/admin/overview/userrights?request=admin"> <input type="hidden" name="userid" value="$user.getUserID()"><input type="submit" value="Set rights Admin"></form></td>
+								#end
+								
+							</tr>
+					 #end 
+					</tbody>
+					</table>
+					
+	   					
+	   				
+					
+					$!{error} $!{success}
+				</ul>
+				<br class="clear" />
+			</div>
+			#else
+			
+			
+				#if ($!{error} || $!{success})
+					<h2>$!{error} $!{success}</h2>
+					Please click on the button to go back to the User overview!
+					<br />
+					<br />
+					<form action="$baseUrl/admin/overview" method="get"><input Type="submit" value="Go Back" ></form>
+				
+			#else
+				
+					<h2>Server statistics</h2>
+					Here you can see the VM's the user has made + the cost and order date
+					<p />
+					<table class="table table-hover">
+					  <thead>
+					<tr>
+					    <th>ID</th>
+					    <th>Hostname</th> 
+					    <th>Operating System</th>
+					    <th>CPU</th>
+					    <th>Total RAM</th>
+					    <th>Total HDD space</th>
+					    <th>IP address</th>
+					    <th>SLA</th>
+					    <th>Monthly price</th>
+					    <th>Status</th>
+					    <th>Order Date</th>
+					  </tr>
+					    </thead>
+					       <tbody>
+					   #foreach( $vm in $vmBeanArray )
+					  <tr>
+					    <td>$!{vm.getVMID()}</td>
+					    <td>$!{vm.getVMName()}</td> 
+					    <td>$!{vm.getVMOS()}</td> 
+					    <td>$!{vm.getVMCPU()} cores</td>
+					    <td>$!{vm.getVMMemory()} GB/MB</td>
+					    <td>$!{vm.getVMDiskSpace()} GB</td>
+					    <td>#if ($!{vm.getVMIP()})$!{vm.getVMIP()} #else No IP address assigned... #end</td>
+					    <td>$!{vm.getVMSLA()}</td>
+					    <td>$!{vm.getVMMonthlyPrice()} euro's</td>
+					    <td>$!{vm.getVMState()}</td>
+					    <td>$!{vm.getVMOrderDate()}</td>
+					    
+					  </tr>
+					  #end
+						   </tbody>
+					</table>	
+					
+
+				#end
+			#end
+			
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	window.scrollTo(0,430);
+	</script>
+	#parse( "/Velocity/includes/admin/footer.html" )

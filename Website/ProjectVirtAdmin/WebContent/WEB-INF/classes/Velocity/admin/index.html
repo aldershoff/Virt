@@ -1,0 +1,55 @@
+#parse( "/Velocity/includes/admin/header.html" )
+
+<body id="top">
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+
+			<div id="topnav">
+				<ul>
+					<li class="active"><a href="$baseUrl/admin/home">Home</a></li>
+					<li><a href="$baseUrl/admin/overview">Overview</a></li>
+					<li><a href="$baseUrl/admin/logout">Logout</a></li>
+				</ul>
+			</div>
+			<br />
+			Welcome back, $name!
+			<br />
+			<a href="$baseUrl/admin/profile" style="color:#CCCCCC; background-color:#000; font-size:x-small;">Click here to view your profile!</a>
+			<br class="clear" />
+		</div>
+	</div>
+
+
+	<div class="wrapper col2">
+		<div id="featured_slide">
+			<div id="featured_content">
+				<ul>
+					<li><img src="$baseUrl/images/services_main.jpg" alt="" />
+						<div class="floater">
+							<br> <br>
+							<h1>Welcome admin from PlainTech!</h1></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="wrapper col3">
+		<div id="container">
+			<div class="homepage">
+				Welcome admin! Here, you can call an overview of all Vm's and have an overview of all users, using the service! <br /> Please let us know if
+				there are any requests or sidenotes.
+				<p />
+				<br /> We thank you for making use of PlainTech technologies. <br
+					class="clear" />
+			</div>
+		</div>
+	</div>
+
+	#parse( "/Velocity/includes/admin/footer.html" )

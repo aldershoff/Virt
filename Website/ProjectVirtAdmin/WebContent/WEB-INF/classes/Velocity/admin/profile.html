@@ -1,0 +1,169 @@
+#parse( "/Velocity/includes/admin/header.html" )
+<body id="top">
+
+
+	<div class="wrapper col1">
+		<div id="header">
+			<div id="logo">
+				<h1>
+					<a href="#">Plaintech</a>
+				</h1>
+				<p>Your personal server!</p>
+			</div>
+
+			<div id="topnav">
+				<ul>
+					<li><a href="$baseUrl/admin/home">Home</a></li>
+					<li><a href="$baseUrl/admin/overview">Overview</a></li>
+
+					<li><a href="$baseUrl/admin/logout">Logout</a></li>
+				</ul>
+			</div>
+			<br />
+			Welcome back, $name!
+			<br />
+			<a href="$baseUrl/admin/profile" style="color:#CCCCCC; background-color:#000; font-size:x-small;">Click here to view your profile!</a>
+			<br class="clear" />
+		</div>
+	</div>
+<div class="container">
+
+
+    <h2>View and edit Profile</h2>
+  	<hr>
+	<div class="row">
+      <!-- edit form column -->
+      <div class="col-md-9 personal-info">
+        <div class="alert alert-info alert-dismissable">
+          <a class="panel-close close" data-dismiss="alert">×</a> 
+          <i class="fa fa-coffee"></i>
+         <strong> Please check your profile details carefully before editing!</strong>
+        </div>
+        <h3>Personal info</h3>
+        
+        <form class="form-horizontal" role="form" action="$baseUrl/admin/profile/updateprofile" method="post">
+          <div class="form-group">
+            <label class="col-lg-3 control-label">First name:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getFirstName()" name="firstname">
+            </div>
+          </div>
+          <br />
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Last name:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getLastName()" name="lastname">
+            </div>
+          </div>
+           <br />
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Company:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getCompany()" name="company">
+            </div>
+          </div>
+           <br />
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Email:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getEmail()" name="email">
+            </div>
+          </div>
+           <br />
+            <div class="form-group">
+            <label class="col-lg-3 control-label">Phone Number:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getPhone()" name="phone">
+            </div>
+          </div>
+           <br />
+            <div class="form-group">
+            <label class="col-lg-3 control-label">Address:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getAddress()" name="address">
+            </div>
+          </div>
+           <br />
+            <div class="form-group">
+            <label class="col-lg-3 control-label">Zipcode:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="$userDetails.getZipCode()" name="zipcode">
+            </div>
+          </div>
+           <br />
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Two-Factor enable:</label>
+            <div class="col-lg-8">
+              <div class="ui-select">
+                  <select id="twofactor" class="form-control" name="twofactor">
+                  #if($userDetails.isTwoFactor() == 1)
+                  <option value="yes" selected="selected">Yes</option>
+                  <option value="no">No</option>
+                  #else
+                  <option value="yes">Yes</option>
+                  <option value="no" selected="selected">No</option>
+                  #end
+                </select>
+              </div>
+            </div>
+          </div>
+          <br />
+             <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="hidden" name ="username" value="$userDetails.getUsername()">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
+              <span></span>
+              <input type="reset" class="btn btn-default" value="Cancel">
+            </div>
+          </div>
+          <br />
+          $!{errorprofile} $!{successprofile}
+           </form>
+        </div>
+            <h3>Account info</h3>
+              <form class="form-horizontal" role="form" action="$baseUrl/admin/profile/updateaccount" method="post">
+
+           <br />
+          <div class="form-group">
+            <label class="col-md-3 control-label">Password:</label>
+            <div class="col-md-8">
+              <input class="form-control" type="password" name="password">
+            </div>
+          </div>
+           <br />
+          <div class="form-group">
+            <label class="col-md-3 control-label">Confirm password:</label>
+            <div class="col-md-8">
+              <input class="form-control" type="password" name="passwordconfirm">
+            </div>
+          </div>
+           <br />
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="hidden" name ="username" value="$userDetails.getUsername()">
+              <input type="hidden" name ="firstname" value="$userDetails.getFirstName()">
+              <input type="hidden" name ="lastname" value="$userDetails.getLastName()">
+              <input type="hidden" name ="company" value="$userDetails.getCompany()">
+              <input type="hidden" name ="email" value="$userDetails.getEmail()">
+              <input type="hidden" name ="phone" value="$userDetails.getPhone()">
+              <input type="hidden" name ="address" value="$userDetails.getAddress()">
+              <input type="hidden" name ="zipcode" value="$userDetails.getZipCode()">
+              <input type="hidden" name ="twofactor" value="$userDetails.isTwoFactor()">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
+              <span></span>
+              <input type="reset" class="btn btn-default" value="Cancel">
+            </div>
+          </div>
+           $!{erroraccount} $!{successaccount}
+        </form>
+      </div>
+  </div>
+</div>
+<hr>
+<script>
+window.scrollTo(0,400);
+</script>
+</body>
+#parse( "/Velocity/includes/admin/footer.html" )
