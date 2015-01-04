@@ -42,9 +42,9 @@ public class BuyDAO {
 		int rs = 0;
 		
 		// Adding the VM
-		final String ADD_VM = "INSERT INTO VM(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, VMOrderDate, user_userID)"
-						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-		final String GET_VM_ID = "select last_insert_id() as last_id from VM";
+		final String ADD_VM = "INSERT INTO vm(VMName, VMCPU, VMOS, VMHDD, VMMemory, VMSLA, VMMonthlyPrice, VMUUID, VMIsActive, VMOrderDate, user_userID, VMState)"
+						+ "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+		final String GET_VM_ID = "select last_insert_id() as last_id from vm";
 		
 		/**
 		 * If connection is not null, the query can proceed
@@ -80,6 +80,7 @@ public class BuyDAO {
 				pstm.setInt(9, (int) vmBean.getVMIsActive());
 				pstm.setString(10, currentTime);
 				pstm.setString(11, userID);
+				pstm.setString(12, "Pending");
 				
 				// Execute the query
 				rs = pstm.executeUpdate();

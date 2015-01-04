@@ -19,39 +19,39 @@ import com.google.gson.GsonBuilder;
 import databaseAccessObjects.VMDAO;
 
 public class ProcessUserVMDataService {
-	
+
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	
-	public ProcessUserVMDataService(HttpServletRequest request, HttpServletResponse response){
+
+	public ProcessUserVMDataService(HttpServletRequest request,
+			HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
 	}
-	
-	
+
 	@SuppressWarnings("unchecked")
-	public void getAllVM() throws IOException{
+	public void getAllVM() throws IOException {
 
 		// Making new VMDAO for making connection
-				VMDAO VMDAO = new VMDAO();
-				String userID = null;
+		VMDAO VMDAO = new VMDAO();
+		String userID = null;
 
-				/**
-				 * Setting GSON variables
-				 */
-				Gson gson = new Gson();
-				JSONObject jobj = new JSONObject();
-				String json = "";
-				String error = "";
-		
+		/**
+		 * Setting GSON variables
+		 */
+		Gson gson = new Gson();
+		JSONObject jobj = new JSONObject();
+		String json = "";
+		String error = "";
+
 		// Setting the userID and new arraylist for getting all the VMs
 		userID = request.getParameter("userID");
 		ArrayList<VMBean> vmBeanArray = VMDAO.getVMs(userID);
 
 		try {
 			/**
-			 * If the array is not null, a new JSON String will be made and
-			 * will be send to the output
+			 * If the array is not null, a new JSON String will be made and will
+			 * be send to the output
 			 */
 			if (vmBeanArray != null) {
 
@@ -65,16 +65,20 @@ public class ProcessUserVMDataService {
 			response.setContentType("application/json");
 			if (error != "") {
 				response.getWriter().write(jobj.toString());
-				
+
 			} else {
 				response.getWriter().write(json.toString());
 			}
 		}
 	}
 	
+	
+	
+	//+++++++++++++++ COuld BE handy later
+
 	@SuppressWarnings("unchecked")
-	public void getSpecificVM() throws IOException{
-		
+	public void getSpecificVM() throws IOException {
+
 		// Making new VMDAO for making connection
 		VMDAO VMDAO = new VMDAO();
 		String userID = null;
@@ -86,7 +90,7 @@ public class ProcessUserVMDataService {
 		JSONObject jobj = new JSONObject();
 		String json = "";
 		String error = "";
-		
+
 		/**
 		 * Setting the parameters for the VM and User ID
 		 */
@@ -125,17 +129,14 @@ public class ProcessUserVMDataService {
 
 			}
 
-		}
-		finally {
+		} finally {
 			response.setContentType("application/json");
 			if (error != "") {
 				response.getWriter().write(jobj.toString());
-				
+
 			} else {
 				response.getWriter().write(json.toString());
 			}
 		}
 	}
 }
-	
-

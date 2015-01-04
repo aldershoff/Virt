@@ -32,7 +32,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String SELECT_ALL_VM = "SELECT VMID, VMName, VMOS, VMState FROM VM WHERE user_UserID = ? && VMIsActive = 1";
+		final String SELECT_ALL_VM = "SELECT VMID, VMName, VMOS, VMState FROM vm WHERE user_UserID = ? && VMIsActive = 1";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -114,7 +114,7 @@ public class VMDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String GET_SPECIFIC_VM = "SELECT * FROM VM WHERE vm.user_UserID = ? AND vm.vmid = ?";
+		final String GET_SPECIFIC_VM = "SELECT * FROM vm WHERE vm.user_UserID = ? AND vm.vmid = ?";
 		final String GET_VM_IPADDRESS = "SELECT * FROM netaddress WHERE netaddress.VM_VMID = ?";
 
 		/**
@@ -214,7 +214,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String START_SPECIFIC_VM = "UPDATE VM SET VMState = 'Running' WHERE VMID = ? AND VM.user_UserID = ?";
+		final String START_SPECIFIC_VM = "UPDATE vm SET VMState = 'Running' WHERE VMID = ? AND vm.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -284,7 +284,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String STOP_SPECIFIC_VM = "UPDATE VM SET VMState = 'Stopped' WHERE VMID = ? AND VM.user_UserID = ?";
+		final String STOP_SPECIFIC_VM = "UPDATE vm SET VMState = 'Stopped' WHERE VMID = ? AND vm.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -354,7 +354,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String EDIT_SPECIFIC_VM = "UPDATE VM SET VMCpu = ?, VMMemory = ?, VMHDD = ?, VMSLA = ? WHERE VMID = ? AND VM.user_UserID = ?";
+		final String EDIT_SPECIFIC_VM = "UPDATE vm SET VMCpu = ?, VMMemory = ?, VMHDD = ?, VMSLA = ? WHERE VMID = ? AND vm.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -414,6 +414,82 @@ public class VMDAO {
 		return 0;
 	}
 	
+	
+//	/**
+//	 * Executes the login query, but will also add information to the Bean
+//	 * 
+//	 * @return
+//	 */
+//	public String refreshSpecificVM(String userID, String vmID) {
+//		
+//		final String VM_STATE;
+//		
+//		// Making the connection
+//		conn = makeConn();
+//
+//		// Setting the resultset and query
+//		ResultSet rs = null;
+//		final String REFRESH_SPECIFIC_VM = "SELECT VMState FROM VM WHERE vm.user_UserID = ? AND vm.vmid = ?";
+//
+//		/**
+//		 * If connection is not null, the query can proceed
+//		 */
+//		if (conn != null) {
+//
+//			try {				
+//				// Make prepared statement with the desired query
+//				PreparedStatement pstm = conn.prepareStatement(REFRESH_SPECIFIC_VM);
+//				
+//				// Setting the parameters (places where the "?" exist)
+//				pstm.setString(1, userID);
+//				pstm.setString(2, vmID);
+//
+//				// Execute the query
+//				rs = pstm.executeQuery();
+//
+//				/**
+//				 * While the resultset will go to the next result, store the
+//				 * variables. rs.next will only
+//				 */
+//				
+//				while (rs.next()) {
+//					VM_STATE = rs.getString("VMState");
+//					
+//				}
+//			}
+//
+//			/**
+//			 * Catch exception SQL
+//			 */
+//			catch (SQLException ex) {
+//
+//				// handle any errors
+//				System.out.println("SQLException: " + ex.getMessage());
+//				System.out.println("SQLState: " + ex.getSQLState());
+//				System.out.println("VendorError: " + ex.getErrorCode());
+//
+//			}
+//
+//			/**
+//			 * Finally, close the connection and check if the password from the
+//			 * form equals the password inside the bean
+//			 */
+//			finally {
+//				closeConn(conn);
+//			}
+//
+//		}
+//
+//		// If the connection was not made, return nothing
+//		else {
+//			return null;
+//		}
+//
+//		// Return the bean for using the data
+//		return bean;
+//	}
+//	
+	
 	/**
 	 * Executes the login query, but will also add information to the Bean
 	 * 
@@ -428,7 +504,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String DELETE_SPECIFIC_VM = "UPDATE VM SET VMIsActive = 0 WHERE VMID = ? AND VM.user_UserID = ?";
+		final String DELETE_SPECIFIC_VM = "UPDATE vm SET VMIsActive = 0 WHERE VMID = ? AND vm.user_UserID = ?";
 		final String UNASSIGN_SPECIFIC_VM_IP = "UPDATE netaddress SET IsActive = 0, VM_VMID = 0 WHERE VM_VMID = ?";
 		
 		/**

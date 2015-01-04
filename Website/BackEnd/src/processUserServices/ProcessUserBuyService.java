@@ -22,25 +22,23 @@ import databaseAccessObjects.BuyDAO;
 
 public class ProcessUserBuyService {
 
-	
 	private HttpServletRequest request;
 	private HttpServletResponse response;
-	
-	public ProcessUserBuyService(HttpServletRequest request, HttpServletResponse response){
+
+	public ProcessUserBuyService(HttpServletRequest request,
+			HttpServletResponse response) {
 		this.request = request;
 		this.response = response;
 	}
-	
-	
-	
+
 	/**
 	 * Method for adding new VM for user
 	 * 
 	 * @param request
 	 * @param response
 	 * @throws IOException
-	 * @throws LibvirtException 
-	 * @throws NumberFormatException 
+	 * @throws LibvirtException
+	 * @throws NumberFormatException
 	 */
 	@SuppressWarnings("unchecked")
 	public void buyUserVM() throws IOException, NumberFormatException {
@@ -82,89 +80,90 @@ public class ProcessUserBuyService {
 			break;
 
 		}
-		
-	
+
 		UUID makeVMLibvirtResult = java.util.UUID.randomUUID();
-//		try {
-//			makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(), vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()), Integer.parseInt(vmBean.getVMDiskSpace()), Integer.parseInt(vmBean.getVMCPU()));
-//		} catch (LibvirtException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
+		// try {
+		// makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(),
+		// vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()),
+		// Integer.parseInt(vmBean.getVMDiskSpace()),
+		// Integer.parseInt(vmBean.getVMCPU()));
+		// } catch (LibvirtException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		JSONObject jobj = new JSONObject();
 		String error = "";
 		String json = "";
-		
-		//if(makeVMLibvirtResult != null){
-			
-			// Set the vm on active mode
-			vmBean.setVMIsActive(1);
-			
-			// Set the bean and fill it
-			vmBean = buyDAO.addVM(vmBean, userID, makeVMLibvirtResult);
 
-			int assignVMUP = buyDAO.AssignVMIP(vmBean.getVMID());
-			
-			if(assignVMUP == 1){
-				vmBean.setVmIPIsActive(1);
-			}
-			else{
-				vmBean.setVmIPIsActive(0);
-			}
-			
-			
-			Gson gson = new Gson();
+		// if(makeVMLibvirtResult != null){
 
-			try {
+		// Set the vm on active mode
+		vmBean.setVMIsActive(1);
 
-				// If bean is not null, a database connection has been initiated
-				if (vmBean != null) {
+		// Set the bean and fill it
+		vmBean = buyDAO.addVM(vmBean, userID, makeVMLibvirtResult);
 
-					/**
-					 * If the VM is succesfully added to the database, the user will
-					 * get a response back
-					 */
+		/**
+		 * Assigning the IP address (if exist)
+		 */
+		int assignVMUP = buyDAO.AssignVMIP(vmBean.getVMID());
 
-					if (vmBean.isValid()) {
+		if (assignVMUP == 1) {
+			vmBean.setVmIPIsActive(1);
+		} else {
+			vmBean.setVmIPIsActive(0);
+		}
 
-						
-						final GsonBuilder gsonBuilder = new GsonBuilder();
-						gsonBuilder.registerTypeAdapter(VMBean.class,
-								new BuyCustomerVMSerialiser());
-						gson = gsonBuilder.create();
+		Gson gson = new Gson();
 
-						json = gson.toJson(vmBean);
+		try {
 
-					}
+			// If bean is not null, a database connection has been initiated
+			if (vmBean != null) {
 
-					else {
-						error = "Something went wrong with buying the VM";
-						jobj.put("error", error);
-					}
+				/**
+				 * If the VM is succesfully added to the database, the user will
+				 * get a response back
+				 */
+
+				if (vmBean.isValid()) {
+
+					final GsonBuilder gsonBuilder = new GsonBuilder();
+					gsonBuilder.registerTypeAdapter(VMBean.class,
+							new BuyCustomerVMSerialiser());
+					gson = gsonBuilder.create();
+
+					json = gson.toJson(vmBean);
+
 				}
 
 				else {
-					error = "Could not connect to database..";
+					error = "Something went wrong with buying the VM";
 					jobj.put("error", error);
 				}
-			} finally {
-				response.setContentType("application/json");
-				if (error != "") {
-					response.getWriter().write(jobj.toString());
-				} else {
-					response.getWriter().write(json.toString());
-				}
 			}
-			
-//		}
-//		else{
-//			response.setContentType("application/json");
-//			jobj.put("error", "LIBVIRT ERROR");
-//			response.getWriter().write(jobj.toString());
-//		}
-		
+
+			else {
+				error = "Could not connect to database..";
+				jobj.put("error", error);
+			}
+		} finally {
+			response.setContentType("application/json");
+			if (error != "") {
+				response.getWriter().write(jobj.toString());
+			} else {
+				response.getWriter().write(json.toString());
+			}
+		}
+
+		// }
+		// else{
+		// response.setContentType("application/json");
+		// jobj.put("error", "LIBVIRT ERROR");
+		// response.getWriter().write(jobj.toString());
+		// }
 
 	}
-	
+
 }

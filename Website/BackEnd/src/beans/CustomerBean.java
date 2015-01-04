@@ -25,6 +25,7 @@ public class CustomerBean {
 	@Expose private String zipcode;
 	@Expose private boolean remember;
 	@Expose private int twoFactor;
+	private String userType;
 	private String company;
 	@Expose public boolean valid;
 
@@ -193,5 +194,13 @@ public class CustomerBean {
 
 	public void setCompany(String company) {
 		this.company = company;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 }

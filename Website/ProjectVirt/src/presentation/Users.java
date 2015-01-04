@@ -3,7 +3,6 @@ package presentation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,19 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import json.JsonGETParser;
-import net.sf.json.JSONException;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-
-import beans.VMBean;
-
-import com.google.gson.Gson;
 
 import userServices.UserAccountService;
 import userServices.UserBuyService;
@@ -410,11 +400,12 @@ public class Users extends HttpServlet {
 			 * Switch for determing the users path
 			 */
 			switch (userPath) {
+						
 			case "/customer/marketplace/buy":
 				UserBuyService userBuy = new UserBuyService(vsl_Context, template, out, request);
 				userBuy.buyCustomerVM(sessionUserID);
 				break;
-						
+				
 			case "/customer/profile/updateprofile":
 				UserAccountService updateProfile = new UserAccountService(vsl_Context, template, out, request, response);
 				updateProfile.updateUserProfileDetails(sessionUserID);
@@ -458,6 +449,9 @@ public class Users extends HttpServlet {
 				default:
 					break;
 				}
+				
+			
+				break;
 				
 			}
 		}

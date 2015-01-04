@@ -941,7 +941,7 @@ public class UserAccountService {
 		}
 
 		// Redirect to home page
-		response.sendRedirect(request.getRequestURI() + "/home");
+		response.sendRedirect("/ProjectVirt/login");
 
 		return;
 	}

@@ -41,7 +41,7 @@ public class UserDAO {
 
 		// Setting the resultset and query
 		ResultSet rs = null;
-		final String VERIFY_USER = "SELECT UserName, UserPassword, UserID, UserTwoFactor FROM users WHERE UserName = ?";
+		final String VERIFY_USER = "SELECT UserName, UserPassword, UserID, UserTwoFactor, UserType FROM users WHERE UserName = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -71,6 +71,7 @@ public class UserDAO {
 					bean.setPassword(rs.getString("UserPassword"));
 					bean.setUserID(rs.getInt("UserID"));
 					bean.setTwoFactor(rs.getInt("UserTwoFactor"));
+					bean.setUserType(rs.getString("UserType"));
 
 					/**
 					 * Check if username and password is correct

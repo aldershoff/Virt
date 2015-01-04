@@ -14,6 +14,9 @@ import org.apache.catalina.manager.util.SessionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
 
+import processAdminServices.ProcessAdminPermissionsService;
+import processAdminServices.ProcessAdminUserOverviewService;
+import processAdminServices.ProcessAdminVMData;
 import processUserServices.ProcessUserAccountService;
 import processUserServices.ProcessUserBuyService;
 import processUserServices.ProcessUserVMControlService;
@@ -128,8 +131,28 @@ public class OperationalBackEnd extends HttpServlet {
 			ProcessUserAccountService getUserDetails = new ProcessUserAccountService(request, response);
 			getUserDetails.processGetUserDetails();
 			break;
+			
+			
+		case "/admin/overview/getusers":
+			ProcessAdminUserOverviewService userData = new ProcessAdminUserOverviewService(
+					request, response);
+
+			switch (request.getParameter("request")) {
+			case "getallusers":
+				userData.getAllUsers();
+				break;
+			case "getalluservms":
+				ProcessAdminVMData userVMData = new ProcessAdminVMData(request, response);
+				userVMData.getAllVM();
+				break;
+			default:
+				break;
+			}
+			break;
 		default:
 			break;
+			
+			
 		}
 	}
 
@@ -205,6 +228,23 @@ public class OperationalBackEnd extends HttpServlet {
 			ProcessUserAccountService updateAccount = new ProcessUserAccountService(request, response);
 			updateAccount.processUpdateUserAccountDetails();
 			break;
+			
+		case "/admin/overview/processuserrights":
+			ProcessAdminPermissionsService changePerm = new ProcessAdminPermissionsService(request, response);
+			
+			switch (request.getParameter("request")) {
+			case "user":
+				changePerm.setPermissions("user");
+				break;
+
+			case "admin":
+				changePerm.setPermissions("admin");
+				break;
+			default:
+				break;
+			}
+			break;
+				
 			
 		default:
 			break;

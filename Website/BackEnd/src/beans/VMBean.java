@@ -26,6 +26,7 @@ public class VMBean {
 	private String vmMonthlyPrice;
 	private long vmIsActive;
 	private long vmIPIsActive;
+	private String vmOrderDate;
 	public ArrayList<VMBean> VMs = new ArrayList<VMBean>();
 	public boolean valid;
 
@@ -192,6 +193,14 @@ public class VMBean {
 
 	public void setVmIPIsActive(long vmIPIsActive) {
 		this.vmIPIsActive = vmIPIsActive;
+	}
+
+	public String getVMOrderDate() {
+		return vmOrderDate;
+	}
+
+	public void setVMOrderDate(String vmOrderDate) {
+		this.vmOrderDate = vmOrderDate;
 	}
 
 	

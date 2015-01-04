@@ -32,6 +32,7 @@ public class LoginUserSerialiser implements JsonSerializer<CustomerBean> {
 		jsonObject.addProperty("username", customer.getUsername());
 		jsonObject.addProperty("userTwoFactor", customer.isTwoFactor());
 		jsonObject.addProperty("valid", customer.isValid());
+		jsonObject.addProperty("userType", customer.getUserType());
 
 		return jsonObject;
 	}

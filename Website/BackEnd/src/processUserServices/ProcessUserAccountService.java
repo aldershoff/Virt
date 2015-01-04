@@ -148,6 +148,7 @@ public class ProcessUserAccountService {
 		custBean.setFirstName(request.getParameter("firstname"));
 		custBean.setLastName(request.getParameter("lastname"));
 		custBean.setEmail(request.getParameter("email"));
+		custBean.setCompany(request.getParameter("company"));
 		custBean.setPhone(request.getParameter("phone"));
 		custBean.setAddress(request.getParameter("address"));
 		custBean.setZipCode(request.getParameter("zipcode"));

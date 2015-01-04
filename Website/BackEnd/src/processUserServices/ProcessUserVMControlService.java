@@ -385,7 +385,7 @@ public class ProcessUserVMControlService {
 		}
 	}
 	@SuppressWarnings("unchecked")
-	public void refreshVMState(String userID, String vmID) throws IOException {
+	public void refreshVMState() throws IOException {
 
 		JSONObject jobj = new JSONObject();
 		String error = "";
@@ -439,8 +439,8 @@ public class ProcessUserVMControlService {
 				error = "Can't connect with libVirt!";
 				jobj.put("error", error);
 			}
+//		
 		
-
 		
 		try {
 			if (result != 2) {
