@@ -1,6 +1,7 @@
 package processUserServices;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import jsonserializers.GetUserVMSerialiser;
 import libvirtAccessObject.VMmanagementTest;
 
 import org.json.simple.JSONObject;
+import org.libvirt.LibvirtException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -385,12 +387,11 @@ public class ProcessUserVMControlService {
 		}
 	}
 	@SuppressWarnings("unchecked")
-	public void refreshVMState() throws IOException {
+	public void refreshVMState() throws IOException, LibvirtException {
 
 		JSONObject jobj = new JSONObject();
 		String error = "";
 		
-		String userID = request.getParameter("userID");
 		String vmID = request.getParameter("vmID");
 
 		/**
@@ -398,73 +399,49 @@ public class ProcessUserVMControlService {
 		 */
 		VMDAO refreshVMState = new VMDAO();
 		
-
+		UUID UUID = java.util.UUID.fromString(refreshVMState.getVMUUID(vmID));
 		/**
 		 * Function for also making connection with libvirt API
 		 */
 		VMmanagementTest vmManagement = new VMmanagementTest();
 		
-		int resultLibVirt = vmManagement.refreshVMState("VMUUID");
+		int resultLibVirt = vmManagement.checkState(UUID);
 		
+		try{
 			if(resultLibVirt != 2){
 				if(resultLibVirt == 1){
-					int result = refreshVMState.deleteSpecificVM(vmID, userID);
-					try {
+					int result = refreshVMState.refreshSpecificVM(vmID);
+					
 						if (result != 2) {
 
 							/**
 							 * If the bean is valid, it will return a new JSON response
 							 */
 							if (result == 1) {
-								jobj.put("success", "VM succesfully deleted!");
+								jobj.put("success", "Running");
 
 							} else {
-								error = "Could not delete VM...";
+								error = "Stopped";
 								jobj.put("error", error);
 							}
 						} else {
-							error = "Can't connect with database";
+							error = "Error";
 							jobj.put("error", error);
 
 						}
 
-					} finally {
-						response.setContentType("application/json");
-						response.getWriter().write(jobj.toString());
-
-					}
-				}
+					} 
+				
 			}
 			else{
 				error = "Can't connect with libVirt!";
 				jobj.put("error", error);
 			}
-//		
-		
-		
-		try {
-			if (result != 2) {
-
-				/**
-				 * If the bean is valid, it will return a new JSON response
-				 */
-				if (result == 1) {
-					jobj.put("success", "VM succesfully deleted!");
-
-				} else {
-					error = "Could not delete VM...";
-					jobj.put("error", error);
-				}
-			} else {
-				error = "Can't connect with database";
-				jobj.put("error", error);
-
-			}
-
-		} finally {
+		}
+		finally {
 			response.setContentType("application/json");
 			response.getWriter().write(jobj.toString());
 
-		}
+		}		
 	}
 }

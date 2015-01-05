@@ -1,6 +1,8 @@
 package libvirtAccessObject;
 
 
+import java.util.UUID;
+
 import org.libvirt.Connect;
 import org.libvirt.Domain;
 import org.libvirt.LibvirtException;
@@ -39,6 +41,49 @@ public class VMmanagementTest {
 		}
 	}
 	
+	public void changeVM(UUID UUID, int oldMemory, int vCpu) throws LibvirtException{
+			
+			//setup libvirt connection, second parameter is a boolean for read-only 
+			Connect conn = new Connect("qemu:///system", false);
+			
+			try{
+				Domain x = conn.domainLookupByUUID(UUID);
+				x.setMaxMemory(Long.valueOf(oldMemory));
+				x.setVcpus(vCpu);
+			}catch (LibvirtException e) {
+				e.printStackTrace();
+	}
+			
+			
+	}
+	@SuppressWarnings("finally")
+	public int checkState(UUID UUID) throws LibvirtException{
+		
+		Connect conn = new Connect("qemu:///system", false);
+		int state = 0;
+		//1 if running, 0 if inactive, -1 on error
+		try{
+			Domain x = conn.domainLookupByUUID(UUID);
+			state = x.isActive();
+		}catch (LibvirtException e) {
+			e.printStackTrace();
+		}finally{
+			return state;
+		}
+	}
 	
-	
+	public void startDomain(UUID UUID) throws LibvirtException{
+		
+		Connect conn = new Connect("qemu:///system", false);
+		
+		try{
+			Domain x = conn.domainLookupByUUID(UUID);
+			int state = x.isActive();
+			if(state != 1){
+				x.create();
+			}
+		}catch (LibvirtException e) {
+			e.printStackTrace();
+		}
+	}
 }

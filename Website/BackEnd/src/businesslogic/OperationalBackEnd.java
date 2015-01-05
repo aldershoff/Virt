@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.catalina.manager.util.SessionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
+import org.libvirt.LibvirtException;
 
 import processAdminServices.ProcessAdminPermissionsService;
 import processAdminServices.ProcessAdminUserOverviewService;
@@ -205,6 +206,12 @@ public class OperationalBackEnd extends HttpServlet {
 			case "Delete":
 				vmControl.deleteVM();
 				break;
+			case "Refresh":
+				try {
+					vmControl.refreshVMState();
+				} catch (LibvirtException e) {
+					e.printStackTrace();
+				}
 			default:
 				break;
 			}
