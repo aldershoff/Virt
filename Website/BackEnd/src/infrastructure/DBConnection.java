@@ -39,7 +39,7 @@ public class DBConnection {
 			// url
 			// Setting login and password for database
 			String sqlusername = "root";
-			String sqlpassword = "Fuckdezeshit";
+			String sqlpassword = "VirtTeam1DBP@55W0rdH@xx0r5";
 
 			// Initiazing the connection with the drivermanager for making a
 			// real connection

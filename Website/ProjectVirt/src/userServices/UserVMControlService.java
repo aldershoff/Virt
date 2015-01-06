@@ -89,7 +89,7 @@ public class UserVMControlService {
 		 * If json is null, connection could not be made
 		 */
 		if (json != null) {
-
+			
 			/**
 			 * Get success or error from the back-end
 			 */
@@ -266,7 +266,7 @@ public class UserVMControlService {
 			 * Getting request or error from the back-end
 			 */
 			if (!json.containsKey("error")) {
-				response.sendRedirect("http://localhost:8080/ProjectVirt/customer/controlpanel");
+				response.sendRedirect("http://145.92.14.10:8080/ProjectVirt/customer/controlpanel");
 			} else {
 				vsl_Context.put("error", json.get("error"));
 			}
@@ -289,15 +289,13 @@ public class UserVMControlService {
 	 * @param userID
 	 * @param action
 	 */
-	public void refreshVMState(String vmID, long userID,
+	public void refreshVMState(String vmID,
 			String action) {
 		/**
 		 * Set postparameters to give with the request
 		 */
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		postParameters.add(new BasicNameValuePair("vmID", vmID));
-		postParameters.add(new BasicNameValuePair("userID", Long
-				.toString(userID)));
 		postParameters.add(new BasicNameValuePair("action", action));
 
 		// Making JSON Object for sending request tot the back-end
@@ -311,12 +309,69 @@ public class UserVMControlService {
 		 * If json is null, connection could not be made
 		 */
 		if (json != null) {
-
+			
 			/**
 			 * Getting request or error from the back-end
 			 */
 			if (!json.containsKey("error")) {
 				vsl_Context.put("success", json.get("success"));
+			} else {
+				vsl_Context.put("error", json.get("error"));
+			}
+
+		}
+
+		// Else, the connection could not be made
+		else {
+			vsl_Context.put("error",
+					"Connection with server could not be made..");
+
+		}
+	}
+	
+	/**
+	 * Method for giving request to back-end, to stop the chosen VM
+	 * @param request
+	 * @param response
+	 * @param vmID
+	 * @param userID
+	 * @param action
+	 */
+	public void refreshVMRealTime(String vmID, long userID,
+			String action) {
+		
+		// Setting new bean to fill the data
+		VMBean realtimeDataBean;
+		
+		/**
+		 * Set postparameters to give with the request
+		 */
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+		postParameters.add(new BasicNameValuePair("vmID", vmID));
+		postParameters.add(new BasicNameValuePair("userID", Long.toString(userID)));
+		postParameters.add(new BasicNameValuePair("action", action));
+
+		// Making JSON Object for sending request tot the back-end
+		JSONObject json = JsonPOSTParser
+				.postJsonFromUrl(
+						request,
+						"http://localhost:8080/BackEnd/customer/controlpanel/vmcontrol",
+						postParameters);
+
+		/**
+		 * If json is null, connection could not be made
+		 */
+		if (json != null) {
+			
+			/**
+			 * Getting request or error from the back-end
+			 */
+			if (!json.containsKey("error")) {
+				Gson gson = new Gson();
+				realtimeDataBean = gson.fromJson(json.toString(), VMBean.class);
+
+				vsl_Context.put("realtimeDataBean",
+						realtimeDataBean);
 			} else {
 				vsl_Context.put("error", json.get("error"));
 			}

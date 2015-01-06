@@ -1,7 +1,6 @@
 package businesslogic;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.naming.ServiceUnavailableException;
 import javax.servlet.ServletException;
@@ -10,10 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.manager.util.SessionUtils;
-import org.apache.commons.lang.RandomStringUtils;
 import org.json.simple.JSONObject;
-import org.libvirt.LibvirtException;
 
 import processAdminServices.ProcessAdminPermissionsService;
 import processAdminServices.ProcessAdminUserOverviewService;
@@ -22,21 +18,7 @@ import processUserServices.ProcessUserAccountService;
 import processUserServices.ProcessUserBuyService;
 import processUserServices.ProcessUserVMControlService;
 import processUserServices.ProcessUserVMDataService;
-import jsonserializers.BuyCustomerVMSerialiser;
-import jsonserializers.LoginUserSerialiser;
-import jsonserializers.GetUserVMSerialiser;
-import libvirtAccessObject.TestVM;
-import security.PasswordService;
-import beans.CustomerBean;
-import beans.VMBean;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import databaseAccessObjects.BuyDAO;
 import databaseAccessObjects.TwoFactorDAO;
-import databaseAccessObjects.UserDAO;
-import databaseAccessObjects.VMDAO;
 
 /**
  * The servlet for getting and Posting information through and from the database
@@ -207,11 +189,12 @@ public class OperationalBackEnd extends HttpServlet {
 				vmControl.deleteVM();
 				break;
 			case "Refresh":
-				try {
-					vmControl.refreshVMState();
-				} catch (LibvirtException e) {
-					e.printStackTrace();
-				}
+				vmControl.refreshVMState();
+				break;
+			case "RefreshRealtime":
+				vmControl.refreshVMRealtime();
+				break;
+				
 			default:
 				break;
 			}

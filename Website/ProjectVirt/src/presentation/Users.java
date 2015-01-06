@@ -442,10 +442,14 @@ public class Users extends HttpServlet {
 					vmControl.editVM(vmID, sessionUserID, "Edit");
 					break;
 					
-				case "RefreshState":
+				case "Refresh":
 					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
-					vmControl.refreshVMState(vmID, sessionUserID, "RefreshState");
+					vmControl.refreshVMState(vmID, "Refresh");
 					break;
+					
+				case "RefreshRealtime":
+					template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
+					vmControl.refreshVMRealTime(vmID, sessionUserID, "RefreshRealtime");
 				default:
 					break;
 				}

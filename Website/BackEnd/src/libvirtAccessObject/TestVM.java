@@ -19,7 +19,7 @@ public class TestVM {
 	 */
 	public TestVM() {
 		System.setProperty("jna.library.path",
-				"/home/sne/workspace/ProjectVirt");
+				"/home/virt");
 	}
 
 	/**
@@ -71,7 +71,7 @@ public class TestVM {
 	 */
 	
 	
-	public static UUID createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
+	public UUID createVM(String OSType, String OSName, int Memory, int Storage, int CPU) throws LibvirtException{
 		
 		//setup libvirt connection, second parameter is a boolean for read-only 
 		Connect conn = new Connect("qemu:///system", false);

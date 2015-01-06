@@ -205,7 +205,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public int startSpecificVMState(String vmID, String userID) {
+	public int startSpecificVMState(String vmID, String userID, int state) {
 
 		
 		// Making the connection
@@ -214,7 +214,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String START_SPECIFIC_VM = "UPDATE vm SET VMState = 'Running' WHERE VMID = ? AND vm.user_UserID = ?";
+		final String START_SPECIFIC_VM = "UPDATE vm SET VMState = ? WHERE VMID = ? AND vm.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -226,8 +226,14 @@ public class VMDAO {
 				PreparedStatement pstm = conn.prepareStatement(START_SPECIFIC_VM);
 				
 				// Setting the parameters (places where the "?" exist)
-				pstm.setString(1, vmID);
-				pstm.setString(2, userID);
+				if(state == 1){
+					pstm.setString(1, "Running");
+				}
+				else{
+					pstm.setString(1, "Stopped");
+				}
+				pstm.setString(2, vmID);
+				pstm.setString(3, userID);
 
 
 				// Execute the query
@@ -275,7 +281,7 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public int stopSpecificVM(String vmID, String userID) {
+	public int stopSpecificVM(String vmID, String userID, int state) {
 
 		
 		// Making the connection
@@ -284,7 +290,7 @@ public class VMDAO {
 		// Setting the resultset and query
 		int rs = 0;
 		
-		final String STOP_SPECIFIC_VM = "UPDATE vm SET VMState = 'Stopped' WHERE VMID = ? AND vm.user_UserID = ?";
+		final String STOP_SPECIFIC_VM = "UPDATE vm SET VMState = ? WHERE VMID = ? AND vm.user_UserID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -296,8 +302,14 @@ public class VMDAO {
 				PreparedStatement pstm = conn.prepareStatement(STOP_SPECIFIC_VM);
 				
 				// Setting the parameters (places where the "?" exist)
-				pstm.setString(1, vmID);
-				pstm.setString(2, userID);
+				if(state == 1){
+					pstm.setString(1, "Running");
+				}
+				else{
+					pstm.setString(1, "Stopped");
+				}
+				pstm.setString(2, vmID);
+				pstm.setString(3, userID);
 
 
 				// Execute the query
@@ -420,14 +432,14 @@ public class VMDAO {
 	 * 
 	 * @return
 	 */
-	public int refreshSpecificVM(String vmID) {
+	public int refreshSpecificVM(String vmID, int state) {
 		
 		// Making the connection
 		conn = makeConn();
 
 		// Setting the resultset and query
 		int rs = 0;
-		final String REFRESH_SPECIFIC_VM = "UPDATE vm SET VMState WHERE vm.VMID = ?";
+		final String REFRESH_SPECIFIC_VM = "UPDATE vm SET VMState = ? WHERE vm.VMID = ?";
 
 		/**
 		 * If connection is not null, the query can proceed
@@ -439,7 +451,13 @@ public class VMDAO {
 				PreparedStatement pstm = conn.prepareStatement(REFRESH_SPECIFIC_VM);
 				
 				// Setting the parameters (places where the "?" exist)
-				pstm.setString(1, vmID);
+				if(state == 1){
+					pstm.setString(1, "Running");
+				}
+				else{
+					pstm.setString(1, "Stopped");
+				}
+				pstm.setString(2, vmID);
 
 				// Execute the query
 				rs = pstm.executeUpdate();
@@ -624,6 +642,72 @@ public class VMDAO {
 
 		// Return 0 if not successful
 		return UUID;
+	}
+	
+public String getStorKey(String vmID){
+		
+		// Set the UUID
+		String storageKey = null;
+		
+		// Making the connection
+		conn = makeConn();
+
+		// Setting the resultset and query
+		ResultSet rs;
+		
+		final String GET_VM_UUID = "SELECT VMStorKey FROM vm WHERE VMID = ?";
+		
+		/**
+		 * If connection is not null, the query can proceed
+		 */
+		if (conn != null) {
+
+			try {				
+				// Make prepared statement with the desired query
+				PreparedStatement pstm = conn.prepareStatement(GET_VM_UUID);
+				
+				// Setting the parameters (places where the "?" exist)
+				pstm.setString(1, vmID);
+				
+
+				// Execute the query
+				rs = pstm.executeQuery();
+				while (rs.next()) {
+					storageKey = rs.getString("VMStorKey");
+					
+				}
+				
+			}
+
+			/**
+			 * Catch exception SQL
+			 */
+			catch (SQLException ex) {
+
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+
+			}
+
+			/**
+			 * Finally, close the connection and check if the password from the
+			 * form equals the password inside the bean
+			 */
+			finally {
+				closeConn(conn);
+			}
+
+		}
+
+		// If the connection was not made, return nothing
+		else {
+			return null;
+		}
+
+		// Return 0 if not successful
+		return storageKey;
 	}
 	
 	/**

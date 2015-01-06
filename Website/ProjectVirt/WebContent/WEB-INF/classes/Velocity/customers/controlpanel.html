@@ -7,7 +7,7 @@
 		<div id="header">
 			<div id="logo">
 				<h1>
-					<a href="#">Plaintech</a>
+					<a href="$baseUrl/customer/home">Plaintech</a>
 				</h1>
 				<p>Your personal server!</p>
 			</div>
@@ -78,9 +78,11 @@
 								<td>$vm.getVMName()</td>
 								<td>$vm.getVMOS()</td>
 								<td>$!{vm.getVMState()}</td>
-								
-								<td><form method="POST" action="$baseUrl/customer/controlpanel/vmcontrol?action=RefreshState"> <input type="hidden" name="vmid" value="$vm.getVMID()"><input type="submit" value="Refresh VM State"></form></td>
-								
+								<td>
+								<form id="controlVMForm" action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$vm.getVMID()" method="post">
+	   							<input type="submit" name="action" value="Refresh">
+	   							</form>
+	   							</td>								
 							</tr>
 					 #end 
 					</tbody>
@@ -104,7 +106,8 @@
 					<input type="button" id="refreshVMPage" name="refreshPage" value="Go back">
 				
 			#else
-				
+			
+			#if($vm)	
 					<h2>Server statistics</h2>
 					Click on your Virtual Machine for real-time monitoring!
 					<p />
@@ -149,9 +152,13 @@
 					<input type="hidden" name="vmid" value="$vm.getVMID()">
 					<input type="submit" value="Edit VM">
 					</form>
-					
+					 <form id="controlVMForm" action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$!{vm.getVMID()}" method="post">
+	   				<input type="submit" name="action" value="RefreshRealtime"> </form>
 					<br />
-			<h2>Realtime Statistics  <input type="button" id="refreshVMRealtime" name="refreshVMRealtime" value="Refresh"></h2>
+					#else
+			<h2>Realtime Statistics</h2>  <form id="controlVMForm" action="$baseUrl/customer/controlpanel/vmcontrol?vmid=$!{realtimeDataBean.getVMID()}" method="post">
+	   				<input type="submit" name="action" value="RefreshRealtime"> </form>
+	   				
 			<table class="table table-hover">
 					  <thead>
 					<tr>
@@ -160,30 +167,28 @@
 					    <th>Active CPU</th>
 					    <th>Total RAM</th>
 					    <th>RAM in use</th>
-					    <th>RAM free</th>
 					    <th>IP address</th>
 					    <th>Total HDD space</th>
-					    <th>Available HDD space</th>
+					    <th>Allocated HDD space</th>
 					  </tr>
 					    </thead>
 					       <tbody>
 					  <tr>
-					    <td id="vmHostname">$!{vm.getVMID()}</td>
-					    <td id="vmOS">$!{vm.getVMName()}</td> 
-					    <td id="vmActCPU">$!{vm.getVMOS()}</td> 
-					    <td id="vmTotRAM">$!{vm.getVMCPU()}</td>
-					    <td id="vmInUseRAM">$!{vm.getVMMemory()}</td>
-					    <td id="vmFreeRam">$!{vm.getVMDiskSpace()}</td>
-					    <td id="vmIPAddr">$!{vm.getVMIP()}</td>
-					    <td id="vmTotHDD">$!{vm.getVMSLA()}</td>
-					    <td id="vmFreeHDD">$!{vm.getVMSLA()}</td>
+					    <td id="vmHostname">$!{realtimeDataBean.getVMName()}</td>
+					    <td id="vmOS">$!{realtimeDataBean.getVMOS()}</td> 
+					    <td id="vmActCPU">$!{realtimeDataBean.getVMCPU()} core(s)</td> 
+					    <td id="vmInUseRAM">$!{realtimeDataBean.getVMMemory()}</td>
+					    <td id="vmIPAddr">#if ($!{realtimeDataBean.getVMIP()})$!{realtimeDataBean.getVMIP()} #else No IP address assigned... #end</td>
+					    <td id="vmTotHDD">$!{realtimeDataBean.getVMDiskSpace()}GB</td>
+					    <td id="vmFreeHDD">$!{realtimeDataBean.getVMMonthlyPrice()}GB</td>
 					    
 					    
 					  </tr>
 						   </tbody>
 					</table>	
-
+			$!{error} $!{success}
 				#end
+			#end
 			#end
 			
 		</div>

@@ -81,22 +81,21 @@ public class ProcessUserBuyService {
 
 		}
 
-		UUID makeVMLibvirtResult = java.util.UUID.randomUUID();
-		// try {
-		// makeVMLibvirtResult = TestVM.createVM(vmBean.getVMOS(),
-		// vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()),
-		// Integer.parseInt(vmBean.getVMDiskSpace()),
-		// Integer.parseInt(vmBean.getVMCPU()));
-		// } catch (LibvirtException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
+		UUID makeVMLibvirtResult = null;
 		JSONObject jobj = new JSONObject();
 		String error = "";
 		String json = "";
+		
+		 try {
+			 TestVM vm = new TestVM();
+			 
+		 makeVMLibvirtResult = vm.createVM(vmBean.getVMOS(),
+		 vmBean.getVMName(), Integer.parseInt(vmBean.getVMMemory()),
+		 Integer.parseInt(vmBean.getVMDiskSpace()),
+		 Integer.parseInt(vmBean.getVMCPU()));
+		 
 
-		// if(makeVMLibvirtResult != null){
+		if(makeVMLibvirtResult != null){
 
 		// Set the vm on active mode
 		vmBean.setVMIsActive(1);
@@ -116,8 +115,6 @@ public class ProcessUserBuyService {
 		}
 
 		Gson gson = new Gson();
-
-		try {
 
 			// If bean is not null, a database connection has been initiated
 			if (vmBean != null) {
@@ -148,22 +145,23 @@ public class ProcessUserBuyService {
 				error = "Could not connect to database..";
 				jobj.put("error", error);
 			}
-		} finally {
-			response.setContentType("application/json");
-			if (error != "") {
-				response.getWriter().write(jobj.toString());
-			} else {
-				response.getWriter().write(json.toString());
-			}
+
 		}
-
-		// }
-		// else{
-		// response.setContentType("application/json");
-		// jobj.put("error", "LIBVIRT ERROR");
-		// response.getWriter().write(jobj.toString());
-		// }
-
+		 } catch (LibvirtException e) {
+			 error = e.getError().getMessage().toString();
+			 jobj.put("error", error);
+		}
+			finally {
+				response.setContentType("application/json");
+				if (error != "") {
+					response.getWriter().write(jobj.toString());
+				} else {
+					response.getWriter().write(json.toString());
+				
+				}
+		 }
 	}
-
 }
+		 
+	
+

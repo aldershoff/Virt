@@ -1,89 +1,190 @@
 package libvirtAccessObject;
 
-
 import java.util.UUID;
 
-import org.libvirt.Connect;
-import org.libvirt.Domain;
-import org.libvirt.LibvirtException;
-import org.libvirt.VcpuInfo;
 
+
+
+
+
+import org.libvirt.*;
+import org.libvirt.LibvirtException;
+
+import beans.VMBean;
 
 public class VMmanagementTest {
-	
-	public long getMemory(String OSname) throws LibvirtException{
-		
+
+	public VMmanagementTest() {
+		System.setProperty("jna.library.path",
+				"/home/virt");
+	}
+
+	public long getMemory(String OSname) throws LibvirtException {
+
 		long maxMemory = 0;
-		try{
+		try {
 			Connect conn = new Connect("qemu:///system", false);
 			Domain x = conn.domainLookupByName(OSname);
-			
+
 			maxMemory = x.getMaxMemory();
-		}
-		catch(LibvirtException e){
+		} catch (LibvirtException e) {
 			e.printStackTrace();
 		}
 		return maxMemory;
 	}
-	//Return VcpuInfo[] CPU, I've got to test this,
-	public VcpuInfo[] getCPU(String OSname) throws LibvirtException{
-		VcpuInfo[] CPU = null;
+
+	// //Return VcpuInfo[] CPU, I've got to test this,
+	// public VcpuInfo[] getCPU(String OSname) throws LibvirtException{
+	// VcpuInfo[] CPU = null;
+	// try {
+	// Connect conn = new Connect("qemu:///system", false);
+	// Domain x = conn.domainLookupByName(OSname);
+	//
+	// CPU = x.getVcpusInfo();
+	// } catch (LibvirtException e) {
+	// e.printStackTrace();
+	// }
+	// finally{
+	// return CPU;
+	// }
+	// }
+
+	public int editVM(UUID UUID, int oldMemory, int vCpu)
+			throws LibvirtException {
+		int success = -1;
+		
+		// setup libvirt connection, second parameter is a boolean for read-only
+		Connect conn = new Connect("qemu:///system", false);
+		if (conn.isConnected()) {
 		try {
-			Connect conn = new Connect("qemu:///system", false);
-			Domain x = conn.domainLookupByName(OSname);
-			
-			CPU = x.getVcpusInfo();
+			Domain x = conn.domainLookupByUUID(UUID);
+			x.setMemory(oldMemory);
+			x.setVcpus(vCpu);
+			success = 1;
+
 		} catch (LibvirtException e) {
 			e.printStackTrace();
 		}
-		finally{
-			return CPU;
 		}
+		else{
+			success = 0;
+		}
+		return success;
+
 	}
-	
-	public void changeVM(UUID UUID, int oldMemory, int vCpu) throws LibvirtException{
-			
-			//setup libvirt connection, second parameter is a boolean for read-only 
-			Connect conn = new Connect("qemu:///system", false);
-			
-			try{
+
+	public int checkState(UUID UUID) throws LibvirtException {
+
+		Connect conn = new Connect("qemu:///system", true);
+		int state = 0;
+		if (conn.isConnected()) {
+			// 1 if running, 0 if inactive, -1 on error
+			try {
 				Domain x = conn.domainLookupByUUID(UUID);
-				x.setMaxMemory(Long.valueOf(oldMemory));
-				x.setVcpus(vCpu);
-			}catch (LibvirtException e) {
+
+				state = x.isActive();
+			} catch (LibvirtException e) {
+
+				e.getError();
 				e.printStackTrace();
+			}
+
+		} else {
+			state = -1;
+		}
+		return state;
 	}
-			
-			
-	}
-	@SuppressWarnings("finally")
-	public int checkState(UUID UUID) throws LibvirtException{
+
+	public int startVM(UUID UUID) throws LibvirtException {
+		int state = 0;
 		
 		Connect conn = new Connect("qemu:///system", false);
-		int state = 0;
-		//1 if running, 0 if inactive, -1 on error
-		try{
+		if (conn.isConnected()) {
+			// 1 if running, 0 if inactive, -1 on error
+			try {
+				Domain x = conn.domainLookupByUUID(UUID);
+
+				if (state != 1) {
+					x.create();
+					state = 1;
+				}
+			} catch (LibvirtException e) {
+
+				e.getError();
+				e.printStackTrace();
+			}
+
+		} else {
+			state = -1;
+		}
+		return state;
+	}
+
+	
+	public int stopVM(UUID UUID) throws LibvirtException {
+		Connect conn = new Connect("qemu:///system", false);
+		int state = -1;
+
+		try {
 			Domain x = conn.domainLookupByUUID(UUID);
 			state = x.isActive();
-		}catch (LibvirtException e) {
+			int pers = x.isPersistent();
+			if (state == 1 && pers == 1) {
+				x.shutdown();
+				state = 0;
+			}
+		} catch (LibvirtException e) {
 			e.printStackTrace();
-		}finally{
-			return state;
 		}
+
+		return state;
+	}
+
+	public VMBean getLiveData(UUID UUID, VMBean vmBean) throws LibvirtException {
+		Connect conn = new Connect("qemu:///system", true);
+		int state = 0;
+		if (conn.isConnected()) {
+			// 1 if running, 0 if inactive, -1 on error
+			try {
+				Domain x = conn.domainLookupByUUID(UUID);
+
+				state = x.isActive();
+				if(state == 1){
+					vmBean.setVMName(x.getName());
+					vmBean.setVMOS(x.getOSType());
+					vmBean.setVMCPU(Integer.toString(x.getInfo().nrVirtCpu));
+					vmBean.setVMMemory(Long.toString(x.getInfo().memory));
+					
+					// temp setter
+					vmBean.setVMSLA(Long.toString(x.getMaxMemory()));
+				}
+				else{
+					vmBean = null;
+				}
+			} catch (LibvirtException e) {
+
+				e.getError();
+				e.printStackTrace();
+			}
+
+		} else {
+			vmBean = null;
+		}
+		return vmBean;
 	}
 	
-	public void startDomain(UUID UUID) throws LibvirtException{
-		
-		Connect conn = new Connect("qemu:///system", false);
-		
-		try{
-			Domain x = conn.domainLookupByUUID(UUID);
-			int state = x.isActive();
-			if(state != 1){
-				x.create();
-			}
-		}catch (LibvirtException e) {
-			e.printStackTrace();
-		}
-	}
+	 public String[] getVolume(String key) throws LibvirtException{
+		 String[] storage = new String[2];
+		  Connect conn = new Connect("qemu:///system", false);
+		  
+		  try{
+		   StorageVol x = conn.storageVolLookupByKey(key);
+		   storage[0] = Long.toString(x.getInfo().capacity);
+		   storage[1] = Long.toString(x.getInfo().allocation);
+		 
+		   }catch (LibvirtException e) {
+		   e.printStackTrace();
+		  }
+		return storage;
+		 }
 }
