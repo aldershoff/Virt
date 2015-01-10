@@ -1,0 +1,19 @@
+financial panel
+-----------------------------------------
+grafiek
+ik heb totaal aantal users
+totaal aantal servers
+gemiddeld aantal servers per user
+
+done
+-----------------------------------------
+
+Button : Show All Servers  (done)
+note: Automaticley show certain amount of VM and can switch page. 
+
+Button: Show all Users (done)
+
+---------------------------------------------
+Searchbar Query: find username (hier wordt de VM's weer gegeven)
+
+
