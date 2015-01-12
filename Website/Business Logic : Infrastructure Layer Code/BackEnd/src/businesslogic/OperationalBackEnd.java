@@ -192,7 +192,11 @@ public class OperationalBackEnd extends HttpServlet {
 				vmControl.refreshVMState();
 				break;
 			case "RefreshRealtime":
-				vmControl.refreshVMRealtime();
+				/**
+				 * Make special method for getting the realtime VM data
+				 */
+				ProcessUserVMDataService refreshRealtime = new ProcessUserVMDataService(request, response);
+				refreshRealtime.getRealtimeVMData();
 				break;
 				
 			default:

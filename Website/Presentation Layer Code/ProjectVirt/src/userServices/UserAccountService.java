@@ -326,7 +326,11 @@ public class UserAccountService {
 						// Call the Android login authentication
 						setLoginAndroidTwoFactor(request, response, userID);
 
-					} else {
+					} 
+					/**
+					 * Else, the user is not valid and so there is an error
+					 */
+					else {
 						/**
 						 * Checking if json response or Velocity response should
 						 * be given
@@ -338,7 +342,11 @@ public class UserAccountService {
 						}
 					}
 
-				} else {
+				} 
+				/**
+				 * If the JSON contains an error key, the error will be shown
+				 */
+				else {
 					/**
 					 * Checking if json response or Velocity response should be
 					 * given
@@ -349,7 +357,11 @@ public class UserAccountService {
 						vsl_Context.put("error", json.get("error"));
 					}
 				}
-			} else {
+			} 
+			/**
+			 * If the JSON was null, an connection could not be made...
+			 */
+			else {
 				/**
 				 * Checking if json response or Velocity response should be
 				 * given
@@ -357,18 +369,14 @@ public class UserAccountService {
 				if (isAndroid) {
 					jobj.put("error", "Can't connect with server");
 				} else {
-					vsl_Context.put("error", "SSSS");
+					vsl_Context.put("error", "Can't connect with server");
 				}
 
 			}
 
-			/**
-			 * Save user input when error code appeared
-			 */
 		} catch (ServiceUnavailableException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 
@@ -435,7 +443,7 @@ public class UserAccountService {
 		}
 	}
 
-	// GCM login / register shizzle
+	// GCM login / register
 	// ==========================================================================
 
 	/**
@@ -539,10 +547,8 @@ public class UserAccountService {
 				userPin = new PasswordService().getInstance().encrypt(
 						(String) request.getParameter("pin"));
 			} catch (ServiceUnavailableException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			;
+			};
 
 			/**
 			 * If the pin equals to each other, authentication was successful
@@ -617,14 +623,21 @@ public class UserAccountService {
 	private long loginTwoFactorWriteToDatabase(String regId, String userID,
 			HttpServletRequest request) throws IOException {
 
+		/**
+		 * Srtting the parameters
+		 */
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		postParameters.add(new BasicNameValuePair("regID", regId));
 		postParameters.add(new BasicNameValuePair("userID", userID));
 
+		/**
+		 * Sending request
+		 */
 		JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
 				"http://localhost:8080/BackEnd/customer/insertUserMobileID",
 				postParameters);
 
+		// Getting response
 		return (long) json.get("result");
 
 	}
@@ -640,17 +653,29 @@ public class UserAccountService {
 	 */
 	private String loginTwoFactorReadFromDatabase(String userID,
 			HttpServletRequest request) throws IOException {
+		
+		/**
+		 * Setting parameters
+		 */
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		postParameters.add(new BasicNameValuePair("userID", userID));
 
+		/**
+		 * Making request
+		 */
 		JSONObject json = JsonPOSTParser.postJsonFromUrl(request,
 				"http://localhost:8080/BackEnd/customer/getUserMobileID",
 				postParameters);
 
+		// Getting response
 		return (String) json.get("result");
 
 	}
 
+	/**
+	 * Method for getting the User Details for the profile
+	 * @param sessionUserID
+	 */
 	public void getUserDetails(long sessionUserID) {
 
 		// Setting the URL for getting data from the back-end
@@ -692,13 +717,10 @@ public class UserAccountService {
 						"Connection with server could not be made..");
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

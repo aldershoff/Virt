@@ -19,6 +19,12 @@ public class VMmanagementTest {
 				"/home/virt");
 	}
 
+	/**
+	 * Getting the total memory from libvirt
+	 * @param OSname
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public long getMemory(String OSname) throws LibvirtException {
 
 		long maxMemory = 0;
@@ -33,22 +39,15 @@ public class VMmanagementTest {
 		return maxMemory;
 	}
 
-	// //Return VcpuInfo[] CPU, I've got to test this,
-	// public VcpuInfo[] getCPU(String OSname) throws LibvirtException{
-	// VcpuInfo[] CPU = null;
-	// try {
-	// Connect conn = new Connect("qemu:///system", false);
-	// Domain x = conn.domainLookupByName(OSname);
-	//
-	// CPU = x.getVcpusInfo();
-	// } catch (LibvirtException e) {
-	// e.printStackTrace();
-	// }
-	// finally{
-	// return CPU;
-	// }
-	// }
 
+	/**
+	 * Edit the virtual machine with new parameters
+	 * @param UUID
+	 * @param oldMemory
+	 * @param vCpu
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public int editVM(UUID UUID, int oldMemory, int vCpu)
 			throws LibvirtException {
 		int success = -1;
@@ -73,6 +72,12 @@ public class VMmanagementTest {
 
 	}
 
+	/**
+	 * Check the state of the virtual machine
+	 * @param UUID
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public int checkState(UUID UUID) throws LibvirtException {
 
 		Connect conn = new Connect("qemu:///system", true);
@@ -95,6 +100,12 @@ public class VMmanagementTest {
 		return state;
 	}
 
+	/**
+	 * Start the virtual machine
+	 * @param UUID
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public int startVM(UUID UUID) throws LibvirtException {
 		int state = 0;
 		
@@ -121,6 +132,12 @@ public class VMmanagementTest {
 	}
 
 	
+	/**
+	 * Stop the virtual machine
+	 * @param UUID
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public int stopVM(UUID UUID) throws LibvirtException {
 		Connect conn = new Connect("qemu:///system", false);
 		int state = -1;
@@ -140,6 +157,13 @@ public class VMmanagementTest {
 		return state;
 	}
 
+	/**
+	 * Get realtime data from the virtual machine
+	 * @param UUID
+	 * @param vmBean
+	 * @return
+	 * @throws LibvirtException
+	 */
 	public VMBean getLiveData(UUID UUID, VMBean vmBean) throws LibvirtException {
 		Connect conn = new Connect("qemu:///system", true);
 		int state = 0;
@@ -173,6 +197,12 @@ public class VMmanagementTest {
 		return vmBean;
 	}
 	
+	/**
+	 * Get the volume from the storage key (image file)
+	 * @param key
+	 * @return
+	 * @throws LibvirtException
+	 */
 	 public String[] getVolume(String key) throws LibvirtException{
 		 String[] storage = new String[2];
 		  Connect conn = new Connect("qemu:///system", false);

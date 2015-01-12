@@ -21,30 +21,33 @@ import com.google.gson.Gson;
 
 /**
  * Service for getting all the data for the virtual machines.
+ * 
  * @author KjellZijlemaker
  * @version 1.0
  * @since 1.0
  *
  */
 public class UserVMDataService {
-	
+
 	/**
 	 * Variables that will be used globally
 	 */
 	private VelocityContext vsl_Context;
 	private HttpServletRequest request;
-	
+
 	/**
 	 * Constructor for initialing the global variables
+	 * 
 	 * @param vsl_Context
 	 * @param template
 	 * @param out
 	 */
-	public UserVMDataService(VelocityContext vsl_Context, Template template, PrintWriter out, HttpServletRequest request){
+	public UserVMDataService(VelocityContext vsl_Context,
+			PrintWriter out, HttpServletRequest request) {
 		this.vsl_Context = vsl_Context;
 		this.request = request;
 	}
-	
+
 	/**
 	 * This method is for calling all the user VMs. This will be done with
 	 * making a connection to the back-end servlet that will respond with JSON
@@ -100,7 +103,8 @@ public class UserVMDataService {
 					for (int i = 0; i < listdata.size(); i++) {
 						VMBean bean = new VMBean();
 						Gson gson = new Gson();
-						bean = gson.fromJson(listdata.get(i).toString(), VMBean.class);
+						bean = gson.fromJson(listdata.get(i).toString(),
+								VMBean.class);
 						vmBeanArray.add(bean);
 					}
 
@@ -113,13 +117,10 @@ public class UserVMDataService {
 			}
 
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -153,7 +154,7 @@ public class UserVMDataService {
 
 		// Setting up the bean
 		VMBean vmBean = null;
-		
+
 		/**
 		 * Try to parse object from the given URL
 		 */
@@ -186,13 +187,10 @@ public class UserVMDataService {
 						"Connection with server could not be made..");
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -203,23 +201,26 @@ public class UserVMDataService {
 			vsl_Context.put("vm", vmBean);
 		}
 	}
-	
+
 	/**
-	 * Method for getting realtime data from the back-end servlet. The back-end will make a connection with the libvirt server
+	 * Method for getting realtime data from the back-end servlet. The back-end
+	 * will make a connection with the libvirt server
+	 * 
 	 * @param request
 	 * @param response
 	 * @param sessionUserID
 	 */
-	public void getRealtimeVMData(long sessionUserID){
+	public void getRealtimeVMData(long sessionUserID) {
 		// Get VMID from parameter
 		String parameterVMID = request.getParameter("vmid");
-		
+
 		// Setting the URL for getting data from the back-end
-		String getRealtimeVMDataUrl = "http://localhost:8080/BackEnd/customer/controlpanel/monitorvms?vmid=" + parameterVMID + "&userID=" +sessionUserID;
+		String getRealtimeVMDataUrl = "http://localhost:8080/BackEnd/customer/controlpanel/monitorvms?vmid="
+				+ parameterVMID + "&userID=" + sessionUserID;
 
 		// Setting up the bean
 		VMBean vmBean = null;
-		
+
 		/**
 		 * Try to parse object from the given URL
 		 */
@@ -252,13 +253,10 @@ public class UserVMDataService {
 						"Connection with server could not be made..");
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -268,9 +266,7 @@ public class UserVMDataService {
 		finally {
 			vsl_Context.put("vm", vmBean);
 		}
-		
-		
-		
+
 	}
-	
+
 }

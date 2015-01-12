@@ -269,8 +269,7 @@ public class Users extends HttpServlet {
 				template = Velocity
 						.getTemplate("Velocity/customers/controlpanel.html");
 
-				userVM = new UserVMDataService(vsl_Context, template,
-						out, request);
+				userVM = new UserVMDataService(vsl_Context, out, request);
 				/**
 				 * If the request contains the parameter with getVM, not all the
 				 * VMS should be requested
@@ -292,14 +291,14 @@ public class Users extends HttpServlet {
 
 			case "/customer/controlpanel/monitor":
 				
-				UserVMDataService vmData = new UserVMDataService(vsl_Context, template, out, request);
+				UserVMDataService vmData = new UserVMDataService(vsl_Context, out, request);
+				template = Velocity.getTemplate("Velocity/customers/controlpanel.html");
 				vmData.getRealtimeVMData(sessionUserID);
-				
 				break;
 				
 				
 			case "/customer/controlpanel/vmcontrol/editvm":
-				UserVMDataService getVMData = new UserVMDataService(vsl_Context, template, out, request);
+				UserVMDataService getVMData = new UserVMDataService(vsl_Context, out, request);
 				template = Velocity.getTemplate("Velocity/customers/editvm.html");
 				getVMData.getUserVMs(sessionUserID);
 				break;
