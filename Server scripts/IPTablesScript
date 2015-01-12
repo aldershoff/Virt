@@ -1,0 +1,9 @@
+#!/bin/bash
+cp /home/scripts/iptables.test.rules /etc/iptables.test.rules
+
+iptables-restore < /etc/iptables.test.rules
+iptables-save > /etc/iptables.up.rules
+
+cp /home/scripts/iptables /etc/network/if-pre-up.d/iptables
+
+chmod +x /etc/network/if-pre-up.d/iptables
