@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import json.JsonPOSTParser;
 
@@ -28,8 +27,6 @@ public class UserBuyService {
 	 * Variables that will be used globally
 	 */
 	private VelocityContext vsl_Context;
-	private Template template;
-	private PrintWriter out;
 	private HttpServletRequest request;
 
 	/**
@@ -41,8 +38,6 @@ public class UserBuyService {
 	 */
 	public UserBuyService(VelocityContext vsl_Context, Template template, PrintWriter out, HttpServletRequest request){
 		this.vsl_Context = vsl_Context;
-		this.template = template;
-		this.out = out;
 		this.request = request;
 	}
 	
@@ -127,15 +122,15 @@ public class UserBuyService {
 				 */
 				switch (request.getParameter("VMOS")) {
 				case "debian":
-					template = Velocity
+					Velocity
 							.getTemplate("Velocity/customers/debian.html");
 					break;
 				case "windows":
-					template = Velocity
+					Velocity
 							.getTemplate("Velocity/customers/windows.html");
 					break;
 				case "slackware":
-					template = Velocity
+					Velocity
 							.getTemplate("Velocity/customers/slackware.html");
 					break;
 				}

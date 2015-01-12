@@ -5,14 +5,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import json.JsonGETParser;
 import net.sf.json.JSONException;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -34,8 +32,6 @@ public class UserVMDataService {
 	 * Variables that will be used globally
 	 */
 	private VelocityContext vsl_Context;
-	private Template template;
-	private PrintWriter out;
 	private HttpServletRequest request;
 	
 	/**
@@ -46,8 +42,6 @@ public class UserVMDataService {
 	 */
 	public UserVMDataService(VelocityContext vsl_Context, Template template, PrintWriter out, HttpServletRequest request){
 		this.vsl_Context = vsl_Context;
-		this.template = template;
-		this.out = out;
 		this.request = request;
 	}
 	

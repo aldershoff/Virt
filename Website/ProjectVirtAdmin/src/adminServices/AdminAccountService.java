@@ -464,7 +464,7 @@ public class AdminAccountService {
 			 */
 			if (sessionPin.equals(userPin)) {
 				session.removeAttribute("pincode");
-				response.sendRedirect("/ProjectVirt/customer/home");
+				response.sendRedirect("/ProjectVirtAdmin/admin/home");
 			} else {
 				session.invalidate();
 				vsl_Context.remove("success");

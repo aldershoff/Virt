@@ -23,11 +23,10 @@ import org.apache.velocity.app.Velocity;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
-import com.google.gson.Gson;
-
-import beans.CustomerBean;
-import beans.VMBean;
 import security.PasswordService;
+import beans.CustomerBean;
+
+import com.google.gson.Gson;
 
 /**
  * Service for the account of the user. e.d. like logging in, registering and

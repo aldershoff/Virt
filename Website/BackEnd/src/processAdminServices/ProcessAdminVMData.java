@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jsonserializers.GetAdminAllVMSerialiser;
-import jsonserializers.LoginUserSerialiser;
 
 import org.json.simple.JSONObject;
 
-import beans.CustomerBean;
 import beans.VMBean;
 
 import com.google.gson.Gson;

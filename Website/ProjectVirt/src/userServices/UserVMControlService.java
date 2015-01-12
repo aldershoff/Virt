@@ -13,13 +13,11 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
 import org.json.simple.JSONObject;
 
-import com.google.gson.Gson;
-
-import beans.CustomerBean;
 import beans.VMBean;
+
+import com.google.gson.Gson;
 
 /**
  * Service for controlling the virtual machines e.d start, stop, editing and
@@ -36,8 +34,6 @@ public class UserVMControlService {
 	 * Variables that will be used globally
 	 */
 	private VelocityContext vsl_Context;
-	private Template template;
-	private PrintWriter out;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 
@@ -51,8 +47,6 @@ public class UserVMControlService {
 	public UserVMControlService(VelocityContext vsl_Context, Template template,
 			PrintWriter out, HttpServletRequest request, HttpServletResponse response) {
 		this.vsl_Context = vsl_Context;
-		this.template = template;
-		this.out = out;
 		this.request = request;
 		this.response = response;
 	}

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import beans.CustomerBean;
-import beans.OverviewBean;
 import beans.VMBean;
 
 public class AdminDAO {

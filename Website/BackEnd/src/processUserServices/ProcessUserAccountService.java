@@ -7,20 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jsonserializers.GetUserDetailsSerialiser;
-import jsonserializers.GetUserVMSerialiser;
 import jsonserializers.LoginUserSerialiser;
 
 import org.json.simple.JSONObject;
 
 import security.PasswordService;
 import beans.CustomerBean;
-import beans.VMBean;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import databaseAccessObjects.UserDAO;
-import databaseAccessObjects.VMDAO;
 
 public class ProcessUserAccountService {
 

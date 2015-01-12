@@ -6,27 +6,20 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jsonserializers.GetUserDetailsSerialiser;
-
 import org.json.simple.JSONObject;
 
 import beans.CustomerBean;
-import beans.VMBean;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import databaseAccessObjects.AdminDAO;
-import databaseAccessObjects.UserDAO;
 
 public class ProcessAdminUserOverviewService {
 
-	private HttpServletRequest request;
 	private HttpServletResponse response;
 
 	public ProcessAdminUserOverviewService(HttpServletRequest request,
 			HttpServletResponse response) {
-		this.request = request;
 		this.response = response;
 	}
 

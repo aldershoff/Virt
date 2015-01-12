@@ -116,33 +116,19 @@ public class ProcessUserBuyService {
 
 		Gson gson = new Gson();
 
-			// If bean is not null, a database connection has been initiated
-			if (vmBean != null) {
+			if (vmBean.isValid()) {
 
-				/**
-				 * If the VM is succesfully added to the database, the user will
-				 * get a response back
-				 */
+				final GsonBuilder gsonBuilder = new GsonBuilder();
+				gsonBuilder.registerTypeAdapter(VMBean.class,
+						new BuyCustomerVMSerialiser());
+				gson = gsonBuilder.create();
 
-				if (vmBean.isValid()) {
+				json = gson.toJson(vmBean);
 
-					final GsonBuilder gsonBuilder = new GsonBuilder();
-					gsonBuilder.registerTypeAdapter(VMBean.class,
-							new BuyCustomerVMSerialiser());
-					gson = gsonBuilder.create();
-
-					json = gson.toJson(vmBean);
-
-				}
-
-				else {
-					error = "Something went wrong with buying the VM";
-					jobj.put("error", error);
-				}
 			}
 
 			else {
-				error = "Could not connect to database..";
+				error = "Something went wrong with buying the VM";
 				jobj.put("error", error);
 			}
 
