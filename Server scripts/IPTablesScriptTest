@@ -1,0 +1,11 @@
+#!/bin/bash
+cp /home/scripts/iptables.test.rules /etc/iptables.test.rules
+
+iptables-save > /home/scripts/working.iptables.rules
+iptables-restore < /etc/iptables.test.rules
+iptables-save > /etc/iptables.up.rules
+
+sleep 60
+
+iptables-restore < /home/scripts/working.iptables.rules
+iptables-save > /etc/iptables.up.rules
