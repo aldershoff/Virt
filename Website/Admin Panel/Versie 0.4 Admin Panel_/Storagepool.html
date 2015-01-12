@@ -1,0 +1,172 @@
+
+<html>
+<head> 
+
+	<link rel="stylesheet" type="text/css" href="layout.css"></link>
+	<script src="js/Chart.js"></script>
+</head>
+
+	
+
+
+<body>
+
+<div id= "header">
+	<div id ="menu">
+		<div id="banner">Plaintech</div>
+
+		<div id ="dropdownmenu">
+			<ul>
+				<li><a  href="Username.html">Username</a>
+					<ul>
+						<li><a href="">Logout</a>
+						</li>
+					</ul>
+				</li>
+
+				<li><a  href="VM.html">VM</a>
+					<ul>
+						<li>
+							<a href="">create vm</a>
+						 </li>
+						 <li>
+							<a href="">delete vm</a>
+						 </li>
+						 <li>
+							<a href="">update vm</a>
+						 </li>
+						 <li>
+							<a href="">start vm</a>
+						 </li>
+						 <li>
+							<a href="">stop vm</a>
+						 </li>
+						 <li>
+							<a href="">list vms</a>
+						 </li>
+						 <li>
+							<a href="">make snapshot</a>
+						 </li>
+						 <li>
+							<a href="">delete snapshot</a>
+						 </li>
+						 <li>
+							<a href="">restore snapshot</a>
+						 </li>
+						 <li>
+							<a href="">list snapshots</a>
+						</li>
+					</ul> 
+				</li>
+
+				<li><a href="StorageVolume.html">Storage volume</a>
+					<ul>
+						<li>
+							<a href="">create storage volume</a>
+						</li>
+						<li>
+							<a href="">delete storage volume</a>
+						</li>
+						<li>
+							<a href="">update storage volume</a>
+						</li>
+						<li>
+							<a href="">list storage volumes</a>
+						</li>
+						<li>
+							<a href="">migrate storage volumes (check if possible)</a>
+						</li>
+					</ul>
+				</li>
+
+				<li><a class="active" href="Storagepool.html">Storage pool</a>
+					<ul>
+						<li>
+							<a href="">create storage pool</a>
+						</li>
+						<li>
+							<a href="">delete storage pool</a>
+						</li>
+						<li>
+							<a href="">update storage pool</a>
+						</li>
+						<li>
+							<a href="">list storage pools</a>
+						</li>
+						<li>
+							<a href="">stop storage pools</a>
+						</li>
+						<li>
+							<a href="">start pools</a>
+						</li>
+					</ul>
+				</li>
+
+				<li><a href="NetworkBasedOperations.html">network based operations</a>
+					<ul>
+						<li>
+							<a href="">create network interface</a>
+						</li>
+						<li>
+							<a href="">delete network interface</a>
+						</li>
+						<li>
+							<a href="">update network interface</a>
+						</li>
+						<li>
+							<a href="">list network interface</a>
+						</li>
+					</ul>
+				</li>
+
+				<li><a href="HostBasedOperations.html">host based operations</a>
+					<ul>
+						<li>
+							<a href="">list hosts</a>
+						</li>
+						<li>
+							<a href="">show cpu info</a>
+						</li>
+						<li>
+							<a href="">show mem info</a>
+						</li>
+					</ul>
+				</li>
+
+			</ul>		
+		</div>
+	</div>
+</div>
+
+<div id ="context">
+
+	<div class="widgetbox">
+		<div class="widgetheader">
+				Storage Pools
+		</div>
+			<div class="chartbox">
+				
+			<script type="text/javascript" src="Barchart.js"></script>
+				
+			<canvas id="canvas" height="300" width="900"></canvas>
+
+	
+			</canvas>
+			
+			
+
+		 	</div>
+		 	<div class="tablelist">
+		 		
+				
+
+
+		 	</div>
+
+	</div>
+
+
+</div>
+<script src="js/chartData.js"></script>
+</body>
+</html>
